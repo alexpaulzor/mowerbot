@@ -37,3 +37,30 @@ A lawnmowing robot
 1. [8mm linear bearing](https://smile.amazon.com/gp/product/B01LPZPJ18)
 1. [IEC C14 plug](https://smile.amazon.com/gp/product/B07DCXKNXQ)
 1. [Type B outlet]()
+
+
+# Wiring
+
+| Arduino pin | Color | Function | Destination pin |
+| ----------- | ----- | -------- | --------------- |
+| 3 | violet | PPM | IA6B<sub>1</sub> |
+| 4 | gray | L - forward enable | 
+| 5 | violet | L forward speed |
+| 6 | blue | L reverse speed |  |
+| 7 | green | L reverse enable |  |
+| 8 | brown | R forward enable |  |
+| 9 | red | R reverse enable |  |
+| 10 | orange | R forward speed |  |
+| 11 | yellow | R reverse speed |  |
+| 12 | red | RC power | IA6B<sub>vcc</sub> |
+| 13 | violet | status LED |  |
+| 22 | white | SSR enable | SSR<sub>+</sub> |
+| 26 | green |  |  |
+| 27 | blue |  |  |
+| 28 | violet | |  |
+| 29 | gray | |  |
+| 30 | brown | |  |
+| 50 | orange | limit switch |  |
+| 51 | white | Stepper ENA | TB6600<sub>ENA-</sub> |
+| 52 | brown | Stepper DIR | TB6600<sub>DIR-</sub> |
+| 53 | orange | Stepper PUL | TB6600<sub>PUL-</sub> |
