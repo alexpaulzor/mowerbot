@@ -43,24 +43,24 @@ A lawnmowing robot
 
 | Arduino pin | Color | Function | Destination pin |
 | ----------- | ----- | -------- | --------------- |
-| 3 | violet | PPM | IA6B<sub>1</sub> |
-| 4 | gray | L - forward enable | 
-| 5 | violet | L forward speed |
-| 6 | blue | L reverse speed |  |
-| 7 | green | L reverse enable |  |
-| 8 | brown | R forward enable |  |
-| 9 | red | R reverse enable |  |
-| 10 | orange | R forward speed |  |
-| 11 | yellow | R reverse speed |  |
-| 12 | red | RC power | IA6B<sub>vcc</sub> |
+| 3 | violet | PPM | <code>IA6B<sub>1</sub></code> |
+| 4 | gray | L - forward enable | <code><sup>L</sup>IBT2<sub>L_EN</sub></code> |
+| 5 | violet | L forward speed | <code><sup>L</sup>IBT2<sub>R_PWM</sub></code> |
+| 6 | blue | L reverse speed | <code><sup>L</sup>IBT2<sub>L_PWM</sub></code> |
+| 7 | green | L reverse enable | <code><sup>L</sup>IBT2<sub>R_EN</sub></code> |
+| 8 | brown | R forward enable | <code><sup>R</sup>IBT2<sub>R_EN</sub></code> |
+| 9 | red | R reverse enable | <code><sup>R</sup>IBT2<sub>L_EN</sub></code> |
+| 10 | orange | R forward speed | <code><sup>R</sup>IBT2<sub>R_PWM</sub></code> |
+| 11 | yellow | R reverse speed | <code><sup>R</sup>IBT2<sub>L_PWM</sub></code> |
+| 12 | red | RC power | <code>IA6B<sub>vcc</sub></code> |
 | 13 | violet | status LED |  |
-| 22 | white | SSR enable | SSR<sub>+</sub> |
+| 22 | white | SSR enable | <code>SSR<sub>+</sub></code> |
 | 26 | green |  |  |
 | 27 | blue |  |  |
 | 28 | violet | |  |
 | 29 | gray | |  |
 | 30 | brown | |  |
 | 50 | orange | limit switch |  |
-| 51 | white | Stepper ENA | TB6600<sub>ENA-</sub> |
-| 52 | brown | Stepper DIR | TB6600<sub>DIR-</sub> |
-| 53 | orange | Stepper PUL | TB6600<sub>PUL-</sub> |
+| 51 | white | Stepper ENA | <code>TB6600<sub>ENA-</sub></code> |
+| 52 | brown | Stepper DIR | <code>TB6600<sub>DIR-</sub></code> |
+| 53 | orange | Stepper PUL | <code>TB6600<sub>PUL-</sub></code> |
