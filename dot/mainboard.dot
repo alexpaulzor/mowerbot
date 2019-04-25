@@ -1,0 +1,167 @@
+graph {
+	node [shape=none];
+	mega [label=<<table>
+		<tr><td colspan="11">ATMEGA 2650</td></tr>
+		<tr>
+			<td port="vcc" bgcolor="red" colspan="5">vcc</td>
+			<td port="gnd" bgcolor="darkgreen" colspan="6">gnd</td>
+		</tr><tr>
+			<td port="3" bgcolor="violet">3</td>
+			<td port="4" bgcolor="gray">4</td>
+			<td port="5" bgcolor="violet">5</td>
+			<td port="6" bgcolor="blue">6</td>
+			<td port="7" bgcolor="green">7</td>
+			<td port="8" bgcolor="brown">8</td>
+			<td port="9" bgcolor="red">9</td>
+			<td port="10" bgcolor="orange">10</td>
+			<td port="11" bgcolor="yellow">11</td>
+			<td port="12" bgcolor="red">12</td>
+			<td port="13" bgcolor="violet">13</td>
+		</tr><tr>
+			<td port="22" bgcolor="white">22</td>
+			<td port="26" bgcolor="green">26</td>
+			<td port="27" bgcolor="blue">27</td>
+			<td port="28" bgcolor="violet">28</td>
+			<td port="29" bgcolor="gray">29</td>
+			<td port="30" bgcolor="brown">30</td>
+			<td port="50" bgcolor="orange">50</td>
+			<td port="51" bgcolor="white">51</td>
+			<td port="52" bgcolor="brown">52</td>
+			<td port="53" bgcolor="orange">53</td>
+		</tr>
+		</table>>];
+	battery [label=<<table><tr><td colspan="2">battery</td></tr>
+		<tr><td port="vcc" bgcolor="blue4">vcc</td>
+			<td port="gnd" bgcolor="forestgreen">gnd</td></tr></table>>];
+	// battery_36v;
+	psu [label=<<table><tr><td colspan="2">PSU</td></tr>
+		<tr><td port="vcc" bgcolor="blue4">vcc</td>
+			<td port="gnd" bgcolor="forestgreen">gnd</td></tr>
+		<tr><td port="AC_L">AC_L</td>
+			<td port="AC_N">AC_N</td></tr></table>>];
+	vreg [label=<<table>
+		<tr><td colspan="2">voltage regulator</td></tr>
+		<tr><td port="vcc_in" bgcolor="blue4">vcc_in</td>
+			<td port="gnd_in" bgcolor="forestgreen">gnd_in</td></tr>
+		<tr><td port="vcc_out" bgcolor="red">vcc_out</td>
+			<td port="gnd_out" bgcolor="darkolivegreen">gnd_out</td></tr></table>>];
+	vdisp_high;
+	vdisp_ttl;
+	l_h_bridge [label=<<table>
+		<tr><td colspan="2">(L) H bridge</td></tr>
+		<tr><td port="L_EN" bgcolor="gray">L_EN</td>
+			<td port="L_PWM" bgcolor="blue">L_PWM</td></tr>
+		<tr><td port="R_EN" bgcolor="green">R_EN</td>
+			<td port="R_PWM" bgcolor="violet">R_PWM</td></tr>
+		<tr><td port="m_p">M+</td>
+			<td port="m_m">M-</td></tr>
+		<tr><td port="vcc" bgcolor="blue4">vcc</td>
+			<td port="gnd" bgcolor="forestgreen">gnd</td></tr></table>>];
+	r_h_bridge [label=<<table>
+		<tr><td colspan="2">(R) H bridge</td></tr>
+		<tr><td port="L_EN" bgcolor="red">L_EN</td>
+			<td port="L_PWM" bgcolor="yellow">L_PWM</td></tr>
+		<tr><td port="R_EN" bgcolor="brown">R_EN</td>
+			<td port="R_PWM" bgcolor="orange">R_PWM</td></tr>
+		<tr><td port="m_p">M+</td>
+			<td port="m_m">M-</td></tr>
+		<tr><td port="vcc" bgcolor="blue4">vcc</td>
+			<td port="gnd" bgcolor="forestgreen">gnd</td></tr></table>>];
+	rc [label=<<table><tr><td colspan="2">RC</td></tr>
+		<tr><td port="ppm" bgcolor="violet">ppm</td></tr>
+		<tr><td port="vcc" bgcolor="red">vcc</td>
+			<td port="gnd" bgcolor="darkolivegreen">gnd</td></tr></table>>];
+	step_driver [label=<<table>
+		<tr><td colspan="2">Stepper CTL</td></tr>
+		<tr><td port="ENA_p">ENA+</td>
+			<td port="ENA">ENA-</td></tr>
+		<tr><td port="DIR_p">DIR+</td>
+			<td port="DIR">DIR-</td></tr>
+		<tr><td port="PUL_p">PUL+</td>
+			<td port="PUL">PUL-</td></tr>
+		<tr><td port="A_p" bgcolor="black"><font color="white">A+</font></td>
+			<td port="A_m" bgcolor="green">A-</td></tr>
+		<tr><td port="B_p" bgcolor="red">B+</td>
+			<td port="B_m" bgcolor="blue">B-</td></tr>
+		<tr><td port="vcc" bgcolor="blue4">vcc</td>
+			<td port="gnd" bgcolor="forestgreen">gnd</td></tr></table>>];
+	ssr [label=<<table>
+		<tr><td colspan="2">SSR</td></tr>
+		<tr><td port="ENA" bgcolor="red">ENA+</td>
+			<td port="gnd" bgcolor="darkolivegreen">ENA-</td></tr>
+		<tr><td port="AC_L">AC_L</td>
+			<td port="AC_N">AC_N</td></tr></table>>];
+
+	nema [label=<<table>
+		<tr><td colspan="2">NEMA17 Stepper</td></tr>
+		<tr><td port="A_p" bgcolor="black"><font color="white">A+</font></td>
+			<td port="A_m" bgcolor="green">A-</td></tr>
+		<tr><td port="B_p" bgcolor="red">B+</td>
+			<td port="B_m" bgcolor="blue">B-</td></tr></table>>];
+
+	mower [label=<<table><tr><td colspan="2">mower</td></tr>
+		<tr><td port="m_p">M+</td>
+			<td port="m_m">M-</td></tr></table>>];
+	limit_switch [label=<<table><tr><td colspan="3">limit switch</td></tr>
+		<tr><td port="NO">NO</td>
+			<td port="C">C</td>
+			<td port="NC">NC</td></tr></table>>];
+	l_motor [label=<<table><tr><td colspan="2">(L) motor</td></tr>
+		<tr><td port="m_p">M+</td>
+			<td port="m_m">M-</td></tr></table>>];
+	r_motor [label=<<table><tr><td colspan="2">(R) motor</td></tr>
+		<tr><td port="m_p">M+</td>
+			<td port="m_m">M-</td></tr></table>>];
+
+	battery:vcc -- vreg:vcc_in [color=blue4];
+	vreg:gnd_in -- battery:gnd [color=forestgreen];
+	psu:vcc -- battery:vcc [color=blue4];
+	battery:gnd -- psu:gnd [color=forestgreen];
+	battery:vcc -- l_h_bridge:vcc [color=blue4];
+	l_h_bridge:gnd -- battery:gnd [color=forestgreen];
+	battery:vcc -- r_h_bridge:vcc [color=blue4];
+	r_h_bridge:gnd -- battery:gnd [color=forestgreen];
+
+	battery:vcc -- step_driver:vcc [color=blue4];
+	step_driver:gnd -- battery:gnd [color=forestgreen];
+
+	vreg:vcc_out -- mega:vcc [color=firebrick];
+	mega:gnd -- vreg:gnd_out [color=darkolivegreen];
+	vreg:vcc_out -- rc:vcc [color=firebrick];
+	rc:gnd -- vreg:gnd_out [color=darkolivegreen];
+
+	rc:ppm -- mega:3 [color=violet];
+	mega:4 -- l_h_bridge:L_EN [color=gray];
+	mega:5 -- l_h_bridge:R_PWM [color=violet];
+	mega:6 -- l_h_bridge:L_PWM [color=blue];
+	mega:7 -- l_h_bridge:R_EN [color=green];
+	mega:8 -- r_h_bridge:R_EN [color=brown];
+	mega:9 -- r_h_bridge:L_EN [color=red];
+	mega:10 -- r_h_bridge:R_PWM [color=orange];
+	mega:11 -- r_h_bridge:L_PWM [color=yellow];
+
+	mega:22 -- ssr:ENA [style=dashed];
+	ssr:gnd -- vreg:gnd_out [color=darkolivegreen];
+	vreg:vcc_out -- limit_switch:C [color=yellow];
+	limit_switch:NO -- mega:50 [color=orange];
+	mega:51 -- step_driver:ENA [style=dashed];
+	mega:52 -- step_driver:DIR [color=brown];
+	mega:53 -- step_driver:PUL [color=orange];
+
+	psu:AC_L -- ssr:AC_L;
+	ssr:AC_N -- mower:m_p;
+	mower:m_m -- psu:AC_N;
+
+	vreg:vcc_out -- step_driver:ENA_p [color=firebrick];
+	vreg:vcc_out -- step_driver:DIR_p [color=firebrick];
+	vreg:vcc_out -- step_driver:PUL_p [color=firebrick];
+	step_driver:A_p -- nema:A_p [color=black];
+	step_driver:B_p -- nema:B_p [color=red];
+	step_driver:A_m -- nema:A_m [color=green];
+	step_driver:B_m -- nema:B_m [color=blue];
+
+	l_h_bridge:m_p -- l_motor:m_p;
+	l_h_bridge:m_m -- l_motor:m_m;
+	r_h_bridge:m_p -- r_motor:m_p;
+	r_h_bridge:m_m -- r_motor:m_m;
+}
