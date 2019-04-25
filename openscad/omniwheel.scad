@@ -21,6 +21,13 @@ roller_angle = 360 / num_rollers;
 slot_offset = hub_or - roller_or - roller_clearance;
 slot_width = roller_h + slot_clearance;
 
+optical_slot_clearance = 5;
+num_optical_slots = num_rollers * 2;
+optical_slot_angle = 360 / num_optical_slots;
+optical_slot_offset = bearing_or + optical_slot_clearance;
+optical_slot_length = slot_offset - optical_slot_offset - optical_slot_clearance;
+optical_slot_width = 2;
+
 module slot() {
     translate([slot_offset, -slot_width/2, 0]) 
         cube([roller_or + roller_clearance, 
@@ -39,8 +46,14 @@ module slot() {
     % translate([hub_or - roller_axle_or / 2 - roller_clearance / 2,
                roller_h / 2,
                hub_h / 2])
-               roller();
-    
+               roller();   
+}
+
+module optical_slot() {
+    translate([optical_slot_offset, -optical_slot_width/2, 0]) 
+        cube([optical_slot_length, 
+              optical_slot_width,
+              hub_h]);
 }
 
 module roller_disc() {
@@ -61,7 +74,7 @@ module hub() {
         for(j=[1:num_rollers])  {
             rotate([0,0,j*roller_angle]) {
                 slot();
-                if (j % 2 == 0)
+                * if (j % 2 == 0)
                     translate([2 * slot_offset / 3, 0, 0])
                         cylinder(h=hub_h, r=hub_ir);
             }
@@ -73,7 +86,12 @@ module hub() {
         translate([0, 0, (hub_h - bearing_h)/2])
             cylinder(h=hub_h, r=bearing_or, $fn=60);
         cylinder(h=hub_h, r=bearing_ir);
-         
+        
+        for(j=[1:num_optical_slots])  {
+            rotate([0,0,j*optical_slot_angle]) {
+                optical_slot();
+            }                
+        }
     }
 }
 
@@ -90,4 +108,4 @@ module plate() {
         }
 }
 //plate();
-//!slot();
+hub();

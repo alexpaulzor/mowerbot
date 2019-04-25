@@ -7,7 +7,7 @@ SCAD_FILE = chain_drive.scad
 .PHONY: chain_drive
 .PRECIOUS: *.stl *.gcode
 
-all: chain_drive
+all:
 
 chain_drive: 40_idler_sprocket.stl 40_drive_sprocket.stl 40_idle_drive_sprocket.stl 40_double_link_clip.stl 
 
@@ -39,28 +39,23 @@ chain_drive: 40_idler_sprocket.stl 40_drive_sprocket.stl 40_idle_drive_sprocket.
 		--render \
 		$(SCAD_FILE)
 
+MODULE_CMD := cut -d'.' -f2- | cut -d'(' -f1
+# Have to invoke with `make 'module-openbeam.beam(length~500)'`
+# for named params, because make will not recognize wildcards contaning `=`
+ARGS_CMD := cut -d'.' -f2- | grep -F '(' | cut -d'(' -f2- | sed -e 's/[)]$$//' | tr '~' '='
 
 module-%:
-	export fname="$(shell echo $(*) | cut -d'.' -f1)" \
-	&& export module="$(shell echo $(*) | cut -d'.' -f2-)" \
-	&& echo -e "use <$$PWD/$$fname.scad>\n$$module();" \
+	export     fname="$(shell echo '$(*)' | cut -d'.' -f1)" \
+	&& export module="$(shell echo '$(*)' | $(MODULE_CMD))" \
+	&& export   args="$(shell echo '$(*)' | $(ARGS_CMD))" \
+	&& export tmpfile="$(shell mktemp)" \
+	&& echo -e "use <$$PWD/$$fname.scad>\n$$module($$args);" > $$tmpfile \
+	&& cat $$tmpfile \
 	&& $(SCAD) \
 		-o $$fname.$$module.stl \
-		--render <(echo -e "use <$$PWD/$$fname.scad>\n$$module();")
-# mowerbot: gcode
-
-# stl: $(ALL_WALLS:%=stl-%)
-
-# stl-%: wall-%.stl
-# 	echo "Rendered  wall-$(*).stl"
-
-# wall-%.stl: $(SCAD_FILE)
-# 	echo "Rendering wall-$(*).stl"
-# 	$(SCAD) \
-# 		-D render_wall=$(*) \
-# 		-o wall-$(*).stl \
-# 		--render \
-# 		$(SCAD_FILE)
+		--render $$tmpfile \
+	&& echo "Rendered $$fname.$$module.stl"
+	rm -f $$tmpfile
 
 clean: clean-gcode clean-stl
 
