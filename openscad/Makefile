@@ -40,6 +40,13 @@ chain_drive: 40_idler_sprocket.stl 40_drive_sprocket.stl 40_idle_drive_sprocket.
 		$(SCAD_FILE)
 
 
+module-%:
+	export fname="$(shell echo $(*) | cut -d'.' -f1)" \
+	&& export module="$(shell echo $(*) | cut -d'.' -f2-)" \
+	&& echo -e "use <$$PWD/$$fname.scad>\n$$module();" \
+	&& $(SCAD) \
+		-o $$fname.$$module.stl \
+		--render <(echo -e "use <$$PWD/$$fname.scad>\n$$module();")
 # mowerbot: gcode
 
 # stl: $(ALL_WALLS:%=stl-%)

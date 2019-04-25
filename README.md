@@ -1,12 +1,12 @@
 # mowerbot
 A lawnmowing robot
 
+# Incoming prototype state:
 
-# BOM
+## BOM
 
-## Electronics
+### Electronics
 1. 12v battery `Mighty Max 12V 8.6AH 190CCA GEL Battery`
-1. 36v battery `NEB1002-H 36v 5200mAh/187Wh` 
 1. 0-48V 480W PSU [HJS-480-0-48](https://smile.amazon.com/gp/product/B0777MH681)
 1. adjustable [LM2596 3.0-40V to 1.5-35V voltage regulator](https://smile.amazon.com/gp/product/B01GJ0SC2C)
 1. [voltage display](https://smile.amazon.com/gp/product/B00YALV0NG)
@@ -17,14 +17,12 @@ A lawnmowing robot
 1. [Rocker switch](https://smile.amazon.com/gp/product/B011U1NU90)
 1. [Limit switch](https://smile.amazon.com/gp/product/B00E0JOTV8)
 1. [Arduino ATMEGA2650 knockoff](https://smile.amazon.com/gp/product/B00D9NA4CY)
-1. Ultrasonic sensor [HC-SR04](https://smile.amazon.com/gp/product/B071W9689R)
 
-## Hardware
+### Hardware
 1. [12v wiper motor]()
 1. [NEMA 17 stepper motor](https://smile.amazon.com/gp/product/B00PNEQKC0)
 1. [NEMA 17 mount](https://smile.amazon.com/gp/product/B071NWWB7Z)
 1. [Black & Decker string trimmer](https://smile.amazon.com/gp/product/B00HH4K6RE)
-1. [Ryobi RY40204 40v string trimmer](https://smile.amazon.com/Ryobi-40-Volt-Lithium-Ion-Cordless-Included/dp/B01GOXBO9W)
 1. [#40 roller chain](https://smile.amazon.com/gp/product/B00NP5LDMG)
 1. [MakerBeam](https://smile.amazon.com/gp/product/B06XHXJSVL)
 1. [1" square steel tubing](https://smile.amazon.com/gp/product/B003TPMSDK)
@@ -39,7 +37,7 @@ A lawnmowing robot
 1. [Type B outlet]()
 
 
-# Wiring
+## Wiring
 
 | Arduino pin | Color | Function | Destination pin |
 | ----------- | ----- | -------- | --------------- |
@@ -64,3 +62,25 @@ A lawnmowing robot
 | 51 | white | Stepper ENA | <code>TB6600<sub>ENA-</sub></code> |
 | 52 | brown | Stepper DIR | <code>TB6600<sub>DIR-</sub></code> |
 | 53 | orange | Stepper PUL | <code>TB6600<sub>PUL-</sub></code> |
+
+
+# Next Gen
+
+## Add Components
+
+### Electronics
+
+1. 36v battery `NEB1002-H 36v 5200mAh/187Wh` 
+1. Ultrasonic sensor [HC-SR04](https://smile.amazon.com/gp/product/B071W9689R)
+1. Raspberry Pi [Zero W](https://smile.amazon.com/gp/product/B0748MPQT4)
+1. RPI NV [camera](https://smile.amazon.com/gp/product/B07BK1QZ2L)
+
+### Hardware
+
+1. [Ryobi RY40204 40v string trimmer](https://smile.amazon.com/Ryobi-40-Volt-Lithium-Ion-Cordless-Included/dp/B01GOXBO9W)
+
+### To-source components
+1. GPS receiver
+1. Directional sensor
+1. travel motion feedback sensor
+1. Accelerometer?
