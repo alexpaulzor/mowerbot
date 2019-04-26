@@ -82,5 +82,5 @@ A lawnmowing robot
 ### To-source components
 1. GPS receiver
 1. Directional sensor
-1. travel motion feedback sensor
+1. travel motion feedback sensor--IR interrupt?
 1. Accelerometer?

@@ -1,3 +1,5 @@
+use <purchased_electrics.scad>;
+
 $fn = 30;
 bearing_h = 7;
 bearing_ir = 4;
@@ -49,11 +51,11 @@ module slot() {
                roller();   
 }
 
-module optical_slot() {
+module optical_slot(depth=hub_h) {
     translate([optical_slot_offset, -optical_slot_width/2, 0]) 
         cube([optical_slot_length, 
               optical_slot_width,
-              hub_h]);
+              depth]);
 }
 
 module roller_disc() {
@@ -95,6 +97,70 @@ module hub() {
     }
 }
 
+sens_holder_wall_th = 2;
+sens_holder_tighten_ir = 3/2;
+sens_holder_h = optical_slot_offset + bearing_ir + optical_slot_length + 2 * sens_holder_wall_th;
+ir_sens_holder_w = 20;
+ir_sens_holder_l = 24;
+
+module ir_sens_holder() {
+    difference() {
+        translate([0, 0, optical_slot_offset/2 + optical_slot_length/2 - sens_holder_wall_th])
+            cube([ir_sens_holder_l, ir_sens_holder_w, sens_holder_h], center=true);
+        for (i=[0:3:12]) {
+            translate([-i, 0, optical_slot_offset])
+                ir_sensor();
+        }
+        rotate([0, 90, 0]) {
+            cylinder(r=bearing_ir, h=ir_sens_holder_l+1, center=true);
+            % translate([0, 0, ir_sens_holder_l/2]) hub();
+            # rotate([0, 0, 180]) optical_slot(ir_sens_holder_l);
+        }
+            
+        translate([0, 0, bearing_ir * 1.5])
+            cube([ir_sens_holder_l, sens_holder_wall_th, bearing_ir * 3], center=true);
+        translate([0, -ir_sens_holder_w/2  + sens_holder_wall_th/2, bearing_ir * 3])
+            cube([ir_sens_holder_l, ir_sens_holder_w, sens_holder_wall_th], center=true);
+        translate([0, 0, bearing_ir * 2])
+            rotate([90, 0, 0])
+            cylinder(r=sens_holder_tighten_ir, h=ir_sens_holder_w, center=true);
+    }
+
+}
+
+* ir_sens_holder();
+
+ir_emit_holder_w = 20;
+ir_emit_holder_l = 24;
+
+module ir_emit_holder() {
+    difference() {
+        translate([0, 0, optical_slot_offset/2 + optical_slot_length/2 - sens_holder_wall_th])
+            cube([ir_emit_holder_l, ir_emit_holder_w, sens_holder_h], center=true);
+        for (i=[0:3:12]) {
+            # translate([-i, 0, optical_slot_offset + optical_slot_length / 2])
+                ir_emit();
+        }
+        rotate([0, 90, 0]) {
+            cylinder(r=bearing_ir, h=ir_emit_holder_l+1, center=true);
+            % translate([0, 0, ir_emit_holder_l/2]) 
+                hub();
+            rotate([0, 0, 180]) 
+                optical_slot(ir_emit_holder_l);
+        }
+        translate([0, 0, bearing_ir * 1.5])
+            cube([ir_emit_holder_l, sens_holder_wall_th, bearing_ir * 3], center=true);
+        translate([0, -ir_emit_holder_w/2  + sens_holder_wall_th/2, bearing_ir * 3])
+            cube([ir_emit_holder_l, ir_emit_holder_w, sens_holder_wall_th], center=true);
+        translate([0, 0, bearing_ir * 2])
+            rotate([90, 0, 0])
+            cylinder(r=sens_holder_tighten_ir, h=ir_emit_holder_w, center=true);
+    }
+
+}
+
+ir_emit_holder();
+
 module plate() {
     hub();
     translate([2 * hub_or + roller_clearance, 0, 0])
@@ -107,5 +173,3 @@ module plate() {
         }   
         }
 }
-//plate();
-hub();
