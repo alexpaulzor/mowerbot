@@ -79,8 +79,15 @@ A lawnmowing robot
 
 1. [Ryobi RY40204 40v string trimmer](https://smile.amazon.com/Ryobi-40-Volt-Lithium-Ion-Cordless-Included/dp/B01GOXBO9W)
 
-### To-source components
+### TODO / To-source components
+
+1. Power protection vreg
 1. GPS receiver
 1. Directional sensor
 1. travel motion feedback sensor--IR interrupt?
 1. Accelerometer?
+1. Add elgoo sensors link
+1. Add links for purchased-but-not-in-use components
+1. Experiment with 2bit rotary encoder
+1. Experiment with ultrasonic, IR proximity, hall sensor
+

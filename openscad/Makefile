@@ -9,7 +9,10 @@ MODULE_CMD := cut -d'.' -f2- | cut -d'(' -f1
 # for named params, because make will not recognize wildcards contaning `=`
 ARGS_CMD := cut -d'.' -f2- | grep -F '(' | cut -d'(' -f2- | sed -e 's/[)]$$//' | tr '~' '='
 
-module-%:
+prep:
+	mkdir -p stl
+
+module-%: prep
 	export     fname="$(shell echo '$(*)' | cut -d'.' -f1)" \
 	&& export module="$(shell echo '$(*)' | $(MODULE_CMD))" \
 	&& export   args="$(shell echo '$(*)' | $(ARGS_CMD))" \
@@ -17,15 +20,15 @@ module-%:
 	&& echo -e "use <$$PWD/$$fname.scad>\n$$module($$args);" > $$tmpfile \
 	&& cat $$tmpfile \
 	&& $(SCAD) \
-		-o $$fname-$$module.stl \
+		-o stl/$$module.$$fname.stl \
 		--render $$tmpfile \
-	&& echo "Rendered $$fname-$$module.stl"
+	&& echo "Rendered stl/$$module.$$fname.stl"
 	rm -f $$tmpfile
 
 clean: clean-gcode clean-stl
 
 clean-stl:
-	rm -f *.stl
+	rm -f *.stl stl/*.stl
 
 clean-gcode:
 	rm -f *.gcode
