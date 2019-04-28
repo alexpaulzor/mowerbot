@@ -297,3 +297,39 @@ module ir_emit() {
         sens_pins(ir_emit_pin_w);
 }
 
+volt_disp_w = 14;
+volt_disp_l = 23;
+volt_disp_h = 10;
+volt_disp_tab_lw = 5;
+volt_disp_tab_h = 3;
+volt_disp_tab_hole_ir = 3 / 2;
+
+module volt_disp() {
+    difference() {
+        union() {
+            cube([volt_disp_l, volt_disp_w, volt_disp_h], center=true);
+            translate([0, 0, (volt_disp_tab_h - volt_disp_h) / 2]) 
+                cube([
+                    volt_disp_l + 2 * volt_disp_tab_lw,
+                    volt_disp_tab_lw,
+                    volt_disp_tab_h], center=true);
+        }
+        volt_disp_holes();
+    }
+}
+
+module volt_disp_holes() {
+    for (i=[-1, 1]) {
+        translate([i* (volt_disp_l + volt_disp_tab_lw)/2, 0, 0])
+            cylinder(r=volt_disp_tab_hole_ir, h=2*volt_disp_h, center=true);
+    }
+}
+
+module volt_disp_holder() {
+    volt_disp();
+    % translate([0, 0, -BEAM_W/2])
+        rotate([0, 90, 0])
+        beam();
+    
+}
+volt_disp_holder();
