@@ -257,5 +257,79 @@ module rocker_mount() {
     mount_block(rocker_or);
 }
 
-* rotate([90, 0, 0]) rocker_mount();
-* translate([4 * beam_w, 0, 0]) pillow_block();
+sens_pin_h = 5;
+sens_pin_l = 9;
+sens_pin_offs_l = 4;
+sens_chip_h = 4;
+
+module sens_pins(pin_w) {
+    translate([-sens_pin_l / 2 + sens_pin_offs_l, 0, sens_chip_h / 2 + sens_pin_h / 2])
+        cube([sens_pin_l, pin_w, sens_pin_h], center=true);
+        
+}
+
+ir_sens_chip_l = 20;
+ir_sens_chip_w = 16;
+ir_sens_pin_w = 8;
+
+ir_sens_h = 12;
+ir_sens_w = 6;
+ir_sens_l = 6;
+module ir_sensor() {
+    cube([ir_sens_chip_l, ir_sens_chip_w, sens_chip_h], center=true);
+    translate([0, 0, ir_sens_h / 2])
+        cube([ir_sens_l, ir_sens_w, ir_sens_h], center=true);
+    translate([-ir_sens_chip_l/2, 0, 0])
+        sens_pins(ir_sens_pin_w);
+}
+
+ir_emit_chip_l = 20;
+ir_emit_chip_w = 16;
+ir_emit_pin_w = 8;
+
+ir_emit_or = 3;
+ir_emit_l = 22;
+module ir_emit() {
+    cube([ir_emit_chip_l, ir_emit_chip_w, sens_chip_h], center=true);
+    rotate([0, 90, 0])
+        cylinder(r=ir_emit_or, h=ir_emit_l);
+    translate([-ir_emit_chip_l/2, 0, 0])
+        sens_pins(ir_emit_pin_w);
+}
+
+volt_disp_w = 14;
+volt_disp_l = 23;
+volt_disp_h = 10;
+volt_disp_tab_lw = 5;
+volt_disp_tab_h = 3;
+volt_disp_tab_hole_ir = 3 / 2;
+
+module volt_disp() {
+    difference() {
+        union() {
+            cube([volt_disp_l, volt_disp_w, volt_disp_h], center=true);
+            translate([0, 0, (volt_disp_tab_h - volt_disp_h) / 2]) 
+                cube([
+                    volt_disp_l + 2 * volt_disp_tab_lw,
+                    volt_disp_tab_lw,
+                    volt_disp_tab_h], center=true);
+        }
+        volt_disp_holes();
+    }
+}
+
+module volt_disp_holes() {
+    for (i=[-1, 1]) {
+        translate([i* (volt_disp_l + volt_disp_tab_lw)/2, 0, 0])
+            cylinder(r=volt_disp_tab_hole_ir, h=2*volt_disp_h, center=true);
+    }
+}
+
+module volt_disp_holder() {
+    volt_disp();
+    % translate([0, 0, -BEAM_W/2])
+        rotate([0, 90, 0])
+        beam();
+    
+}
+volt_disp_holder();

@@ -390,7 +390,7 @@ module plate(part=0) {
 
 module design_chain_drive() {   
    
-    translate([-DRIVE_PITCH_OR, 0, 0])
+    * translate([-DRIVE_PITCH_OR, 0, 0])
         rotate([0, 0, 180 + DRIVE_TEETH_DEG / 2])
         chain(floor(DRIVE_TEETH / 2), DRIVE_TEETH_DEG);
     
@@ -411,9 +411,9 @@ module design_chain_drive() {
     * drive_sprocket();
     * translate([0, 0, LINK_LARGE_W + CHAIN_GAP])
         idle_drive_sprocket();
-    translate([0, 0, LINK_LARGE_W + CHAIN_GAP])
+    * translate([0, 0, LINK_LARGE_W + CHAIN_GAP])
         idler_sprocket();
-    idler_sprocket();
+    * idler_sprocket();
     * translate([0, 0, bearing_h/2])
         idle_sprocket_spacer();
 }

@@ -1,50 +1,18 @@
-use <openbeam.scad>;
-IN_MM = 25.4;
-
-/////////////////////////////////////////////////
-//////////// PURCHASED PARTS ////////////////////
-/////////////////////////////////////////////////
-
-BEAM_W = 15;
-BEAM_IR = 3/2;
-
-mower_shaft_or = 25 / 2;
-mower_shaft_l = 32 * IN_MM;
-mower_blade_or = 12 * IN_MM / 2;
-mower_blade_h = 3 * IN_MM;
-mower_neck_angle = 45;
-mower_neck_or = 2 * IN_MM;
-mower_neck_shaft_l = 7.5 * IN_MM;
-mower_neck_h = 5.5 * IN_MM;
-mower_neck_offset_h = 1.0 * IN_MM;
-
-module mower() {
-    translate([0, 0, -mower_neck_shaft_l])
-        cylinder(r=mower_shaft_or, h=mower_shaft_l);
-    translate([0, 0, -mower_neck_shaft_l]) {
-                rotate([0, -mower_neck_angle, 0]) {
-                    translate([0, 0, -mower_blade_h - mower_neck_offset_h]) {
-                        cylinder(r=mower_blade_or, h=mower_blade_h);
-                        cylinder(r=mower_neck_or, h=mower_blade_h+mower_neck_h);
-                    }
-                }
-            }
-}
-
-/////////////////////////////////////////////////
-//////////// ROD+SHAFT+NEMA /////////////////////
-/////////////////////////////////////////////////
+include <constants.scad>;
 
 rod_r = 8 / 2;
 rod_l = 500;
-rod_mount_c_h = 20;
+
 rod_mount_flange_w = 42;
 rod_mount_flange_h = 6.5;
 rod_mount_w = 20;
 rod_mount_l = 14;
 rod_mount_h = 33.5;
-rod_mount_hole_r = 5.5 / 2;
-rod_mount_hole_c_c = 31.5;
+
+// moved to constants.scad
+// rod_mount_hole_r = 5.5 / 2;
+// rod_mount_hole_c_c = 31.5;
+// rod_mount_c_h = 20;
 
 module rod(l=rod_l) {
     rotate([0, 90, 0])
@@ -61,11 +29,15 @@ module rod_mount() {
         }
         translate([-rod_mount_l / 2, 0, 0])
             rod(rod_mount_l);
-        translate([0, rod_mount_hole_c_c / 2, -rod_mount_c_h])
-            cylinder(r=rod_mount_hole_r, h=rod_mount_flange_h);
-        translate([0, -rod_mount_hole_c_c / 2, -rod_mount_c_h])
-            cylinder(r=rod_mount_hole_r, h=rod_mount_flange_h);
+        rod_mount_holes();
     }
+}
+
+module rod_mount_holes(h=rod_mount_c_h) {
+    translate([0, rod_mount_hole_c_c / 2, -rod_mount_c_h])
+        cylinder(r=rod_mount_hole_r, h=h);
+    translate([0, -rod_mount_hole_c_c / 2, -rod_mount_c_h])
+        cylinder(r=rod_mount_hole_r, h=h);
 }
 
 rod_traveller_w = 34;
@@ -76,7 +48,6 @@ rod_traveller_step_w = 17;
 rod_traveller_hole_c_c_w = 24.5;
 rod_traveller_hole_c_c_l = 18;
 rod_traveller_hole_r = 4 / 2;
-
 rod_traveller_mount_h = 4 * rod_traveller_hole_r;
 
 module rod_traveller() {
@@ -112,16 +83,20 @@ module rod_traveller_mount_holes(h=rod_traveller_mount_h) {
             cylinder(r=rod_traveller_hole_r, h=h);
 }
 
-shaft_r = 8 / 2;
+
 shaft_l = 400;
 shaft_pillow_l = 13;
-shaft_pillow_c_h = 14.5;
 shaft_pillow_h = 30;
 shaft_pillow_w = 2 * shaft_pillow_c_h;
 shaft_pillow_flange_w = 55;
-shaft_pillow_hole_r = 5 / 2;
-shaft_pillow_hole_c_c = 42;
+
 shaft_pillow_flange_h = 5;
+
+// moved to constants.scad
+// shaft_r = 8 / 2;
+// shaft_pillow_hole_r = 5 / 2;
+// shaft_pillow_hole_c_c = 42;
+// shaft_pillow_c_h = 14.5;
 
 module shaft(l=shaft_l) {
     rod(l);
@@ -137,11 +112,15 @@ module shaft_pillow() {
                 cube([shaft_pillow_l, shaft_pillow_flange_w, shaft_pillow_flange_h]);
         }
         shaft(shaft_pillow_l);
-        translate([0, shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
-            cylinder(r=shaft_pillow_hole_r, h=shaft_pillow_flange_h);
-        translate([0, - shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
-            cylinder(r=shaft_pillow_hole_r, h=shaft_pillow_flange_h);
+        shaft_pillow_holes();
     }
+}
+
+module shaft_pillow_holes(h=shaft_pillow_flange_h) {
+    translate([0, shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
+        cylinder(r=shaft_pillow_hole_r, h=h);
+    translate([0, - shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
+        cylinder(r=shaft_pillow_hole_r, h=h);
 }
 
 traveller_h = 16;
@@ -295,41 +274,3 @@ module drive_motor(use_stl=false) {
         }
     }
 }
-
-volt_disp_w = 14;
-volt_disp_l = 23;
-volt_disp_h = 10;
-volt_disp_tab_lw = 5;
-volt_disp_tab_h = 3;
-volt_disp_tab_hole_ir = 3 / 2;
-
-module volt_disp() {
-    difference() {
-        union() {
-            cube([volt_disp_l, volt_disp_w, volt_disp_h], center=true);
-            translate([0, 0, (volt_disp_tab_h - volt_disp_h) / 2]) 
-                cube([
-                    volt_disp_l + 2 * volt_disp_tab_lw,
-                    volt_disp_tab_lw,
-                    volt_disp_tab_h], center=true);
-        }
-        volt_disp_holes();
-    }
-}
-
-module volt_disp_holes() {
-    for (i=[-1, 1]) {
-        translate([i* (volt_disp_l + volt_disp_tab_lw)/2, 0, 0])
-            cylinder(r=volt_disp_tab_hole_ir, h=2*volt_disp_h, center=true);
-    }
-}
-
-module volt_disp_holder() {
-    volt_disp();
-    % translate([0, 0, -BEAM_W/2])
-        rotate([0, 90, 0])
-        beam();
-    
-}
-volt_disp_holder();
-
