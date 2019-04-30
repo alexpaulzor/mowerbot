@@ -198,7 +198,7 @@ module cap_mount_8mm() {
     }
 }
 
-module inline_mount_8mm() {
+module mini_inline_mount_8mm() {
     difference() {
         translate([0, 4 + m3_nut_h / 2, 0])
             cube([BEAM_W, BEAM_W + 8 + 2*wall_th + m3_nut_h, BEAM_W + 2 * wall_th], center=true);
@@ -231,4 +231,4 @@ module inline_mount_8mm() {
     }
 }
 
-inline_mount_8mm();
+mini_inline_mount_8mm();

@@ -178,7 +178,7 @@ graph {
 			    <td port="drain" bgcolor="gold4">drain</td></tr></table>>];
 	//}
 
-	subgraph cluster_todo {
+	//subgraph cluster_todo {
 		ir_tx [label=<<table><tr><td colspan="3">IR tx</td></tr>
 		    <tr><td port="S">S</td>
 			    <td bgcolor="firebrick">vcc</td>
@@ -212,26 +212,20 @@ graph {
 				<td bgcolor="darkolivegreen">gnd</td></tr></table>>];
 
 		lcd_display [label=<<table><tr><td colspan="4">LCD Display</td></tr>
-		    <tr>
-			    <td port="d0">d0</td>
-				<td port="d1">d1</td>
-				<td port="d2">d2</td>
-				<td port="d3">d3</td></tr>
-			<tr><td port="d4">d4</td>
-				<td port="d5">d5</td>
-				<td port="d6">d6</td>
-				<td port="d7">d7</td></tr>
-			<tr>
-			    <td port="rs">rs</td>
-				<td port="rw">rw</td>
-				<td port="e">e</td>
-				<td port="v0" bgcolor="firebrick">v0</td>
-			</tr>
-			<tr><td port="a" bgcolor="firebrick">a (LED+)</td>
-				<td port="k" bgcolor="darkolivegreen">k (LED-)</td>
-				<td port="vcc" bgcolor="firebrick">vdd</td>
-				<td port="gnd" bgcolor="darkolivegreen">vss</td></tr></table>>];
-	}
+		    <tr><td port="sda">sda</td>
+			    <td port="scl">scl</td></tr>
+			<tr><td bgcolor="firebrick">vcc</td>
+				<td bgcolor="darkolivegreen">gnd</td></tr></table>>];
+	
+		rpi;
+		rpi_cam;
+		rpi_lcd;
+	//}
+
+	mega -- rpi;
+
+	rpi -- rpi_cam;
+	rpi -- rpi_lcd;
 
     mega -- ir_tx;
     mega -- ir_rx;
