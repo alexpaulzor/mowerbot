@@ -230,5 +230,3 @@ module mini_inline_mount_8mm() {
        
     }
 }
-
-mini_inline_mount_8mm();

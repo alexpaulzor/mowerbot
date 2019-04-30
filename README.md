@@ -29,7 +29,6 @@ Arduino pin | Color | Function | Destination pin
 
 ## Inventory
 
-
 category  |  make  |  component  |  link  |  specs  |  scad module | count 
 ---------  |  ----  |  ---------  |  ----  |  -----  |  ----------- | ---- 
 hardware  |  JeremyWell  |  #40 roller chain  | [link](https://smile.amazon.com/gp/product/B00NP5LDMG) |  `0.5" pitch` |  | 15m 
@@ -108,7 +107,6 @@ output | Elecrow | RPI Touch Screen LCD Display | [link](https://smile.amazon.co
 sensor |  | `ESP8266` WiFi Module | [link](https://smile.amazon.com/gp/product/B07H1W6DJZ) | 3.3v, NOT 5v!! |  | 4
 sensor | Gikfun | `EK8460` / `VS1838B` IR Tx/Rx LED | [link](https://smile.amazon.com/gp/product/B06XYNDRGF) | `5mm 940nm` |  | 10
 
-
 ### ELGOO Sensors
 
 1. Blink  
@@ -149,4 +147,3 @@ sensor | Gikfun | `EK8460` / `VS1838B` IR Tx/Rx LED | [link](https://smile.amazo
 
 1. Experiment with 2bit rotary encoder
 1. Fabricate drive sprocket for NEMA23 stepper motor
-
