@@ -30,31 +30,43 @@ graph {
 		mega [label=<<table>
 			<tr><td colspan="11">ATMEGA 2650</td></tr>
 			<tr>
-				<td port="vcc" bgcolor="orangered" colspan="5">vcc</td>
-				<td port="gnd" bgcolor="darkolivegreen" colspan="6">gnd</td>
+				<td port="vcc" bgcolor="orangered">vcc</td>
+				<td port="gnd" bgcolor="darkolivegreen">gnd</td>
 			</tr><tr>
 				<td port="3" bgcolor="violet">3</td>
+			</tr><tr>
 				<td port="4" bgcolor="gray">4</td>
 				<td port="5" bgcolor="violet">5</td>
+			</tr><tr>
 				<td port="6" bgcolor="blue">6</td>
 				<td port="7" bgcolor="green">7</td>
+			</tr><tr>
 				<td port="8" bgcolor="brown">8</td>
 				<td port="9" bgcolor="red">9</td>
+			</tr><tr>
 				<td port="10" bgcolor="orange">10</td>
 				<td port="11" bgcolor="yellow">11</td>
+			</tr><tr>
 				<td port="12" bgcolor="red">12</td>
 				<td port="13" bgcolor="violet">13</td>
 			</tr><tr>
 				<td port="22" bgcolor="white">22</td>
 				<td port="26" bgcolor="green">26</td>
+			</tr><tr>
 				<td port="27" bgcolor="blue">27</td>
 				<td port="28" bgcolor="violet">28</td>
+			</tr><tr>
 				<td port="29" bgcolor="gray">29</td>
 				<td port="30" bgcolor="brown">30</td>
+			</tr><tr>
+				<td port="sda">20 (SDA)</td>
+				<td port="scl">21 (SCL)</td>
+			</tr><tr>
 				<td port="50" bgcolor="orange">50</td>
 				<td port="51" bgcolor="white">51</td>
+			</tr><tr>
 				<td port="52" bgcolor="brown">52</td>
-				<td port="53" bgcolor="orange">53</td>
+				<td port="53" bgcolor="orange">53</td>				
 			</tr>
 			</table>>];
 		vreg [label=<<table>
@@ -217,23 +229,23 @@ graph {
 			<tr><td bgcolor="firebrick">vcc</td>
 				<td bgcolor="darkolivegreen">gnd</td></tr></table>>];
 	
-		rpi;
-		rpi_cam;
-		rpi_lcd;
-	//}
+	// 	rpi;
+	// 	rpi_cam;
+	// 	rpi_lcd;
+	// //}
 
-	mega -- rpi;
+	// mega -- rpi;
 
-	rpi -- rpi_cam;
-	rpi -- rpi_lcd;
+	// rpi -- rpi_cam;
+	// rpi -- rpi_lcd;
 
-    mega -- ir_tx;
-    mega -- ir_rx;
+    // mega -- ir_tx;
+    // mega -- ir_rx;
 
-    mega -- avoid_sens;
-    mega -- ultrasonic_sens;
-    mega -- gyro_6axis;
-    mega -- lcd_display;
+    // mega -- avoid_sens;
+    // mega -- ultrasonic_sens;
+    // mega -- gyro_6axis;
+    // mega -- lcd_display;
     // mega -- gyro_9axis;
     // mega -- gps_rx;
 
