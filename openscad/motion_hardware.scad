@@ -1,4 +1,7 @@
 include <constants.scad>;
+use <lib_pulley.scad>
+
+! gt2_pulley(40, 9.5);
 
 rod_r = 8 / 2;
 rod_l = 500;
@@ -273,4 +276,8 @@ module drive_motor(use_stl=false) {
             }
         }
     }
+}
+
+module drive_pulley_40t(bore=9.5, height=6) {
+    gt2_pulley(40, bore, pulley_t_ht=height, pulley_b_ht=0, pulley_b_dia=0, no_of_nuts=0, nut_shaft_distance=0);
 }

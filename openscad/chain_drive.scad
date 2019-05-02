@@ -1,4 +1,6 @@
 use <sprockets.scad>
+use <motion_hardware.scad>
+
 IN_MM = 25.4;
 PI = 3.14159;
 $fn=60;
@@ -216,6 +218,29 @@ module idle_drive_sprocket(use_stl=false) {
         }
     }
 }
+
+
+module small_drive_sprocket(use_stl=false) {
+    zratio = LINK_PIN_W / (IN_MM * get_thickness(CHAIN_SIZE));
+    hole_offs = (IDLER_PITCH_OR - ROLLER_OR + bearing_or) / 2;
+    if (use_stl) {
+        import("small_drive_sprocket.stl");
+    } else {
+        difference() {
+            sprocket(size=CHAIN_SIZE, teeth=IDLER_TEETH, bore=0, hub_diameter=(bearing_or*2 + 2*wall_th) / IN_MM, hub_height=(bearing_h)/IN_MM / zratio);
+            translate([0, 0, -1])
+                //drive_pulley_40t(0, LINK_PIN_W + 2);
+                import("stl/drive_pulley_40t.chain_drive.stl");
+            for(j=[0:num_holes])  {
+                rotate([0,0,j*360 / num_holes])
+                    translate([hole_offs, 0, 0])
+                        cylinder(h=hub_h*2, r=arm_hole_ir);
+            }
+        }
+    }
+}
+small_drive_sprocket();
+//! drive_pulley_40t(0, LINK_PIN_W + 2);
 
 module idler_sprocket(use_stl=false) {
     if (use_stl) {

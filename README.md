@@ -63,7 +63,7 @@ motor  |  STEPPERONLINE  |  `17HS19-2004S1` NEMA 17 stepper motor  | [link](http
 motor  |  hitec  |  `HS-311` servo  | [link](?) |  |  | 1
 motor  |   |  Miniature Worm Gear Motor  | [link](https://smile.amazon.com/gp/product/B00NLZ46GU) |  `12v 5 RPM 6mm shaft` |  | 2
 motor  |   |  Miniature Worm Gear Motor  | [link](https://smile.amazon.com/gp/product/B01D2H4FOY) |  `12v 45 RPM 6mm shaft` |  | 2
-motor  |   |  `23HS45-4204S` NEMA 23 stepper motor  | [link](https://smile.amazon.com/gp/product/B074JJ6NGQ) |  `4.2A 0.9ohm 3.0Nm 48V 200s/rev 100mm body 10x24mm shaft` |  | 2
+motor  |   |  `23HS45-4204S` NEMA 23 stepper motor  | [link](https://smile.amazon.com/gp/product/B074JJ6NGQ) |  `4.2A 0.9ohm 3.0Nm 48V 200s/rev 100mm body 10x24mm shaft D-cut=9.5mm` |  | 2
 output  |  Aweking  |  PWM Motor Controller  | [link](https://smile.amazon.com/gp/product/B071ZKGMGN) |  `DC10-60V 30A 500W` |  | 1
 output  |  DROK  |  `L298` Dual H Bridge  | [link](https://smile.amazon.com/gp/product/B078TDKC4F) |  `DC 6.5V-27V 7A 24V 160W` |  | 1
 output  |  DROK  |  `XY-1260` Motor controller  | [link](https://smile.amazon.com/gp/product/B07B4B2X35) |  `DC 10-50V 60A PWM 48V 3000W ` |  | 2
