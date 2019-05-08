@@ -110,7 +110,7 @@ module corner_mount() {
 
 wall_th = 2;
 mount_cube_w = 55;
-mount_cube_h = BEAM_W + 2 * wall_th;
+mount_cube_h = BEAM_W + 4 * wall_th;
 mount_cube_l = 2 * BEAM_W + wall_th;
 
 module mount_cube(mount_cube_l=BEAM_W) {
@@ -151,12 +151,16 @@ module mount_cube_inline() {
         translate([0, BEAM_W, 0]) 
             rotate([0, 0, 90])
             rod_mount_holes(mount_cube_h + BEAM_W);
+        translate([0, BEAM_W, 0])
+                cylinder(r=3/2, h=2*mount_cube_h, center=true);
         for (xi=[-1, 0, 1]) {
             translate([xi * BEAM_W, 0, 0])
                 cylinder(r=3/2, h=2*mount_cube_h, center=true);
             translate([xi * BEAM_W, 0, 0])
                 rotate([90, 0, 0])
-                cylinder(r=3/2, h=2*mount_cube_w, center=true);       
+                cylinder(r=3/2, h=2*mount_cube_w, center=true); 
+            translate([0, BEAM_W, xi*(BEAM_W / 2 + m3_nut_h/2 + wall_th)])
+                m3_nut();
         }
     }
 }
@@ -164,10 +168,10 @@ module mount_cube_inline() {
 module _design_mount_cube_inline() {
     mount_cube_inline();
     
-    % translate([0, BEAM_W, BEAM_W/2 + rod_mount_c_h + wall_th]) 
+    % translate([0, BEAM_W, BEAM_W/2 + rod_mount_c_h + 2* wall_th]) 
         rotate([0, 0, 90])
         rod_mount();
-    %  translate([0, BEAM_W, -BEAM_W/2 - shaft_pillow_c_h - wall_th]) 
+    %  translate([0, BEAM_W, -BEAM_W/2 - shaft_pillow_c_h - 2*wall_th]) 
         rotate([0, 180, 90])
         shaft_pillow();
 }
@@ -225,7 +229,8 @@ module mini_inline_mount_8mm() {
         //# for (j=[0, 2, 3]) {
             translate([0, BEAM_W / 2 + 4, 0])
             rotate([-90, 0, 0])
-            # for (dz=[0, -m3_nut_h+1]) {
+            # for (dz=[0, -
+        +1]) {
                 translate([0, 0, 4 + m3_nut_h/2 + dz])
                 m3_nut();
             }
