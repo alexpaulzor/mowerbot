@@ -12,7 +12,7 @@ ARGS_CMD := cut -d'.' -f2- | grep -F '(' | cut -d'(' -f2- | sed -e 's/[)]$$//' |
 prep:
 	mkdir -p stl
 
-module-%: prep
+stl-%: prep
 	export     fname="$(shell echo '$(*)' | cut -d'.' -f1)" \
 	&& export module="$(shell echo '$(*)' | $(MODULE_CMD))" \
 	&& export   args="$(shell echo '$(*)' | $(ARGS_CMD))" \
@@ -32,3 +32,8 @@ clean-stl:
 
 clean-gcode:
 	rm -f *.gcode
+
+
+lsmod-%:
+	grep 'module ' $(*).scad \
+		| sed -e 's/module //g'
