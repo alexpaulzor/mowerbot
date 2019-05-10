@@ -1,7 +1,7 @@
 GRAPHVIZ ?= dot
 
-all: mainboard.png
+all: png-abstract
 
-mainboard.png: mainboard.dot
-	$(GRAPHVIZ) -Tpng -o mainboard.png mainboard.dot \
-	&& open mainboard.png || true
+png-%:
+	$(GRAPHVIZ) -Tpng -o $(*).png $(*).dot \
+	&& open $(*).png || true
