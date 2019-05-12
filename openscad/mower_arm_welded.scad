@@ -15,7 +15,7 @@ shaft_l = get_shaft_l();
 //////////// PURCHASED PARTS ////////////////////
 /////////////////////////////////////////////////
 
-BEAM_W = 15;
+openbeam_w = 15;
 BEAM_IR = 3/2;
 
 //TODO: remeasure after rebuild
@@ -63,9 +63,9 @@ module arm() {
 }
 
 gimbal_pivot_hole_ir = 5 / 2;
-gimbal_w = 3 * BEAM_W;
-gimbal_h = 2 * BEAM_W;
-gimbal_l = BEAM_W;
+gimbal_w = 3 * openbeam_w;
+gimbal_h = 2 * openbeam_w;
+gimbal_l = openbeam_w;
 gimbal_rod_c_c = gimbal_h/2 - 1.5 * gimbal_pivot_hole_ir;
 
 module pivot_gimbal() {
@@ -85,26 +85,26 @@ module pivot_gimbal() {
             translate([0, 0, gimbal_shift_z])
                 cylinder(h=gimbal_l / 2 - traveller_flange_z/2, r=traveller_flange_or);
         }
-        for (x=[-BEAM_W, BEAM_W]) {
-            for (y=[-BEAM_W/2, BEAM_W/2]) {
+        for (x=[-openbeam_w, openbeam_w]) {
+            for (y=[-openbeam_w/2, openbeam_w/2]) {
                 translate([x, y, 0]) {
                     cylinder(r=BEAM_IR, h=gimbal_h, center=true);
                 }
                 
             }
-            translate([x, 0, BEAM_W/2])
+            translate([x, 0, openbeam_w/2])
                 rotate([90, 0, 0])
                 cylinder(r=BEAM_IR, h=gimbal_w, center=true);
         }
-        * for (y=[-BEAM_W/2, BEAM_W/2]) {
-            translate([0, y, BEAM_W/2])
+        * for (y=[-openbeam_w/2, openbeam_w/2]) {
+            translate([0, y, openbeam_w/2])
                 rotate([0, 90, 0])
                 cylinder(r=BEAM_IR, h=gimbal_w, center=true);
         }
-        % translate([-BEAM_W, 0, -BEAM_W/2])
+        % translate([-openbeam_w, 0, -openbeam_w/2])
             rotate([90, 0, 0]) 
             beam();
-        %  translate([BEAM_W, 0, -BEAM_W/2])
+        %  translate([openbeam_w, 0, -openbeam_w/2])
             rotate([90, 0, 0]) 
             beam();
     }

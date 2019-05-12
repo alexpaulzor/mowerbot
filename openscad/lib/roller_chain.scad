@@ -4,13 +4,13 @@ use <motion_hardware.scad>
 IN_MM = 25.4;
 PI = 3.14159;
 $fn=60;
-BEAM_W = 15;
+openbeam_w = 15;
 
 CHAIN_SIZE = 40;
 BIKE_CHAIN = false;
 
 CHAIN_STRANDS = CHAIN_SIZE == 40 ? 2 : 1;
-CHAIN_GAP = 2 * BEAM_W;
+CHAIN_GAP = 2 * openbeam_w;
 
 CHAIN_PITCH = get_pitch(CHAIN_SIZE) * IN_MM;
 ROLLER_OR = get_roller_diameter(CHAIN_SIZE) * IN_MM / 2;

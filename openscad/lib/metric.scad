@@ -1,4 +1,14 @@
-include <constants.scad>;
+m3_nut_or = 6.1 / 2;
+m3_nut_h = 2.5;
+
+m4_nut_or = 7.7 / 2;
+m4_nut_h = 3.2;
+
+m5_nut_or = 8.8 / 2;
+m5_nut_h = 4.7;
+
+m6_nut_or = 11.1 / 2;
+m6_nut_h = 5.2;
 
 module m_nut(ir, or, h) {
 	difference() {

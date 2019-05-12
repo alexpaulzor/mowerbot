@@ -1,7 +1,16 @@
 include <constants.scad>;
 use <lib_pulley.scad>
 
-! gt2_pulley(40, 9.5);
+shaft_r = 8 / 2;
+shaft_pillow_hole_r = 5 / 2;
+shaft_pillow_hole_c_c = 42;
+shaft_pillow_c_h = 14.5;
+
+rod_mount_hole_r = 5 / 2;
+rod_mount_hole_c_c = 31.5;
+rod_mount_c_h = 20;
+
+nema23_mount_c_h = 39;
 
 rod_r = 8 / 2;
 rod_l = 500;
