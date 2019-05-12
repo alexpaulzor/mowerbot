@@ -158,47 +158,94 @@ module shaft_traveller() {
     }
 }
 
-nema_mount_flange_h = 3;
-nema_mount_w = 50;
-nema_mount_l = 50 + nema_mount_flange_h;
-nema_mount_h = 51.5;
-nema_mount_c_h = 30;
-nema_slot_l = 35;
-nema_slot_iw = 25.6;
-nema_slot_ow = 34.4;
-nema_mount_slot_c_c = (nema_slot_iw + nema_slot_ow) / 2;
-nema_slot_w = (nema_slot_ow - nema_slot_iw) / 2;
-//nema_collar_l = 35;
-nema_collar_l_offset = 6;
-nema_collar_l_coupler = 25;
-nema_collar_l = (
-    nema_collar_l_coupler + 
-    nema_collar_l_offset + 
-    nema_mount_flange_h);
-nema_collar_or = 20 / 2;
-nema_l = 48;
-nema_w = 43;
+nema17_mount_flange_h = 3;
+nema17_mount_w = 50;
+nema17_mount_l = 50 + nema17_mount_flange_h;
+nema17_mount_h = 51.5;
+nema17_mount_c_h = 30;
+nema17_slot_l = 35;
+nema17_slot_iw = 25.6;
+nema17_slot_ow = 34.4;
+nema17_mount_slot_c_c = (nema17_slot_iw + nema17_slot_ow) / 2;
+nema17_slot_w = (nema17_slot_ow - nema17_slot_iw) / 2;
+//nema17_collar_l = 35;
+nema17_collar_l_offset = 6;
+nema17_collar_l_coupler = 25;
+nema17_collar_l = (
+    nema17_collar_l_coupler + 
+    nema17_collar_l_offset + 
+    nema17_mount_flange_h);
+nema17_collar_or = 20 / 2;
+nema17_l = 48;
+nema17_w = 43;
 
-module nema_mount() {
+module nema17_mount() {
     difference() {
         union() {
-            translate([0, -nema_mount_w / 2, -nema_mount_c_h]) {
-                cube([nema_mount_flange_h, nema_mount_w, nema_mount_h]);
-                cube([nema_mount_l, nema_mount_w, nema_mount_flange_h]);
+            translate([0, -nema17_mount_w / 2, -nema17_mount_c_h]) {
+                cube([nema17_mount_flange_h, nema17_mount_w, nema17_mount_h]);
+                cube([nema17_mount_l, nema17_mount_w, nema17_mount_flange_h]);
             }
-            translate([nema_collar_l_offset, 0, 0])
+            translate([nema17_collar_l_offset, 0, 0])
             rotate([0, 90, 0])
-                cylinder(r=nema_collar_or, h=nema_collar_l_coupler);
+                cylinder(r=nema17_collar_or, h=nema17_collar_l_coupler);
         }
-        shaft(nema_mount_flange_h);
-        translate([(nema_mount_l - nema_slot_l)/2, nema_mount_slot_c_c/2 - nema_slot_w/2, -nema_mount_c_h])
-            cube([nema_slot_l, nema_slot_w, nema_mount_flange_h]);
-        translate([(nema_mount_l - nema_slot_l)/2, -nema_mount_slot_c_c/2 - nema_slot_w/2, -nema_mount_c_h])
-            cube([nema_slot_l, nema_slot_w, nema_mount_flange_h]);
-        rod(nema_collar_l);
+        shaft(nema17_mount_flange_h);
+        translate([(nema17_mount_l - nema17_slot_l)/2, nema17_mount_slot_c_c/2 - nema17_slot_w/2, -nema17_mount_c_h])
+            cube([nema17_slot_l, nema17_slot_w, nema17_mount_flange_h]);
+        translate([(nema17_mount_l - nema17_slot_l)/2, -nema17_mount_slot_c_c/2 - nema17_slot_w/2, -nema17_mount_c_h])
+            cube([nema17_slot_l, nema17_slot_w, nema17_mount_flange_h]);
+        rod(nema17_collar_l);
     }
-    % translate([-nema_l, -nema_w/2, -nema_w/2])
-        cube([nema_l, nema_w, nema_w]);
+    % translate([-nema17_l, -nema17_w/2, -nema17_w/2])
+        cube([nema17_l, nema17_w, nema17_w]);
+}
+
+nema23_mount_flange_h = 3;
+nema23_mount_w = 65;
+nema23_mount_l = 65 + nema23_mount_flange_h;
+nema23_mount_h = 68;
+nema23_mount_c_h = 39;
+nema23_mount_face_ir = 39 / 2;
+nema23_slot_l = 45;
+nema23_slot_iw = 39.6;
+nema23_slot_ow = 46.2;
+nema23_mount_slot_c_c = (nema23_slot_iw + nema23_slot_ow) / 2;
+nema23_slot_w = (nema23_slot_ow - nema23_slot_iw) / 2;
+//nema23_collar_l = 35;
+/*nema23_collar_l_offset = 6;
+nema23_collar_l_coupler = 25;
+nema23_collar_l = (
+    nema23_collar_l_coupler + 
+    nema23_collar_l_offset + 
+    nema23_mount_flange_h);
+nema23_collar_or = 20 / 2;*/
+nema23_shaft_or = 10 / 2;
+nema23_shaft_l = 23;
+nema23_l = 100;
+nema23_w = 57;
+
+module nema23_mount() {
+    difference() {
+        union() {
+            translate([0, -nema23_mount_w / 2, -nema23_mount_c_h]) {
+                cube([nema23_mount_flange_h, nema23_mount_w, nema23_mount_h]);
+                cube([nema23_mount_l, nema23_mount_w, nema23_mount_flange_h]);
+            }
+            
+            rotate([0, -90, 0])
+                cylinder(r=nema23_shaft_or, h=nema23_shaft_l);
+        }
+        
+        translate([(nema23_mount_l - nema23_slot_l)/2, nema23_mount_slot_c_c/2 - nema23_slot_w/2, -nema23_mount_c_h])
+            cube([nema23_slot_l, nema23_slot_w, nema23_mount_flange_h]);
+        translate([(nema23_mount_l - nema23_slot_l)/2, -nema23_mount_slot_c_c/2 - nema23_slot_w/2, -nema23_mount_c_h])
+            cube([nema23_slot_l, nema23_slot_w, nema23_mount_flange_h]);
+        rotate([0, 90, 0])
+            cylinder(r=nema23_mount_face_ir, h=nema23_mount_flange_h);
+    }
+    % translate([0, -nema23_w/2, -nema23_w/2])
+        cube([nema23_l, nema23_w, nema23_w]);
 }
 
 bar_w = 1.0 * IN_MM;
