@@ -16,7 +16,7 @@ module drive_arm() {
     }
 }
 
-module driven_sprocket(bore, hub_d, hub_h) {
+module driven_sprocket(bore, hub_d, hub_h) {  // #!AUTOSTL
     zratio = LINK_PIN_W / (IN_MM * get_thickness(CHAIN_SIZE));
     difference() {
         scale([1, 1, zratio])
@@ -30,7 +30,7 @@ module driven_sprocket(bore, hub_d, hub_h) {
     }
 }
 
-module drive_sprocket(use_stl=false) {
+module drive_sprocket(use_stl=false) {  // #!AUTOSTL
     if (use_stl) {
         import("drive_sprocket.stl");
     } else {
@@ -45,7 +45,7 @@ module drive_sprocket(use_stl=false) {
     }
 }
 
-module idle_drive_sprocket(use_stl=false) {
+module idle_drive_sprocket(use_stl=false) {  // #!AUTOSTL
     if (use_stl) {
         import("idle_drive_sprocket.stl");
     } else {
@@ -60,7 +60,7 @@ module idle_drive_sprocket(use_stl=false) {
 }
 
 
-module small_drive_sprocket(use_stl=false) {
+module small_drive_sprocket(use_stl=false) {  // #!AUTOSTL
     zratio = LINK_PIN_W / (IN_MM * get_thickness(CHAIN_SIZE));
     hole_offs = (IDLER_PITCH_OR - ROLLER_OR + bearing_or) / 2;
     if (use_stl) {
@@ -82,7 +82,7 @@ module small_drive_sprocket(use_stl=false) {
 small_drive_sprocket();
 //! drive_pulley_40t(0, LINK_PIN_W + 2);
 
-module idler_sprocket(use_stl=false) {
+module idler_sprocket(use_stl=false) {  // #!AUTOSTL
     if (use_stl) {
         import("idler_sprocket.stl");
     } else {
@@ -111,7 +111,7 @@ module idle_sprocket_spacer() {
     }
 }
 
-module link_clip(use_stl=false) {
+module link_clip(use_stl=false) {  // #!AUTOSTL
     if (use_stl) {
         import("link_clip.stl");
     } else {

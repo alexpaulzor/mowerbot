@@ -107,7 +107,7 @@ module mount_cube(mount_cube_l=openbeam_w) {
     }
 }
 
-module mount_cube_inline() {
+module mount_cube_inline() {  // #!AUTOSTL
     difference() {
         translate([0, openbeam_w, 0])
             cube([mount_cube_w, mount_cube_l, mount_cube_h], center=true);
