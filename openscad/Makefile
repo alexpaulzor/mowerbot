@@ -9,6 +9,8 @@ MODULE_CMD := cut -d'.' -f2- | cut -d'(' -f1
 # for named params, because make will not recognize wildcards contaning `=`
 ARGS_CMD := cut -d'.' -f2- | grep -F '(' | cut -d'(' -f2- | sed -e 's/[)]$$//' | tr '~' '='
 
+all: prep
+
 prep:
 	mkdir -p stl
 

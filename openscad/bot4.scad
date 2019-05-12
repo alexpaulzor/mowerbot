@@ -1,7 +1,8 @@
-include <constants.scad>;
-use <openbeam.scad>;
-use <motion_hardware.scad>;
-use <chain_drive.scad>;
+include <lib/constants.scad>;
+include <lib/openbeam.scad>;
+include <lib/motion_hardware.scad>;
+include <lib/roller_chain.scad>;
+use <openbeam_parts.scad>;
 
 tread_l = 300;
 tread_w = 100;
@@ -52,4 +53,4 @@ module design() {
 // 
 design();
 
-!mount_cube_inline();
+* mount_cube_inline();

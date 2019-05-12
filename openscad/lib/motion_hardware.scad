@@ -269,31 +269,25 @@ function get_rod_mount_l() = rod_mount_l;
 function get_rod_r() = rod_r;
 function get_shaft_l() = shaft_l;
 
-$fn=30;
-PI = 3.14159;
-
-MM_PER_INCH = 25.4;
-
-
 motor_short_c_c = 56;
-motor_short_offset = 0.9 * MM_PER_INCH;
+motor_short_offset = 0.9 * IN_MM;
 motor_long_c_c = 72;
-motor_long_offset = 1.75 * MM_PER_INCH;
-motor_collar_or = 1 * MM_PER_INCH / 2;
+motor_long_offset = 1.75 * IN_MM;
+motor_collar_or = 1 * IN_MM / 2;
 motor_hole_ir = 3;
-motor_post_or = 0.5 * MM_PER_INCH / 2;
-motor_hole_depth = 0.8 * MM_PER_INCH;
-motor_post_depth = 1.5 * MM_PER_INCH;
-motor_collar_h = 1.4 * MM_PER_INCH;
-motor_post_to_sprocket_h = 2.0 * MM_PER_INCH;
-motor_shaft_or = 0.5 * MM_PER_INCH / 2;
-motor_or = 2.4 * MM_PER_INCH / 2;
-motor_depth = 4.5 * MM_PER_INCH;
-motor_gearbox_w = 3 * MM_PER_INCH;
-motor_gearbox_depth = 2 * MM_PER_INCH;
-motor_gearbox_l = 3.4 * MM_PER_INCH;
-motor_sprocket_h = 0.3 * MM_PER_INCH;
-motor_sprocket_or = 1.8 * MM_PER_INCH / 2;
+motor_post_or = 0.5 * IN_MM / 2;
+motor_hole_depth = 0.8 * IN_MM;
+motor_post_depth = 1.5 * IN_MM;
+motor_collar_h = 1.4 * IN_MM;
+motor_post_to_sprocket_h = 2.0 * IN_MM;
+motor_shaft_or = 0.5 * IN_MM / 2;
+motor_or = 2.4 * IN_MM / 2;
+motor_depth = 4.5 * IN_MM;
+motor_gearbox_w = 3 * IN_MM;
+motor_gearbox_depth = 2 * IN_MM;
+motor_gearbox_l = 3.4 * IN_MM;
+motor_sprocket_h = 0.3 * IN_MM;
+motor_sprocket_or = 1.8 * IN_MM / 2;
 
 function get_motor_tall_rotation() = atan(motor_short_c_c/2 / (motor_short_offset + motor_long_offset));
 
@@ -331,6 +325,13 @@ module drive_motor(use_stl=false) {
                     motor_post();
             }
         }
+    }
+}
+
+module bearing() {
+    difference() {
+        cylinder(r=bearing_or, h=bearing_h, center=true);
+        cylinder(r=bearing_ir, h=bearing_h, center=true);
     }
 }
 

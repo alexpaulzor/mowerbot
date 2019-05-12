@@ -1,4 +1,5 @@
 include <lib/openbeam.scad>;
+include <lib/motion_hardware.scad>;
 
 wall_th = 4;
 
