@@ -103,10 +103,10 @@ module pivot_gimbal() {
         }
         % translate([-openbeam_w, 0, -openbeam_w/2])
             rotate([90, 0, 0]) 
-            beam();
+            openbeam();
         %  translate([openbeam_w, 0, -openbeam_w/2])
             rotate([90, 0, 0]) 
-            beam();
+            openbeam();
     }
 }
 

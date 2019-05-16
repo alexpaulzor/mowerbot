@@ -329,7 +329,7 @@ module volt_disp_holder() {
     volt_disp();
     % translate([0, 0, -openbeam_w/2])
         rotate([0, 90, 0])
-        beam();
+        openbeam();
     
 }
 volt_disp_holder();

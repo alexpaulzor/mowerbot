@@ -37,9 +37,9 @@ module mount_block(ir) {
             rotate([90, 0, 0]) 
             cylinder(r=ir, h=openbeam_w+1, center=true, $fn=64);
         translate([openbeam_w, 0, 0])
-            cylinder(r=beam_hole_or, h=wall_th*2);
+            cylinder(r=openbeam_hole_or, h=wall_th*2);
         translate([-openbeam_w, 0, 0])
-            cylinder(r=beam_hole_or, h=wall_th*2);
+            cylinder(r=openbeam_hole_or, h=wall_th*2);
         
         translate([0, 0, -openbeam_w/2])
             cube([3*openbeam_w + 1, openbeam_w + 1, openbeam_w], center=true);
@@ -59,21 +59,21 @@ module corner_mount() {
         cube(2*openbeam_w, center=true);
         
         translate([0, 0, 0])
-            beam(openbeam_w*2);
+            openbeam(openbeam_w*2);
         * translate([0, 0, -openbeam_w])
-            beam(openbeam_w);
+            openbeam(openbeam_w);
         translate([0, 0, 0])
             rotate([90, 0, 0])
-            beam(openbeam_w*2);
+            openbeam(openbeam_w*2);
         * translate([0, -openbeam_w, 0])
             rotate([90, 0, 0])
-            beam(openbeam_w);
+            openbeam(openbeam_w);
         translate([0, 0, 0])
             rotate([0, 90, 0])
-            beam(openbeam_w*2);
+            openbeam(openbeam_w*2);
         * translate([-openbeam_w, 0, 0])
             rotate([0, 90, 0])
-            beam(openbeam_w);
+            openbeam(openbeam_w);
     }
 }
 
@@ -128,7 +128,7 @@ module mount_cube_inline() {  // #!AUTOSTL
         
         translate([0, openbeam_w, 0])
             cylinder(r=3/2, h=2*mount_cube_h, center=true); 
-        translate([0, 0, mount_cube_h/2 - bracket_th/2])
+        translate([0, 0, mount_cube_h/2 - openbeam_bracket_th/2])
             tee_bracket();
         for (xi=[-1, 0, 1]) {
             translate([xi * openbeam_w, 0, 0])
@@ -161,7 +161,7 @@ module cap_mount_8mm() {
             cube([1.5* openbeam_w, openbeam_w - 2, openbeam_w - 2], center=true);
         translate([-openbeam_w * 1.5/2, 0, 0])
             rotate([0, 90, 0])
-            beam(openbeam_w*1.5);
+            openbeam(openbeam_w*1.5);
         rod();
         for (i=[0, 1]) {
             for (j=[-1, 0, 1]) {
@@ -186,7 +186,7 @@ module mini_inline_mount_8mm() {
         translate([0, 4 + m3_nut_h / 2, 0])
             cube([openbeam_w, openbeam_w + 8 + 2*wall_th + m3_nut_h, openbeam_w + 2 * wall_th], center=true);
         rotate([0, 90, 0])
-            beam(openbeam_w+1);
+            openbeam(openbeam_w+1);
         cube([openbeam_w+1, openbeam_w - 2, openbeam_w - 2], center=true);
         
         # for (y=[0, openbeam_w / 2 + 4]) {

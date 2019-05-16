@@ -1,4 +1,5 @@
 include <constants.scad>;
+include <openbeam.scad>;
 use <sprockets.scad>
 
 CHAIN_SIZE = 40;

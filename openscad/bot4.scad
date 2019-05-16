@@ -1,7 +1,7 @@
 include <lib/constants.scad>;
 include <lib/openbeam.scad>;
 include <lib/motion_hardware.scad>;
-include <lib/roller_chain.scad>;
+use <roller_chain_parts.scad>;
 use <openbeam_parts.scad>;
 
 tread_l = 300;
@@ -11,10 +11,10 @@ module design() {
     for (i=[-1, 1]) {
         translate([0, i*(tread_w + openbeam_w) /2, 0])
             rotate([0, 90, 0])
-            beam(tread_l);
+            openbeam(tread_l);
         translate([i * (tread_l - 3*openbeam_w)/2, 0, 0])
             rotate([0, 90, 90])
-            beam(tread_w);
+            openbeam(tread_w);
         for (j=[-1, 1]) {
             translate([j * (tread_l - 3*openbeam_w)/2, i*(tread_w + openbeam_w) /2, 0])
                 rotate([0, 0, 90*(i+1)]) {
@@ -32,7 +32,7 @@ module design() {
                         small_drive_sprocket();
                 }
         }
-        translate([i * (tread_l - 3*openbeam_w) / 2, i*(-tread_w / 2 - openbeam_w), nema23_mount_c_h + 23/2]) {
+        translate([i * (tread_l - 3*openbeam_w) / 2, i*(-tread_w / 2 - openbeam_w - nema23_mount_flange_h), nema23_mount_c_h + 23/2]) {
             rotate([0, 0, i*90])
                 nema23_mount();
             translate([0, -i*20, 0])
@@ -41,10 +41,10 @@ module design() {
         }
         translate([-i*(tread_l - 3*openbeam_w) / 2, i*(openbeam_w - tread_w) / 2, rod_mount_c_h + 23/2])
             rotate([0, 0, 90]) {
-                # rotate([0, 0, i*90+90]) 
+                rotate([0, 0, i*90+90]) 
                     rod(tread_w);
                 rod_mount();
-                translate([-i*(2*openbeam_w + 20), 0, 0])
+                # translate([-i*(2*openbeam_w + 20), 0, 0])
                         rotate([0, 90, 0])
                         small_drive_sprocket();
             }

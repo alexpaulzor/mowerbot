@@ -79,8 +79,6 @@ module small_drive_sprocket(use_stl=false) {  // #!AUTOSTL
         }
     }
 }
-small_drive_sprocket();
-//! drive_pulley_40t(0, LINK_PIN_W + 2);
 
 module idler_sprocket(use_stl=false) {  // #!AUTOSTL
     if (use_stl) {
