@@ -1,5 +1,5 @@
-//include <arduino.scad>
-//use <boxit.scad>
+// include <arduino.scad>
+// use <boxit.scad>
 
 IN_MM = 25.4;
 $fn = 32;
@@ -233,9 +233,9 @@ module mount_block(ir) {
             rotate([90, 0, 0]) 
             cylinder(r=ir, h=beam_w+1, center=true, $fn=64);
         translate([beam_w, 0, 0])
-            cylinder(r=beam_hole_or, h=wall_th*2);
+            cylinder(r=openbeam_hole_or, h=wall_th*2);
         translate([-beam_w, 0, 0])
-            cylinder(r=beam_hole_or, h=wall_th*2);
+            cylinder(r=openbeam_hole_or, h=wall_th*2);
         
         translate([0, 0, -beam_w/2])
             cube([3*beam_w + 1, beam_w + 1, beam_w], center=true);
