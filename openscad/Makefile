@@ -45,7 +45,7 @@ lsmod:
 		| sed -e 's/\.scad:module /./' -e 's/[(].*//'
 
 autostl-%:
-	egrep '^module .*\(' $(*).scad \
+	egrep '^module .*\(' a $(*).scad 2>/dev/null \
 		| grep use_stl= \
 		| sed -e 's/\.scad:module /./' -e 's/[(].*//' \
-		| xargs echo #-I{} make stl-{}
+		| xargs -I{} make stl-{}

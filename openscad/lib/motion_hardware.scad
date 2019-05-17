@@ -187,3 +187,33 @@ module bearing() {
 module drive_pulley_40t(bore=9.5, height=6) {
     gt2_pulley(40, bore, pulley_t_ht=height, pulley_b_ht=0, pulley_b_dia=0, no_of_nuts=0, nut_shaft_distance=0);
 }
+
+motor_coupler_length = 25;
+motor_coupler_small_id = 5;
+motor_coupler_large_id = 8;
+motor_coupler_od = 19;
+motor_coupler_large_depth = 18;
+motor_coupler_grub_ir = 4 / 2;
+motor_coupler_grub_c_c = 17;
+motor_coupler_grub_theta = 72; // Unclear from measuring, somewhere 70 <= x < 75, I think
+
+module motor_coupler() {
+    difference() {
+        cylinder(r=motor_coupler_od/2, h=motor_coupler_length);
+        cylinder(r=motor_coupler_small_id/2, h=motor_coupler_length);
+        cylinder(r=motor_coupler_large_id/2, h=motor_coupler_large_depth);
+        motor_coupler_holes();
+    }
+}
+
+module motor_coupler_holes() {
+    for (t=[0, motor_coupler_grub_theta]) {
+        for (z=[-1, 1]) {
+            rotate([0, 0, t])
+            translate([0, 0, motor_coupler_length/2 + z * motor_coupler_grub_c_c/2])
+            rotate([0, 90, 0])
+            cylinder(r=motor_coupler_grub_ir, h=motor_coupler_od*3);
+
+        }
+    }
+}
