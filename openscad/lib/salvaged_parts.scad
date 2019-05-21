@@ -6,7 +6,7 @@ spool_h = 2 * IN_MM;
 spool_inner_wall_or = 56 / 2;
 spool_outer_wall_ir = 67 / 2;
 spool_outer_wall_or = 71 / 2;
-spool_num_slots = 12 * 2;  // actually 12, but use double to accomodate for half-twist
+spool_num_slots = 12 * 3;  // actually 12, but use double to accomodate for partial-twist
 spool_slot_th = 2;
 spool_wall_th = 3;
 

@@ -2,7 +2,9 @@ include <lib/motors.scad>;
 include <lib/openbeam.scad>;
 include <lib/motion_hardware.scad>;
 include <lib/salvaged_parts.scad>;
-$fn=60;
+use <lib/purchased_electrics.scad>;
+
+$fn=32;
 
 mini_drive_wall_th = 2;
 mini_drive_l = motor_coupler_length + mini_drive_wall_th*3;
@@ -52,13 +54,41 @@ module mini_drive_adapter_plate(use_stl=false) {
 	}
 }
 
-module design_spool() {
-    * translate([0, 0, spool_h / 2 + mini_drive_wall_th])
+module spool_wheel() {
+    % translate([0, 0, spool_h / 2 + mini_drive_wall_th])
         spool();
     mini_drive_adapter();
-    * translate([0, 0, spool_h + 2 * mini_drive_wall_th])
+    translate([0, 0, spool_h + 2 * mini_drive_wall_th])
         rotate([180, 0, 0])
         mini_drive_adapter_plate();
 }
 
-design_spool();
+minibot_w = 100;
+minibot_wheel_space = 5;
+
+module minibot_frame() {
+    openbeam(minibot_w);
+}
+
+module design_minibot() {
+    translate([0, -minibot_w/2, 0]) 
+        rotate([90, 0, 0]) {
+            % mini_motor();
+            translate([0, 0, minibot_wheel_space])
+                spool_wheel();
+        }
+    translate([0, minibot_w/2, 0]) 
+        rotate([-90, 0, 0]) {
+            % mini_motor();
+            translate([0, 0, minibot_wheel_space])
+                spool_wheel();
+        }
+    % translate([0, 0, 100]) nano();
+    % eflight_bat();
+%     translate([0, 0, 50]) l298n();
+    minibot_frame();
+
+}
+
+design_minibot();
+

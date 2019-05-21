@@ -40,6 +40,20 @@ module mega_holes() {
     }
 }
 
+nano_l = 45;
+nano_w = 18;
+nano_h = 8;
+nano_board_h = 3;
+nano_usb_w = 8;
+nano_usb_l = 10;
+nano_usb_overhang = 2;
+module nano() {
+    translate([nano_usb_overhang, -nano_w/2, 0])
+        cube([nano_l - nano_usb_overhang, nano_w, nano_board_h]);
+    translate([0, -nano_usb_w/2, 0])
+        cube([nano_usb_l, nano_usb_w, nano_h]);
+}
+
 // TODO: estimated
 vreg_l = 55;
 vreg_w = 40;
@@ -332,4 +346,41 @@ module volt_disp_holder() {
         openbeam();
     
 }
-volt_disp_holder();
+
+eflight_bat_l = 110;
+eflight_bat_w = 35;
+eflight_bat_h = 35;
+
+module eflight_bat() {
+    cube([eflight_bat_l, eflight_bat_w, eflight_bat_h], center=true);
+}
+
+l298n_l = 45;
+l298n_w = 45;
+l298n_h = 15;
+l298n_heatsink_l = 16;
+l298n_heatsink_w = 23;
+l298n_heatsink_h = 29;
+l298n_hole_or = 3 / 2;
+l298n_hole_c_c = 37;
+module l298n() {
+    difference() {
+        union() {
+            translate([0, 0, l298n_h/2])
+                cube([l298n_l, l298n_w, l298n_h], center=true);
+            translate([(l298n_l-l298n_heatsink_l)/2, 0, l298n_heatsink_h/2])
+                cube([l298n_heatsink_l, l298n_heatsink_w, l298n_heatsink_h], center=true);
+        }
+        l298n_holes();
+    }
+}
+
+module l298n_holes() {
+    for (x=[-1, 1]) {
+        for (y=[-1, 1]) {
+            translate([x * l298n_hole_c_c/2, y * l298n_hole_c_c / 2, l298n_heatsink_h/2])
+            cylinder(r=l298n_hole_or, h=l298n_heatsink_h * 2, center=true);
+        }
+    } 
+}
+

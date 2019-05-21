@@ -49,3 +49,6 @@ autostl-%:
 		| grep use_stl= \
 		| sed -e 's/\.scad:module /./' -e 's/[(].*//' \
 		| xargs -I{} make stl-{}
+
+view:
+	open stl
