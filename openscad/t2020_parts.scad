@@ -18,6 +18,7 @@ module rod_mount_spacer(use_stl=false) {
             rod_mount_holes();
     }
 }
+rod_mount_spacer();
 
 coupler_brace_wall_th = 2;
 coupler_brace_splines = 10;
@@ -45,4 +46,4 @@ module coupler_brace(use_stl=false) {
 	}
 }
 
-coupler_brace();
+//coupler_brace();

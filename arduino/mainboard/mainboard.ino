@@ -19,14 +19,7 @@
 #define INTERRUPT_PIN 3
 #define RC_POWER_PIN 12
 
-#ifdef MOWER_DC
-  #define MOWER_REVERSE_PIN 26  // green
-  #define MOWER_REVERSE_SPEED_PIN 27 // blue
-  #define MOWER_FORWARD_SPEED_PIN 28 // violet
-  #define MOWER_FORWARD_PIN 29 // grey
-#else
-  #define AC_RELAY_CONTROL_PIN 22
-#endif
+#define MOWER_CONTROL_PIN 22
 
 #ifdef ARM_MICROSTEP
   #define STEPPER_STEPS_PER_REV 200
@@ -106,16 +99,9 @@ void setup() {
   pinMode(R_FORWARD_SPEED_PIN, OUTPUT);
   pinMode(R_REVERSE_SPEED_PIN, OUTPUT);
 
-  #ifdef MOWER_DC
-    pinMode(MOWER_FORWARD_PIN, OUTPUT);
-    pinMode(MOWER_REVERSE_PIN, OUTPUT);
-    pinMode(MOWER_FORWARD_SPEED_PIN, OUTPUT);
-    pinMode(MOWER_REVERSE_SPEED_PIN, OUTPUT);
-  #else
-    pinMode(AC_RELAY_CONTROL_PIN, OUTPUT);
-    digitalWrite(AC_RELAY_CONTROL_PIN, LOW);
-  #endif
-
+  pinMode(MOWER_CONTROL_PIN, OUTPUT);
+  digitalWrite(MOWER_CONTROL_PIN, LOW);
+/*
   pinMode(H_STEPPER_HOME_SW_PIN, INPUT);
 
   height_stepper.setEnablePin(H_STEPPER_PIN_ENABLE);
@@ -127,7 +113,7 @@ void setup() {
   height_stepper.setCurrentPosition(H_STEPPER_MAX_STEPS);
   while (!drive_height(0)) {
     // Homing...
-  }
+  }*/
  
   IF_SERIAL Serial.println("setup() complete");
 }
@@ -177,25 +163,11 @@ void loop() {
 }
 
 void mower_off() {
-  #ifdef MOWER_DC
-    analogWrite(MOWER_REVERSE_SPEED_PIN, 0);
-    analogWrite(MOWER_FORWARD_SPEED_PIN, 0);
-    digitalWrite(MOWER_REVERSE_PIN, LOW);
-    digitalWrite(MOWER_FORWARD_PIN, LOW);
-  #else
-    digitalWrite(AC_RELAY_CONTROL_PIN, LOW);
-  #endif
+  digitalWrite(MOWER_CONTROL_PIN, HIGH);
 }
 
 void mower_on() {
-  #ifdef MOWER_DC
-    analogWrite(MOWER_REVERSE_SPEED_PIN, 0);
-    analogWrite(MOWER_FORWARD_SPEED_PIN, PWM_MAX);
-    digitalWrite(MOWER_REVERSE_PIN, LOW);
-    digitalWrite(MOWER_FORWARD_PIN, HIGH);
-  #else
-    digitalWrite(AC_RELAY_CONTROL_PIN, HIGH);
-  #endif
+  digitalWrite(MOWER_CONTROL_PIN, LOW);
 }
 
 void drive(int throttle_pct, int steering_pct, long height_steps) {

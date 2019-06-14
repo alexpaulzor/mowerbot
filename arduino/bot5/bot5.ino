@@ -14,10 +14,11 @@
 
 #define STATUS_LED_PIN 13
 #define INTERRUPT_PIN 2
+#define RC_TIMEOUT_S 1
 
 #define PWM_MAX 255
 #define PWM_MAX_STEP 255
-
+/*
 
 #define L298N_ENA 6  // PWM
 #define L298N_ENB 11  // PWM
@@ -32,6 +33,11 @@
 #define LEFT_REVERSE L298N_IN2   // reverse
 #define RIGHT_FORWARD L298N_IN3   // forward
 #define RIGHT_REVERSE L298N_IN4   // reverse
+*/
+#define LEFT_FORWARD 11
+#define LEFT_REVERSE 10
+#define RIGHT_FORWARD 9
+#define RIGHT_REVERSE 6
 
 #define NUM_CHANNELS 7
 
@@ -69,8 +75,6 @@ void setup() {
 
   pinMode(LEFT_FORWARD, OUTPUT);
   pinMode(LEFT_REVERSE, OUTPUT);
-  pinMode(LEFT_SPEED, OUTPUT);
-  pinMode(RIGHT_SPEED, OUTPUT);
   pinMode(RIGHT_FORWARD, OUTPUT);
   pinMode(RIGHT_REVERSE, OUTPUT);
   
@@ -89,6 +93,12 @@ void loop() {
     }
     channel_values[channel - 1] = value;
   }
+
+  if (millis() > (last_ppm_signal + RC_TIMEOUT_S * 1000) || millis() < last_ppm_signal) {
+        stop_motors();
+        blink(3, 100);
+        last_ppm_signal = millis();
+    }
 
    if (channel_values[CHANNEL_ENABLE_DRIVE] > PPM_CENTER) {
       drive(
@@ -135,29 +145,32 @@ void drive(int throttle_pct, int steering_pct) {
 }
 
 void stop_motors() {
-  digitalWrite(LEFT_SPEED, LOW);
-  digitalWrite(RIGHT_SPEED, LOW);
+  digitalWrite(LEFT_FORWARD, LOW);
+  digitalWrite(LEFT_REVERSE, LOW);
+  digitalWrite(RIGHT_FORWARD, LOW);
+  digitalWrite(RIGHT_REVERSE, LOW);
 }
 
 void drive_motors(int left_speed, int right_speed) {
+    int l_pwm_pin = LEFT_FORWARD;
+    int l_low_pin = LEFT_REVERSE;
     if (left_speed < 0) {
-        digitalWrite(LEFT_FORWARD, LOW);
-        digitalWrite(LEFT_REVERSE, HIGH);
-    } else {
-        digitalWrite(LEFT_FORWARD, HIGH);
-        digitalWrite(LEFT_REVERSE, LOW);
-    }
-    analogWrite(LEFT_SPEED,
+        l_pwm_pin = LEFT_REVERSE;
+        l_low_pin = LEFT_FORWARD;
+    } 
+    int r_pwm_pin = RIGHT_FORWARD;
+    int r_low_pin = RIGHT_REVERSE;
+    if (left_speed < 0) {
+        r_pwm_pin = RIGHT_REVERSE;
+        r_low_pin = RIGHT_FORWARD;
+    } 
+    digitalWrite(l_low_pin, LOW);
+    digitalWrite(r_low_pin, LOW);
+    analogWrite(l_pwm_pin,
         constrain(map(abs(left_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX));
-    
-    if (right_speed < 0) {
-        digitalWrite(RIGHT_FORWARD, LOW);
-        digitalWrite(RIGHT_REVERSE, HIGH);
-    } else {
-        digitalWrite(RIGHT_FORWARD, HIGH);
-        digitalWrite(RIGHT_REVERSE, LOW);
-    }
-    analogWrite(RIGHT_SPEED,
+    analogWrite(r_pwm_pin,
         constrain(map(abs(right_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX));
+    
+    
     
 }

@@ -1,0 +1,48 @@
+/* 
+colors:
+	red - power
+	yellow - control
+	orange - controlled power
+	blue - sensor
+	violet - power sensor
+*/
+
+strict digraph bot5 {
+	battery [color=red];
+	buck [color=red];
+	buck_i_sens [color=violet];
+	drive_l [color=orange];
+	drive_r [color=orange];
+	i2c [color=blue];
+	LCD [color=violet];
+	nano [color=yellow];
+	nineaxis [color=blue];
+	photointerrupt [color=blue];
+	rc [color=blue];
+	vdisp [color=violet];
+	vreg [color=red];
+	vsens [color=blue];
+	zsh3 [color=yellow];
+
+	battery -> buck [color=red];
+	battery -> vdisp [style=dashed, color=violet];
+	battery -> vsens [color=blue];
+	buck -> buck_i_sens [color=red];
+	buck -> vdisp [style=dashed, color=violet];
+	buck -> vreg;
+	buck_i_sens -> nano [color=blue];
+	buck_i_sens -> zsh3 [color=red];
+	i2c -> LCD [color=blue];
+	i2c -> nano [color=blue];
+	nano -> i2c [color=yellow];
+	nano -> zsh3 [label="/5", color=yellow];
+	nineaxis -> i2c;
+	photointerrupt -> nano [color=blue];
+	rc -> nano [color=yellow];
+	vreg -> i2c [color=red];
+	vreg -> rc [color=red];
+	vreg -> vdisp [style=dashed, color=violet];
+	vsens -> rc [label="iBus", color=blue];
+	zsh3 -> drive_l [color=orange];
+	zsh3 -> drive_r [color=orange];
+}

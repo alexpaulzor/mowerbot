@@ -24,9 +24,9 @@ rod_mount_h = 33.5;
 // rod_mount_hole_c_c = 31.5;
 // rod_mount_c_h = 20;
 
-module rod(l=rod_l) {
+module rod(l=rod_l, center=false) {
     rotate([0, 90, 0])
-        cylinder(r=rod_r, h=l);
+        cylinder(r=rod_r, h=l, center=center);
 }
 
 module rod_mount() {
@@ -108,8 +108,8 @@ shaft_pillow_flange_h = 5;
 // shaft_pillow_hole_c_c = 42;
 // shaft_pillow_c_h = 14.5;
 
-module shaft(l=shaft_l) {
-    rod(l);
+module shaft(l=shaft_l, center=false) {
+    rod(l, center=center);
 }
 
 module shaft_pillow() {
@@ -136,8 +136,8 @@ module shaft_pillow_holes(h=shaft_pillow_flange_h) {
 traveller_h = 16;
 traveller_collar_or = 11 / 2;
 traveller_flange_or = 23 / 2;
-traveller_flange_h = 3.75;
-traveller_flange_z = 10.2;
+traveller_flange_h = 3.5;
+traveller_flange_z = 10;
 traveller_hole_ir = 3.7 / 2;
 traveller_hole_offset = 8;
 traveller_num_holes = 4;
@@ -150,19 +150,23 @@ module shaft_traveller() {
      //translate([0, 0, gimbal_l / 2 - traveller_flange_z / 2 + gimbal_shift_z])
         difference() {
         union() {
-            cylinder(h=traveller_h, r=traveller_collar_or);
-            translate([0, 0, traveller_flange_z]) {
+            cylinder(h=traveller_h, r=traveller_collar_or, center=true);
+            translate([0, 0, - traveller_h / 2 + traveller_flange_z]) {
                 difference() {
-                    cylinder(h=traveller_flange_h, r=traveller_flange_or);
-                    for (i=[1:traveller_num_holes])
-                        rotate([0, 0, i * traveller_hole_angle])
-                            translate([traveller_hole_offset, 0, 0])
-                                cylinder(h=traveller_flange_h, r=traveller_hole_ir);
+                    cylinder(h=traveller_flange_h, r=traveller_flange_or, center=true);
+                    shaft_traveller_holes();
                 }
             }
         }
-        cylinder(h=traveller_h, r=traveller_ir);
+        cylinder(h=traveller_h, r=traveller_ir, center=true);
     }
+}
+
+module shaft_traveller_holes(l=traveller_flange_h * 2 + 1) {
+    for (i=[1:traveller_num_holes])
+        rotate([0, 0, i * traveller_hole_angle])
+            translate([traveller_hole_offset, 0, 0])
+                cylinder(h=l, r=traveller_hole_ir, center=true);
 }
 
 bar_w = 1.0 * IN_MM;
