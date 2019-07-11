@@ -58,6 +58,33 @@ module drive_motor(use_stl=false) {
     }
 }
 
+motor_ds_h = 17;
+motor_ds_or = 12 / 2;
+motor_ds_notch_x = 1;
+motor_ds_notch_y = motor_ds_or - 8.10 / 2;
+motor_ds_notch_h = 4.5;
+motor_ds_hole_ir = 6 / 2;
+
+module motor_driveshaft() {
+    difference() {
+        cylinder(r=motor_ds_or, h=motor_ds_h);
+        translate([0, 0, motor_ds_h - motor_ds_notch_h]) {
+            translate([-motor_ds_or, -motor_ds_or, 0])
+                cube([motor_ds_notch_x, , motor_ds_or*2, motor_ds_notch_h]);
+            for (theta=[0, 180]) {
+                rotate([0, 0, theta])
+                translate([-motor_ds_or, -motor_ds_or, 0])
+                cube([motor_ds_or*2, motor_ds_notch_y, motor_ds_notch_h]);
+            }
+        }
+        motor_driveshaft_holes();
+    }
+}
+
+module motor_driveshaft_holes(h=motor_ds_h) {
+    cylinder(r=motor_ds_hole_ir, h=h);
+}
+
 nema17_mount_flange_h = 3;
 nema17_mount_w = 50;
 nema17_mount_l = 50 + nema17_mount_flange_h;
@@ -125,7 +152,7 @@ nema23_shaft_l = 23;
 nema23_l = 100;
 nema23_w = 57;
 
-module nema23_mount() {
+module nema23_mount(motor_dir=1) {
     difference() {
         union() {
             translate([0, -nema23_mount_w / 2, -nema23_mount_c_h]) {
@@ -133,7 +160,7 @@ module nema23_mount() {
                 cube([nema23_mount_l, nema23_mount_w, nema23_mount_flange_h]);
             }
             
-            rotate([0, -90, 0])
+             rotate([0, -90, (motor_dir - 1) * 90])
                 cylinder(r=nema23_shaft_or, h=nema23_shaft_l);
         }
         
@@ -144,8 +171,9 @@ module nema23_mount() {
         rotate([0, 90, 0])
             cylinder(r=nema23_mount_face_ir, h=nema23_mount_flange_h);
     }
-    # translate([nema23_mount_flange_h, -nema23_w/2, -nema23_w/2])
-        cube([nema23_l, nema23_w, nema23_w]);
+    nema23_x = motor_dir * nema23_l/2 + (motor_dir < 0 ? 0 : nema23_mount_flange_h);
+    % translate([nema23_x, 0, 0])
+        cube([nema23_l, nema23_w, nema23_w], center=true);
 }
 
 mini_motor_shaft_or = 3;
@@ -191,3 +219,34 @@ module mini_motor_holes() {
     translate([mini_motor_hole_offs + mini_motor_hole_sep[1], mini_motor_w / 2 - mini_motor_hole_sep[0]/2, 2])
         cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
 }
+
+wc_shaft_thread_or = 10 / 2;  // M10x1.25
+wc_shaft_thread_h = 14;
+wc_shaft_r2 = 14 / 2;  // top
+wc_shaft_r1 = 17 / 2;  // bottom
+wc_shaft_h = 53;
+wc_shaft_notch_w = 5;
+wc_shaft_notch_l = 38 - wc_shaft_notch_w;
+wc_shaft_notch_d = 5;
+wc_shaft_notch_offs = 12 + wc_shaft_notch_w / 2;
+
+module wc_motor_shaft() {
+    difference() {
+        cylinder(r1=wc_shaft_r1, r2=wc_shaft_r2, h=wc_shaft_h);
+        % translate([0, wc_shaft_r1, wc_shaft_notch_offs])
+            rotate([90, 0, 0])
+            cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
+        % translate([0, wc_shaft_r1, wc_shaft_notch_offs + wc_shaft_notch_l])
+            rotate([90, 0, 0])
+            cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
+        % translate([0, wc_shaft_r1 - wc_shaft_notch_d / 2, wc_shaft_notch_offs + wc_shaft_notch_l / 2])
+            cube([wc_shaft_notch_w, wc_shaft_notch_d, wc_shaft_notch_l], center=true);  
+    }
+    translate([0, 0, wc_shaft_h])
+        cylinder(r=wc_shaft_thread_or, h=wc_shaft_thread_h);
+}
+
+module wc_motor() {
+    wc_motor_shaft();
+}
+

@@ -18,7 +18,7 @@ module rod_mount_spacer(use_stl=false) {
             rod_mount_holes();
     }
 }
-rod_mount_spacer();
+
 
 coupler_brace_wall_th = 2;
 coupler_brace_splines = 10;
@@ -46,4 +46,23 @@ module coupler_brace(use_stl=false) {
 	}
 }
 
-//coupler_brace();
+bracket_h = 3;
+bracket_w = 20;
+bracket_l = 60;
+bracket_hole_ir = 5 / 2;
+module corner_bracket_template() {
+    difference() {
+        union() {
+            cube([bracket_l, bracket_w, bracket_h]);
+            cube([bracket_w, bracket_l, bracket_h]);
+        }
+        for (i=[0:2]) {
+            translate([i * bracket_w + bracket_w / 2, bracket_w / 2, -1])
+                cylinder(r=bracket_hole_ir, h=2*bracket_h);
+            translate([bracket_w / 2, i * bracket_w + bracket_w / 2, -1])
+                cylinder(r=bracket_hole_ir, h=2*bracket_h);
+        }
+    }
+}
+
+corner_bracket_template();

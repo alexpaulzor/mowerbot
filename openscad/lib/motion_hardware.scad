@@ -126,18 +126,18 @@ module shaft_pillow() {
     }
 }
 
-module shaft_pillow_holes(h=shaft_pillow_flange_h) {
-    translate([0, shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
-        cylinder(r=shaft_pillow_hole_r, h=h);
-    translate([0, - shaft_pillow_hole_c_c/2, -shaft_pillow_c_h])
-        cylinder(r=shaft_pillow_hole_r, h=h);
+module shaft_pillow_holes(h=shaft_pillow_h) {
+    translate([0, shaft_pillow_hole_c_c/2, 0])
+        cylinder(r=shaft_pillow_hole_r, h=h, center=true);
+    translate([0, - shaft_pillow_hole_c_c/2, 0])
+        cylinder(r=shaft_pillow_hole_r, h=h, center=true);
 }
 
-traveller_h = 16;
+traveller_h = 17;
 traveller_collar_or = 11 / 2;
 traveller_flange_or = 23 / 2;
-traveller_flange_h = 3.5;
-traveller_flange_z = 10;
+traveller_flange_h = 3.8;
+traveller_flange_z = traveller_h - 5;
 traveller_hole_ir = 3.7 / 2;
 traveller_hole_offset = 8;
 traveller_num_holes = 4;
@@ -151,7 +151,7 @@ module shaft_traveller() {
         difference() {
         union() {
             cylinder(h=traveller_h, r=traveller_collar_or, center=true);
-            translate([0, 0, - traveller_h / 2 + traveller_flange_z]) {
+            translate([0, 0, -traveller_h / 2 + traveller_flange_z + traveller_flange_h/2]) {
                 difference() {
                     cylinder(h=traveller_flange_h, r=traveller_flange_or, center=true);
                     shaft_traveller_holes();

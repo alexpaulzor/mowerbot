@@ -69,8 +69,8 @@ module small_drive_sprocket(use_stl=false) {  // #!AUTOSTL
         difference() {
             sprocket(size=CHAIN_SIZE, teeth=IDLER_TEETH, bore=0, hub_diameter=(bearing_or*2 + 2*wall_th) / IN_MM, hub_height=(bearing_h)/IN_MM / zratio);
             translate([0, 0, -1])
-                //drive_pulley_40t(0, LINK_PIN_W + 2);
-                import("stl/drive_pulley_40t.chain_drive.stl");
+                drive_pulley_40t(0, LINK_PIN_W + 2);
+                //import("stl/drive_pulley_40t.chain_drive.stl");
             for(j=[0:num_holes])  {
                 rotate([0,0,j*360 / num_holes])
                     translate([hole_offs, 0, 0])
@@ -182,3 +182,5 @@ module design_chain_drive() {
     * translate([0, 0, bearing_h/2])
         idle_sprocket_spacer();
 }
+
+!small_drive_sprocket();

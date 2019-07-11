@@ -1,5 +1,8 @@
 #include <PPMReader.h>
-#include <AccelStepper.h>
+//#include <AccelStepper.h>
+#include <LiquidCrystal_I2C.h>
+
+LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 #define ENABLE_SERIAL 0
 #define IF_SERIAL if (ENABLE_SERIAL)
@@ -11,6 +14,7 @@
 #define PPM_LOW 1000
 #define PPM_HIGH 2000
 #define PPM_CENTER ((PPM_LOW + PPM_HIGH) / 2)
+#define PPM_FUZZ 10
 
 #define STATUS_LED_PIN 13
 #define INTERRUPT_PIN 2
@@ -78,39 +82,42 @@ void setup() {
   pinMode(RIGHT_FORWARD, OUTPUT);
   pinMode(RIGHT_REVERSE, OUTPUT);
   
+  setup_lcd();
+
   blink(3, 200);
   IF_SERIAL Serial.println("setup() complete");
 }
 
 void loop() {
-  int channel_values[NUM_CHANNELS];
-  // Print latest valid values from all channels
-  for (int channel = 1; channel <= NUM_CHANNELS; ++channel) {
-    int value = ppm.latestValidChannelValue(channel, 0);
-    IF_SERIAL Serial.print(String(value) + " ");
-    if (value != channel_values[channel - 1]) {
-      last_ppm_signal = millis();
+    int channel_values[NUM_CHANNELS];
+    // Print latest valid values from all channels
+    for (int channel = 1; channel <= NUM_CHANNELS; ++channel) {
+        int value = ppm.latestValidChannelValue(channel, 0);
+        IF_SERIAL Serial.print(String(value) + " ");
+        if (abs(value - channel_values[channel - 1]) <= PPM_FUZZ) {
+            last_ppm_signal = millis();
+        }
+        channel_values[channel - 1] = value;
     }
-    channel_values[channel - 1] = value;
-  }
 
-  if (millis() > (last_ppm_signal + RC_TIMEOUT_S * 1000) || millis() < last_ppm_signal) {
+    refresh_disp(channel_values);
+
+    if (millis() > (last_ppm_signal + RC_TIMEOUT_S * 1000) || millis() < last_ppm_signal) {
         stop_motors();
         blink(3, 100);
-        last_ppm_signal = millis();
+        return;
     }
 
-   if (channel_values[CHANNEL_ENABLE_DRIVE] > PPM_CENTER) {
-      drive(
-        map(channel_values[CHANNEL_THROTTLE],
-            PPM_LOW, PPM_HIGH, -THROTTLE_WEIGHT, THROTTLE_WEIGHT),
-        map(channel_values[CHANNEL_STEERING],
-            PPM_LOW, PPM_HIGH, -STEERING_WEIGHT, STEERING_WEIGHT));
-   } else {
-     stop_motors();
-     blink(1, DRIVE_MS/2);
+    if (channel_values[CHANNEL_ENABLE_DRIVE] > PPM_CENTER) {
+        drive(
+            map(channel_values[CHANNEL_THROTTLE],
+                PPM_LOW, PPM_HIGH, -THROTTLE_WEIGHT, THROTTLE_WEIGHT),
+            map(channel_values[CHANNEL_STEERING],
+                PPM_LOW, PPM_HIGH, -STEERING_WEIGHT, STEERING_WEIGHT));
+    } else {
+        stop_motors();
+        blink(1, DRIVE_MS/2);
    }
-  
 }
 
 void drive(int throttle_pct, int steering_pct) {
@@ -160,7 +167,7 @@ void drive_motors(int left_speed, int right_speed) {
     } 
     int r_pwm_pin = RIGHT_FORWARD;
     int r_low_pin = RIGHT_REVERSE;
-    if (left_speed < 0) {
+    if (right_speed < 0) {
         r_pwm_pin = RIGHT_REVERSE;
         r_low_pin = RIGHT_FORWARD;
     } 
@@ -169,8 +176,35 @@ void drive_motors(int left_speed, int right_speed) {
     analogWrite(l_pwm_pin,
         constrain(map(abs(left_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX));
     analogWrite(r_pwm_pin,
-        constrain(map(abs(right_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX));
-    
-    
-    
+        constrain(map(abs(right_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX)); 
 }
+
+void setup_lcd() {
+  lcd.init();  //initialize the lcd
+  lcd.backlight();  //open the backlight 
+}
+
+void refresh_disp(int* channel_values) {
+    char buf[20];
+    lcd.setCursor ( 0, 0 );
+    sprintf(buf, "Up %6u s\0", millis() / 1000);
+    lcd.print(buf);
+    lcd.setCursor (0, 1);
+    sprintf(
+        buf, "Spd=%4d Str=%4d\0", 
+        (channel_values[CHANNEL_THROTTLE] - 1500) / 5,
+        (channel_values[CHANNEL_STEERING] - 1500) / 5);
+    lcd.print(buf);
+    lcd.setCursor (0, 2);
+    sprintf(
+        buf, "Ena=%4d Aux=%4d\0",
+        (channel_values[CHANNEL_ENABLE_DRIVE] - 1000) / 10,
+        (channel_values[CHANNEL_SWB] - 1000) / 10);
+    lcd.print(buf);
+    lcd.setCursor (0, 3);
+    sprintf(
+        buf, "Adj=%4d\0",
+        (channel_values[CHANNEL_DIAL_VRA] - 1500) / 5);
+    lcd.print(buf);
+}
+
