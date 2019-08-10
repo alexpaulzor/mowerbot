@@ -1,4 +1,5 @@
 include <constants.scad>;
+include <motion_hardware.scad>;
 
 spool_ir = 52 / 2;
 spool_or = 168 / 2;
@@ -35,5 +36,16 @@ module spool_core() {
         rotate([0, 0, i])
         translate([spool_ir + fin_l/2, 0, 0])
             cube([fin_l, spool_slot_th, spool_h], center=true);
+    }
+}
+
+platter_or = 95 / 2;
+platter_ir = 25 / 2;
+platter_h = 1.7;
+
+module platter() {
+    difference() {
+        cylinder(r=platter_or, h=platter_h, center=true);
+        cylinder(r=platter_ir, h=platter_h+1, center=true);
     }
 }

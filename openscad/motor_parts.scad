@@ -13,12 +13,15 @@ module hub_adapter() {
             cylinder(r=hub_ir + wall_th, h=wall_th);
         }
         wc_motor_shaft();
-        translate([0, hub_ir, hub_h / 2])
-            rotate([90, 0, 0]) {
-                cylinder(r=5/2, h=hub_ir);
-                m5_nut();
-                translate([0, 0, m5_nut_h/2 + 1]) m5_nut();
+        for (z=[hub_h / 4, hub_h / 2, 3 * hub_h / 4]) {
+            translate([0, hub_ir, wall_th + z]) {
+                rotate([90, 0, 0]) {
+                    cylinder(r=5/2, h=hub_ir);
+                    m5_nut();
+                    translate([0, 0, m5_nut_h/2 + 1]) m5_nut();
+                }
             }
+        }
     }
 }
 
