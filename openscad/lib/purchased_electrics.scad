@@ -384,3 +384,9 @@ module l298n_holes() {
     } 
 }
 
+laser_diode_h = 25;
+laser_diode_or = 9/2;
+module laser_diode() {
+    cylinder(r=laser_diode_or, h=laser_diode_h);
+}
+

@@ -5,35 +5,32 @@ bearing_h = 7;
 bearing_ir = 4;
 bearing_or = 11;
 
-po_or = 130;
-po_hub_or = 2 * platter_or + platter_ir;
-po_num_slots = 20;
-po_hub_h = bearing_h + platter_h;
+// po_or = 120;
+po_hub_or = 80; //po_or - platter_or + platter_ir;
+po_num_slots = 16;
+po_spacer_num_holes = 6;
+po_hub_h = 9;
 //$fn = 60;
-
-po_slot_width = platter_h;
-po_axle_or = 5 / 2;
+po_axle_or = 3 / 2;
+po_axle_l = 20;
 
 po_spacer_h = 6;
+po_slot_length = platter_or + 2;
+po_spacer_or = platter_ir + platter_h;
 
 module po_hub() {
     difference() {
-        union() {
-            cylinder(h=po_hub_h/2, r=po_hub_or);
-            
-            # offset_po_slot() {
-                cylinder(r=platter_ir + platter_h, h=2*po_slot_width, center=true); 
-            }
-         
-        }
-        
-        # platter();
+        cylinder(h=po_hub_h/2, r=po_hub_or);
         # bearing();
+        # cylinder(r=9 / 2, h=bearing_h*2, center=true);
+        # platter();
         offset_po_slot() {
-            platter();
-            # translate([0, 0, platter_h])
-                platter();
+            po_disc();
         }
+        rotate([0, 0, 360 / po_num_slots / 2])
+            offset_po_slot()
+            translate([-20, 0, 0])
+                cylinder(r=po_axle_or, h=po_hub_h, center=true);
     }
 }
 
@@ -41,31 +38,56 @@ module offset_po_slot() {
     roller_angle = 360 / po_num_slots;
     for(j=[1:po_num_slots])
         rotate([0,0,j*roller_angle])
-        translate([po_hub_or - platter_ir, 0, 0])
-        rotate([90, 0, 0])
+        translate([po_hub_or - 6, 0, 0])
         children();
 }
 
 module po_spacer() {
-    num_holes = 6;
-    hole_angle = 360 / num_holes;
+    hole_angle = 360 / po_spacer_num_holes;
     difference() {
-        cylinder(r=platter_ir + platter_h, h=po_spacer_h/2);
-        # platter();
-        cylinder(r=po_axle_or, h=po_spacer_h+1, center=true);
-        # for(j=[1:num_holes]) {
+        union() {
+            translate([0, 0, -po_spacer_h/2])
+                cylinder(r=platter_ir, h=po_spacer_h/2+platter_h/2);
+            translate([0, 0, -po_spacer_h/2]) 
+                cylinder(r=po_spacer_or, h=po_spacer_h/2);
+        }   
+        platter();
+        
+        cylinder(r=po_axle_or, h=po_spacer_h, center=true);
+
+        for(j=[1:po_spacer_num_holes]) {
             rotate([0,0,j*hole_angle])
-            translate([(platter_ir + po_axle_or) / 2, 0, 0]) {
-                cylinder(r=3/2, h=po_spacer_h+1, center=true);
-                # translate([0, 0, po_spacer_h/2 - m3_nut_h/2])
-                    rotate([0, 0, 30])
-                    m3_nut();
+            translate([0, 0, -platter_h/2 ]) 
+            linear_extrude(po_spacer_h/2 + platter_h/2) {
+                polygon(
+                    points=[
+                        [0,0],
+                        [po_spacer_or,0],
+                        [po_spacer_or * sin(hole_angle), po_spacer_or * cos(hole_angle)]
+                    ], 
+                    paths=[[0,1,2]]);
             }
         }
     }
 }
 
-po_spacer();
+module po_roller() {
+    po_spacer();
+    % translate([0, 0, 0]) 
+        rotate([0, 180, 360 / po_spacer_num_holes]) po_spacer();
+    % platter();
+    * cylinder(r=po_axle_or, h=po_axle_l, center=true);
+}
+
+module po_disc() {
+    rotate([90, 0, 0]) {
+       po_roller();
+    }
+    cube([po_slot_length*2, platter_h + 1, po_hub_h], center=true);
+    cube([po_spacer_or*2, po_spacer_h + 1, po_hub_h], center=true);
+}
+
+// po_hub();
 
 /*
 

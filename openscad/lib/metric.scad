@@ -6,6 +6,7 @@ m4_nut_h = 3.2;
 
 m5_nut_or = 8.8 / 2;
 m5_nut_h = 4.7;
+m5_washer_h = 1;
 
 m6_nut_or = 11.1 / 2;
 m6_nut_h = 5.2;

@@ -41,7 +41,7 @@ module spool_core() {
 
 platter_or = 95 / 2;
 platter_ir = 25 / 2;
-platter_h = 1.7;
+platter_h = 1.75;
 
 module platter() {
     difference() {
