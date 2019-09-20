@@ -386,7 +386,24 @@ module l298n_holes() {
 
 laser_diode_h = 25;
 laser_diode_or = 9/2;
-module laser_diode() {
-    cylinder(r=laser_diode_or, h=laser_diode_h);
+laser_diode_beam_ir = 6 / 2;
+laser_diode_beam_l = 100;
+laser_diode_wire_ir = 4 / 2;
+module laser_diode(bl=laser_diode_h, wl=laser_diode_h) {
+    rotate([0, 90, 0]) {
+        cylinder(r=laser_diode_or, h=laser_diode_h, center=true);
+        color("red", 0.5)
+            translate([0, 0, laser_diode_h/2])
+            cylinder(r1=laser_diode_beam_ir, r2=bl, h=bl);
+            // scale([0.3, 1.1, 1])
+            // cylinder(r1=laser_diode_beam_ir, r2=bl, h=bl);
+        color("red")
+            translate([0, -1, -laser_diode_h/2 - wl])
+            cylinder(r=1, h=wl);
+        color("black")
+            translate([0, 1, -laser_diode_h/2 - wl])
+            cylinder(r=1, h=wl);
+    }
 }
+
 

@@ -250,3 +250,29 @@ module wc_motor() {
     wc_motor_shaft();
 }
 
+/////// BLDC wheel
+
+
+
+// rpm=990 (measured 33 clicks in 2 seconds)
+// 16.5 rps
+
+// tire od = 195mm
+// c = 3.14*19.5 = 61.23cm
+// at 16.5rps = 10 m/s
+
+bldc_rim_od = 136; // mm
+bldc_od = 125; // mm
+bldc_rim_dr = 6; // mm
+bldc_rim_h = 18;
+bldc_shaft_od = 12;
+bldc_shaft_h = 100;
+bldc_hub_h = 28; // mm
+
+module bldc_hub() {
+    cylinder(r=bldc_od/2, h=bldc_hub_h, center=true);
+    cylinder(r=bldc_shaft_od/2, h=bldc_shaft_h, center=true);
+    for (i=[-1,1])
+        translate([0, 0, i*(bldc_hub_h/2 + bldc_rim_h/2)])
+        cylinder(r=bldc_rim_od/2, h=bldc_rim_h, center=true);
+}

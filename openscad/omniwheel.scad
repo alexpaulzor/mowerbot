@@ -1,93 +1,147 @@
 include <lib/salvaged_parts.scad>;
 include <lib/metric.scad>;
+include <lib/casting.scad>;
 
 bearing_h = 7;
 bearing_ir = 4;
 bearing_or = 11;
 
 // po_or = 120;
-po_hub_or = 80; //po_or - platter_or + platter_ir;
+po_hub_or = 75; //po_or - platter_or + platter_ir;
 po_num_slots = 16;
 po_spacer_num_holes = 6;
-po_hub_h = 9;
+po_hub_h = 20;
 //$fn = 60;
 po_axle_or = 3 / 2;
 po_axle_l = 20;
+po_axle_offset = 3;
 
 po_spacer_h = 6;
 po_slot_length = platter_or + 2;
 po_spacer_or = platter_ir + platter_h;
+draft_angle = 3;
+have_stl = true;
 
-module po_hub() {
+
+module cast_po_hub() {
+    da = 360 / po_num_slots;
     difference() {
-        cylinder(h=po_hub_h/2, r=po_hub_or);
-        # bearing();
-        # cylinder(r=9 / 2, h=bearing_h*2, center=true);
-        # platter();
-        offset_po_slot() {
-            po_disc();
+        for (i=[0:po_num_slots-1])
+            rotate([0, 90, i*da])
+            cylinder(r=po_hub_h/2, h=po_hub_or);
+        for (i=[0:po_num_slots-1])
+            rotate([0, 0, (i+0.5)*da])
+            translate([po_hub_or - po_axle_offset, 0, 0]) po_disc();
+        # for (i=[0:po_num_slots-1])
+            rotate([0, 0, i*da])
+            translate([po_hub_or - 2 * po_axle_offset, 0, 0])
+            draft_cylinder(r=po_axle_or, h=po_hub_h/2, invert=true);
+        translate([0, 0, -po_hub_h/2])
+            cylinder(r=po_hub_or+5, h=po_hub_h/2);
+        translate([0, 0, po_hub_h/2 - bearing_h/2]) {
+            % bearing();
+            draft_cylinder(r=bearing_or, h=bearing_h, draft_angle=draft_angle, center=true, invert=true);
         }
-        rotate([0, 0, 360 / po_num_slots / 2])
-            offset_po_slot()
-            translate([-20, 0, 0])
-                cylinder(r=po_axle_or, h=po_hub_h, center=true);
+        draft_cylinder(r=9 / 2, h=po_hub_h/2, center=false, draft_angle=draft_angle, invert=true);
+        
+    }
+    
+}
+
+cast_po_hub();
+
+module po_hub(use_stl=false) {
+    if (use_stl) {
+        import("stl/po_hub.omniwheel.stl");
+    } else {
+        difference() {
+            cylinder(h=po_hub_h/2, r=po_hub_or);
+            % bearing();
+            draft_cylinder(r=bearing_or, h=bearing_h, draft_angle=draft_angle, center=true);
+            draft_cylinder(r=9 / 2, h=bearing_h*2, center=true, draft_angle=draft_angle);
+            //# platter();
+            offset_po_slot() {
+                po_disc();
+            }
+            rotate([0, 0, 360 / po_num_slots / 2])
+                offset_po_slot(po_num_slots/2)
+                translate([-57, 0, 0])
+                draft_cylinder(r=po_axle_or, h=po_hub_h/2, center=false, draft_angle=draft_angle);
+            rotate([0, 0, 360 / po_num_slots / 2])
+                offset_po_slot()
+                translate([-20, 0, 0])
+                    draft_cylinder(r=po_axle_or, h=po_hub_h/2, center=false, draft_angle=draft_angle);
+        }
     }
 }
 
-module offset_po_slot() {
+module offset_po_slot(po_num_slots=po_num_slots, dr=0) {
     roller_angle = 360 / po_num_slots;
     for(j=[1:po_num_slots])
         rotate([0,0,j*roller_angle])
-        translate([po_hub_or - 6, 0, 0])
+        translate([po_hub_or - 6 + dr, 0, 0])
         children();
 }
 
-module po_spacer() {
-    hole_angle = 360 / po_spacer_num_holes;
-    difference() {
-        union() {
-            translate([0, 0, -po_spacer_h/2])
-                cylinder(r=platter_ir, h=po_spacer_h/2+platter_h/2);
-            translate([0, 0, -po_spacer_h/2]) 
-                cylinder(r=po_spacer_or, h=po_spacer_h/2);
-        }   
-        platter();
-        
-        cylinder(r=po_axle_or, h=po_spacer_h, center=true);
+module po_spacer(use_stl=false) {
+    if (use_stl) {
+        import("stl/po_spacer.omniwheel.stl");
+    } else {
+        hole_angle = 360 / po_spacer_num_holes;
+        difference() {
+            union() {
+                translate([0, 0, -po_spacer_h/2])
+                    cylinder(r=platter_ir, h=po_spacer_h/2+platter_h/2);
+                translate([0, 0, -po_spacer_h/2]) 
+                    cylinder(r=po_spacer_or, h=po_spacer_h/2);
+            }   
+            platter();
+            
+            cylinder(r=po_axle_or, h=po_spacer_h, center=true);
 
-        for(j=[1:po_spacer_num_holes]) {
-            rotate([0,0,j*hole_angle])
-            translate([0, 0, -platter_h/2 ]) 
-            linear_extrude(po_spacer_h/2 + platter_h/2) {
-                polygon(
-                    points=[
-                        [0,0],
-                        [po_spacer_or,0],
-                        [po_spacer_or * sin(hole_angle), po_spacer_or * cos(hole_angle)]
-                    ], 
-                    paths=[[0,1,2]]);
+            for(j=[1:po_spacer_num_holes]) {
+                rotate([0,0,j*hole_angle])
+                translate([0, 0, -platter_h/2 ]) 
+                linear_extrude(po_spacer_h/2 + platter_h/2) {
+                    polygon(
+                        points=[
+                            [0,0],
+                            [po_spacer_or,0],
+                            [po_spacer_or * sin(hole_angle), po_spacer_or * cos(hole_angle)]
+                        ], 
+                        paths=[[0,1,2]]);
+                }
             }
         }
     }
 }
 
 module po_roller() {
-    po_spacer();
-    % translate([0, 0, 0]) 
-        rotate([0, 180, 360 / po_spacer_num_holes]) po_spacer();
-    % platter();
-    * cylinder(r=po_axle_or, h=po_axle_l, center=true);
+    % po_spacer(have_stl);
+    // translate([0, 0, 0]) 
+    //    rotate([0, 180, 360 / po_spacer_num_holes]) po_spacer();
+    // platter();
+    cylinder(r=po_axle_or, h=po_axle_l, center=true);
 }
 
 module po_disc() {
     rotate([90, 0, 0]) {
        po_roller();
     }
-    cube([po_slot_length*2, platter_h + 1, po_hub_h], center=true);
-    cube([po_spacer_or*2, po_spacer_h + 1, po_hub_h], center=true);
+    draft_cube([po_slot_length*2, platter_h + 1, po_hub_h/2], center=true, draft_angle=draft_angle, invert=false);
+    draft_cube([po_spacer_or*2, po_spacer_h + 1, po_hub_h/2], center=true, draft_angle=draft_angle, invert=false);
 }
 
-// po_hub();
+module plate() {
+     rotate([180, 0, 0])
+     po_hub(have_stl);
+     translate([0, 0, -platter_h/2])
+     rotate([0, 0, 360 / po_num_slots/2])
+     offset_po_slot(po_num_slots/2, 20)
+        po_spacer(have_stl);
+    
+}
+//po_hub(false);
 
 /*
 
@@ -420,7 +474,7 @@ module driven_hub() {
     }
 }
 
-// module plate() {
+module plate() {
 //     hub();
 //     * translate([2 * hub_or + roller_clearance, 0, 0])
 //         hub();

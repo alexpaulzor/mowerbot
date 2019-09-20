@@ -2,9 +2,53 @@ include <lib/motors.scad>;
 include <lib/openbeam.scad>;
 include <lib/motion_hardware.scad>;
 include <lib/salvaged_parts.scad>;
-use <lib/purchased_electrics.scad>;
+include <lib/purchased_electrics.scad>;
+include <lib/metric.scad>;
 
 $fn=32;
+
+laser_holder_w = 20;
+laser_holder_h = 20;
+laser_holder_wall_th = 1.5;
+laser_holder_l = laser_diode_h + laser_holder_wall_th;
+laser_holder_screw_offs = 10;
+
+m5_screw_head_or = 5;
+m5_screw_head_h = 3.5;
+m5_screw_l = 8;
+
+module m5_screw() {
+    cylinder(r=m5_screw_head_or, h=m5_screw_head_h);
+    translate([0, 0, -m5_screw_l])
+        cylinder(r=5/2, h=m5_screw_l);
+}
+
+module laser_holder() {
+    difference() {
+        cube([laser_holder_l, laser_holder_w, laser_holder_h], center=true);
+        translate([laser_holder_l/2 - laser_holder_wall_th, 0, 0])
+            rotate([0, -90, 0])
+            cylinder(r1=laser_diode_or, r2=7, h=laser_diode_h+0.1);
+        # translate([-laser_holder_wall_th/2, 0, 0])
+            laser_diode();
+        
+        # for (i=[0:90:270]) {
+            rotate([i, 0, 0]) 
+            for (j=[0, 0*0.5]) {
+                 
+                translate([-laser_holder_screw_offs - j*2*m3_nut_or, 0, laser_holder_h/2 - laser_holder_wall_th - m3_nut_h/2]) {
+                    m3_nut();
+                    if (j == 0) cylinder(r=3/2, h=laser_holder_w, center=true);
+                }
+                    
+                translate([0, 0, -laser_holder_h/2 + laser_holder_wall_th + j*m5_screw_head_h])
+                    m5_screw();
+            }
+        }
+        
+    }
+}
+laser_holder();
 
 mini_drive_wall_th = 2;
 mini_drive_l = motor_coupler_length + mini_drive_wall_th*3;
@@ -89,6 +133,4 @@ module design_minibot() {
     minibot_frame();
 
 }
-
-design_minibot();
 
