@@ -1,4 +1,3 @@
-include <constants.scad>;
 include <motion_hardware.scad>;
 
 spool_ir = 52 / 2;

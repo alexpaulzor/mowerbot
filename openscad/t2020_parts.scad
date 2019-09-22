@@ -1,4 +1,4 @@
-include <lib/t2020beam.scad>;
+include <lib/t20beam.scad>;
 include <lib/motion_hardware.scad>;
 
 sk8_spacer_h = 13;
@@ -6,13 +6,13 @@ module sk8_spacer(use_stl=false) {
 	% translate([0, 0, sk8_spacer_h + sk8_c_h])
         sk8();
     scale_adj = [
-        sk8_l / t2020_w,
-        sk8_flange_w / (sk8_hole_c_c + t2020_w)
+        sk8_l / t20_w,
+        sk8_flange_w / (sk8_hole_c_c + t20_w)
     ];
     echo(scale_adj);
     difference() {
         linear_extrude(height=sk8_spacer_h, scale=scale_adj) {
-            square([t2020_w, sk8_hole_c_c + t2020_w], center=true);
+            square([t20_w, sk8_hole_c_c + t20_w], center=true);
         }
         translate([0, 0, sk8_c_h - 1])
             sk8_holes();

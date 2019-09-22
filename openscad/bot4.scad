@@ -1,4 +1,3 @@
-include <lib/constants.scad>;
 include <lib/openbeam.scad>;
 include <lib/motion_hardware.scad>;
 use <roller_chain_parts.scad>;

@@ -1,4 +1,14 @@
-include <constants.scad>;
+/** 
+ * REFERENCE:
+ * center_height:
+   * kp08 pillow block    : 15mm
+   * sk8 rail mount       : 20mm
+   * sc8uu linear bearing : 11mm
+   * nema23 mount         : 39mm
+   * nema17 mount         : 30mm
+
+ */
+
 
 t08_screw_r = 8 / 2;
 
@@ -43,6 +53,7 @@ module sk8_holes(h=sk8_c_h) {
 sc8uu_w = 34;
 sc8uu_l = 30;
 sc8uu_h = 22;
+sc8uu_c_h = 11;
 sc8uu_step_h = 18;
 sc8uu_step_w = 11;
 sc8uu_step_base_w = 17;

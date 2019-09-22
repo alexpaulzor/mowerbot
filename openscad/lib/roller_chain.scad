@@ -1,4 +1,3 @@
-include <constants.scad>;
 include <openbeam.scad>;
 use <sprockets.scad>
 
