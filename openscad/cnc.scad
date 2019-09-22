@@ -73,43 +73,49 @@ module inventory() {
 * translate([-500, 500, 0])
     inventory();
 
-cnc_w = 500;
-cnc_l = 500;
-cnc_screw_l = 400;
-cnc_x = 300;
-cnc_y = 300;
+cnc_w = 500;  // w = y
+cnc_l = 500;  // l = x
+cnc_x_screw_l = 400;
+cnc_x_motor_x_offs = 48;
 
+cnc_x_l = 300;
+cnc_y_w = 300;
+
+cnc_x_rail_offset = cnc_y_w/2;
 
 module cnc_frame() {
     // edge with nema23 mount
-    translate([0, 0, 0]) rotate([90, 0, 0])
-        t20(cnc_w);
-    for (i=[-1, 1])
+    for (x=[0, 360, cnc_l-t20_w]) {
+        translate([x, 0, 0]) rotate([90, 0, 0])
+            t20(cnc_w);
+    }
+    for (i=[-1, 1]) {
         translate([cnc_l/2 - t20_w/2, i * (cnc_w + t20_w)/2, 0]) rotate([0, 90, 0])
-        t20(cnc_l);
-    
+            t20(cnc_l);
+        translate([t20_w / 2, i*cnc_w / 2, 0]) rotate([i * 90, 0, 0])
+           t20_corner();
+        for (x=[360, cnc_l - t20_w]) {
+            translate([x - t20_w / 2, i*cnc_w / 2, 0]) rotate([i * 90, 180, 0])
+               t20_corner();
 
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20(500);
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20(500);
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20(500);
+        }
+        translate([-t20_w/2, i*cnc_x_rail_offset, sk8_c_h + t20_w/2])
+            rail(cnc_l);
+        # for (x=[0, cnc_l - t20_w]) {
+            translate([x, i*cnc_x_rail_offset, sk8_c_h + t20_w/2])
+            sk8();
+        }
+    }
+    translate([-cnc_x_motor_x_offs, 0, nema23_mount_c_h - nema23_mount_flange_h - t20_w/2]) {
+        nema23_mount(-1);
+        translate([nema23_shaft_l, 0, 0])
+            t08_screw(cnc_x_screw_l);
+    }
+    translate([0, 0, nema23_mount_c_h - nema23_mount_flange_h - t20_w/2]) rotate([0, 0, 0])
+        kp08();
+    translate([360, 0, nema23_mount_c_h - nema23_mount_flange_h - t20_w/2]) rotate([0, 0, 0])
+        kp08();
 
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    % translate([0, 0, 0]) rotate([0, 0, 0])
-        t20_corner();
-    
-    
 }
 
 cnc_frame();

@@ -1,3 +1,5 @@
+include <metric.scad>;
+
 motor_short_c_c = 56;
 motor_short_offset = 0.9 * IN_MM;
 motor_long_c_c = 72;
