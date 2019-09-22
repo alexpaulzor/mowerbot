@@ -6,48 +6,48 @@ shaft_pillow_hole_r = 5 / 2;
 shaft_pillow_hole_c_c = 42;
 shaft_pillow_c_h = 14.5;
 
-rod_mount_hole_r = 5 / 2;
-rod_mount_hole_c_c = 31.5;
-rod_mount_c_h = 20;
+sk8_hole_r = 5 / 2;
+sk8_hole_c_c = 31.5;
+sk8_c_h = 20;
 
 rod_r = 8 / 2;
 rod_l = 500;
 
-rod_mount_flange_w = 42;
-rod_mount_flange_h = 6.5;
-rod_mount_w = 20;
-rod_mount_l = 14;
-rod_mount_h = 33.5;
+sk8_flange_w = 42;
+sk8_flange_h = 6.5;
+sk8_w = 20;
+sk8_l = 14;
+sk8_h = 33.5;
 
 // moved to constants.scad
-// rod_mount_hole_r = 5.5 / 2;
-// rod_mount_hole_c_c = 31.5;
-// rod_mount_c_h = 20;
+// sk8_hole_r = 5.5 / 2;
+// sk8_hole_c_c = 31.5;
+// sk8_c_h = 20;
 
 module rod(l=rod_l, center=false) {
     rotate([0, 90, 0])
         cylinder(r=rod_r, h=l, center=center);
 }
 
-module rod_mount() {
+module sk8() {
     difference() {
         union() {
-            translate([-rod_mount_l / 2, -rod_mount_w / 2, -rod_mount_c_h])
-                cube([rod_mount_l, rod_mount_w, rod_mount_h]);
-            translate([-rod_mount_l / 2, -rod_mount_flange_w / 2, -rod_mount_c_h]) 
-                cube([rod_mount_l, rod_mount_flange_w, rod_mount_flange_h]);
+            translate([-sk8_l / 2, -sk8_w / 2, -sk8_c_h])
+                cube([sk8_l, sk8_w, sk8_h]);
+            translate([-sk8_l / 2, -sk8_flange_w / 2, -sk8_c_h]) 
+                cube([sk8_l, sk8_flange_w, sk8_flange_h]);
         }
-        translate([-rod_mount_l / 2, 0, 0])
-            rod(rod_mount_l);
-        rod_mount_holes();
+        translate([-sk8_l / 2, 0, 0])
+            rod(sk8_l);
+        sk8_holes();
     }
 }
 
-module rod_mount_holes(h=rod_mount_c_h) {
-    translate([0, rod_mount_hole_c_c / 2, -rod_mount_c_h])
-        cylinder(r=rod_mount_hole_r, h=h);
-    translate([0, -rod_mount_hole_c_c / 2, -rod_mount_c_h])
-        cylinder(r=rod_mount_hole_r, h=h);
+module sk8_holes(h=sk8_c_h) {
+    translate([0, sk8_hole_c_c / 2, -sk8_c_h])
+        cylinder(r=sk8_hole_r, h=h);
+    translate([0, -sk8_hole_c_c / 2, -sk8_c_h])
+        cylinder(r=sk8_hole_r, h=h);
 }
 
 rod_traveller_w = 34;
@@ -175,9 +175,9 @@ module bar(length) {
     cube([length, bar_w, bar_w], center=true);
 }
 
-function get_rod_mount_c_h() = rod_mount_c_h;
-function get_rod_mount_flange_w() = rod_mount_flange_w;
-function get_rod_mount_l() = rod_mount_l;
+function get_sk8_c_h() = sk8_c_h;
+function get_sk8_flange_w() = sk8_flange_w;
+function get_sk8_l() = sk8_l;
 function get_rod_r() = rod_r;
 function get_shaft_l() = shaft_l;
 
@@ -221,3 +221,5 @@ module motor_coupler_holes() {
         }
     }
 }
+
+sk8();

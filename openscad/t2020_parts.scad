@@ -1,21 +1,21 @@
 include <lib/t2020beam.scad>;
 include <lib/motion_hardware.scad>;
 
-rod_mount_spacer_h = 13;
-module rod_mount_spacer(use_stl=false) {
-	% translate([0, 0, rod_mount_spacer_h + rod_mount_c_h])
-        rod_mount();
+sk8_spacer_h = 13;
+module sk8_spacer(use_stl=false) {
+	% translate([0, 0, sk8_spacer_h + sk8_c_h])
+        sk8();
     scale_adj = [
-        rod_mount_l / t2020_w,
-        rod_mount_flange_w / (rod_mount_hole_c_c + t2020_w)
+        sk8_l / t2020_w,
+        sk8_flange_w / (sk8_hole_c_c + t2020_w)
     ];
     echo(scale_adj);
     difference() {
-        linear_extrude(height=rod_mount_spacer_h, scale=scale_adj) {
-            square([t2020_w, rod_mount_hole_c_c + t2020_w], center=true);
+        linear_extrude(height=sk8_spacer_h, scale=scale_adj) {
+            square([t2020_w, sk8_hole_c_c + t2020_w], center=true);
         }
-        translate([0, 0, rod_mount_c_h - 1])
-            rod_mount_holes();
+        translate([0, 0, sk8_c_h - 1])
+            sk8_holes();
     }
 }
 

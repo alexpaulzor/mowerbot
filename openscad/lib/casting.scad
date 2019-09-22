@@ -32,7 +32,7 @@ module draft_cylinder(r=1, h=1, center=false, draft_angle=draft_angle, invert=fa
 module _draft_cylinder(r=1, h=1, draft_angle=draft_angle, invert=false) {
 	draft_r = r - h * sin(draft_angle);
 	rotate([invert ? 180 : 0, 0, 0])
-	cylinder(r1=r, r2=draft_r, h=h, center=true);
+	cylinder(r1=r, r2=draft_r, h=h, center=true, $fn=10*r);
 }
 /*
 
@@ -47,12 +47,12 @@ module draft(h, draft_angle=3) {
     }
 }*/
 
-module sprue(d=10, a=30, h=10, w=2) {
+module sprue(d=10, a=30, h=10, w=2, closed=false) {
     difference() {
         draft_cube([d+2*w, d+2*w, h], center=true, draft_angle=a, invert=true);
         draft_cube([d, d, h], center=true, draft_angle=a, invert=true);
         
-        # for (i=[0:3])
+        for (i=[0:3])
             rotate([0, 0, i*90])
             translate([0, (d - h * sin(a)) / 2 + w/2, -h/2 + 1/2])
             draft_cube([d - h * sin(a) + w*1.5, w/2, 1], draft_angle=2*a, center=true);
@@ -61,19 +61,23 @@ module sprue(d=10, a=30, h=10, w=2) {
         rotate([0, 0, i*90])
         translate([0, (d+w)/2, h/2 + 1/2])
         draft_cube([d + 1.5*w, w/2, 1], draft_angle=2*a, center=true);
+    if (closed)
+        translate([0, 0, -h/2 + 1/2])
+        draft_cube([d, d, 1], center=true, draft_angle=a, invert=true);
         
 }
 
 module sprue_stack() {
     h = 10;
-    a = 30;
-    d = 15;
-    w = 2;
-    for (i=[0:7]) {
-        sprue(d=d + i * h*sin(a), a=a, h=h, w=w);
-        % translate([0, 0, i*h])
-            sprue(d=d + i * h*sin(a), a=a, h=h, w=w);
+    a = 20;
+    d = 20;
+    w = 4;
+    for (i=[0:75/h]) {
+        translate([(i % 3 - 1) * 60, 0, 0])
+        sprue(d=d + i * h*sin(a), a=a, h=h, w=w, closed=(i == 0));
+        % translate([(i % 3 - 1) * 60, 60, i*h])
+            sprue(d=d + i * h*sin(a), a=a, h=h, w=w, closed=(i == 0));
     }
 }
 
-sprue_stack();
+//sprue_stack();

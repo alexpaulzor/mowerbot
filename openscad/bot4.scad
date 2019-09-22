@@ -22,11 +22,11 @@ module design() {
                     rotate([0, 180, 0])
                         mount_cube_inline();
                 }
-            translate([-i*(tread_l - 3*openbeam_w) / 2, j*(openbeam_w - tread_w) / 2, -(rod_mount_c_h + 23/2)])
+            translate([-i*(tread_l - 3*openbeam_w) / 2, j*(openbeam_w - tread_w) / 2, -(sk8_c_h + 23/2)])
                 rotate([180, 0, 90]){
                     rotate([0, 0, j*90+90]) 
                         rod(tread_w);
-                    rod_mount();
+                    sk8();
                     translate([-j*(2*openbeam_w + 20), 0, 0])
                         rotate([0, 90, 0])
                         small_drive_sprocket();
@@ -39,11 +39,11 @@ module design() {
                 rotate([90, 0, 0])
                 small_drive_sprocket();
         }
-        translate([-i*(tread_l - 3*openbeam_w) / 2, i*(openbeam_w - tread_w) / 2, rod_mount_c_h + 23/2])
+        translate([-i*(tread_l - 3*openbeam_w) / 2, i*(openbeam_w - tread_w) / 2, sk8_c_h + 23/2])
             rotate([0, 0, 90]) {
                 rotate([0, 0, i*90+90]) 
                     rod(tread_w);
-                rod_mount();
+                sk8();
                 # translate([-i*(2*openbeam_w + 20), 0, 0])
                         rotate([0, 90, 0])
                         small_drive_sprocket();

@@ -92,7 +92,7 @@ module mount_cube(mount_cube_l=openbeam_w) {
         rotate([90, 0, 0])
             cylinder(r=3/2, h=2*mount_cube_w, center=true);
         shaft_pillow_holes(mount_cube_h + openbeam_w);
-        rod_mount_holes(mount_cube_h + openbeam_w);
+        sk8_holes(mount_cube_h + openbeam_w);
         for (i=[-1, 1]) {
             rotate([i * 90, 0, 0]) {
                 translate([0, 0, openbeam_w / 2 + wall_th])
@@ -123,7 +123,7 @@ module mount_cube_inline() {  // #!AUTOSTL
                 shaft_pillow_holes(mount_cube_h + openbeam_w);
             translate([0, xi*openbeam_w, 0]) 
                 rotate([0, 0, 90])
-                rod_mount_holes(mount_cube_h + openbeam_w);
+                sk8_holes(mount_cube_h + openbeam_w);
         }
         
         translate([0, openbeam_w, 0])
@@ -144,9 +144,9 @@ module _design_mount_cube_inline() {
     * rotate([0, 180, 0])
         mount_cube_inline();
     
-    % translate([0, openbeam_w, openbeam_w/2 + rod_mount_c_h + wall_th]) 
+    % translate([0, openbeam_w, openbeam_w/2 + sk8_c_h + wall_th]) 
         rotate([0, 0, 90])
-        rod_mount();
+        sk8();
     %  translate([0, openbeam_w, -openbeam_w/2 - shaft_pillow_c_h - wall_th]) 
         rotate([0, 180, 90])
         shaft_pillow();

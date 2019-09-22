@@ -5,9 +5,9 @@ IN_MM = 25.4;
 arm_c_h = get_arm_c_h();
 arm_grip_angle = get_arm_grip_angle();
 arm_grip_ir = get_arm_grip_ir();
-rod_mount_c_h = get_rod_mount_c_h();
-rod_mount_flange_w = get_rod_mount_flange_w();
-rod_mount_l = get_rod_mount_l();
+sk8_c_h = get_sk8_c_h();
+sk8_flange_w = get_sk8_flange_w();
+sk8_l = get_sk8_l();
 rod_r = get_rod_r();
 shaft_l = get_shaft_l();
 
@@ -206,19 +206,19 @@ module tread() {
     for (i=[-1, 1]) {
         translate([0, i* (tread_width/2), 0])
             rotate()
-            bar(bot_length + rod_mount_flange_w);
+            bar(bot_length + sk8_flange_w);
         
         for (j=[-1, 1]) {
-            % translate([i * (bot_length / 2), j * (tread_width/2 - rod_mount_l/2), -rod_mount_c_h - bar_w/2])
+            % translate([i * (bot_length / 2), j * (tread_width/2 - sk8_l/2), -sk8_c_h - bar_w/2])
                 rotate([180, 0, 90])
-                rod_mount();
+                sk8();
             
-            translate([i * (bot_length / 2), j*get_gear_space()/2, -rod_mount_c_h - bar_w/2])
+            translate([i * (bot_length / 2), j*get_gear_space()/2, -sk8_c_h - bar_w/2])
                 rotate([j*90, 0, 0])
                 idler_sprocket(use_stl=true);
         }
         
-        % translate([i * (bot_length / 2), -tread_width/2, -rod_mount_c_h - bar_w/2])
+        % translate([i * (bot_length / 2), -tread_width/2, -sk8_c_h - bar_w/2])
             rotate([0, 0, 90])
             rod(tread_width);
     }
@@ -250,7 +250,7 @@ module driven_sprockets() {
                     idle_drive_sprocket(use_stl=true);
         }
 //        rotate([0, 150, 0])
-            translate([0, -get_gear_space() + get_link_pin_w()/2, -rod_mount_c_h - bar_w/2 - get_idler_pitch_or()])
+            translate([0, -get_gear_space() + get_link_pin_w()/2, -sk8_c_h - bar_w/2 - get_idler_pitch_or()])
                 normchain(num_links=get_drive_teeth(), bend_deg=360/get_drive_teeth(), offs=0, include_clips=true);
     }
     translate([0, -tread_width/2, 0])
@@ -271,17 +271,17 @@ motor_offs = [bot_length / 2 - get_drive_pitch_or(), 0, get_drive_pitch_or()];
 
 module bot_frame() {
     
-    *translate([bot_length / 2, -get_gear_space()/2, -rod_mount_c_h - bar_w/2 + get_idler_pitch_or()])
+    *translate([bot_length / 2, -get_gear_space()/2, -sk8_c_h - bar_w/2 + get_idler_pitch_or()])
         rotate([0, 180, 0])
         normchain(num_links=6, bend_deg=360/get_idler_teeth(), offs=0, include_clips=true);
     for (i=[-1, 1]) {
         % translate([0, i*(bot_width / 2 - tread_width / 2), 0]) {
             rotate([0, 0, i*90+90])
                 tread();
-            translate([bot_length / 2, -get_gear_space()/2, -rod_mount_c_h - bar_w/2 - get_idler_pitch_or()])
+            translate([bot_length / 2, -get_gear_space()/2, -sk8_c_h - bar_w/2 - get_idler_pitch_or()])
                 normchain(num_links=24, bend_deg=0, offs=0, include_clips=true);
         }
-        translate([-(bot_length + rod_mount_flange_w + fork_length) / 2, i*(bot_width / 2 - tread_width), 0])
+        translate([-(bot_length + sk8_flange_w + fork_length) / 2, i*(bot_width / 2 - tread_width), 0])
             bar(fork_length);
      }
     
@@ -305,7 +305,7 @@ module design() {
 
 module layout() {
     //* shaft_traveller();
-    //hard_parts_rect(false, 10 * rod_mount_l + shaft_offset_x);
+    //hard_parts_rect(false, 10 * sk8_l + shaft_offset_x);
 }
 //layout();
 design();
