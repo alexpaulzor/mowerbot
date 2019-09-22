@@ -89,7 +89,7 @@ module mini_drive_adapter_plate(use_stl=false) {
         translate([0, 0, spool_h / 2 + mini_drive_wall_th])
             spool_core();
         
-        cylinder(r=rod_r, h=2*spool_h, center=true);
+        cylinder(r=rail_r, h=2*spool_h, center=true);
         for(j=[0:mini_drive_num_holes])  {
             rotate([0,0,j*360 / mini_drive_num_holes])
                 translate([mini_drive_hole_offs, 0, -1])

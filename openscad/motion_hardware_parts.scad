@@ -3,33 +3,33 @@ include <lib/metric.scad>;
 include <lib/motors.scad>;
 
 wall_th = 3;
-shaft_traveller_pivot_l = 2 * traveller_flange_or + 2 * wall_th;
-shaft_traveller_pivot_w = 2 * traveller_flange_or + rod_r + 2 * wall_th;
-shaft_traveller_pivot_h = 2 * rod_r + 2 * wall_th;
+t08_nut_pivot_l = 2 * traveller_flange_or + 2 * wall_th;
+t08_nut_pivot_w = 2 * traveller_flange_or + rail_r + 2 * wall_th;
+t08_nut_pivot_h = 2 * rail_r + 2 * wall_th;
 
-module shaft_traveller_pivot() {
+module t08_nut_pivot() {
     difference() {
-            translate([0, rod_r / 2, 0])
-                cube([shaft_traveller_pivot_l, shaft_traveller_pivot_w, shaft_traveller_pivot_h], center=true);
+            translate([0, rail_r / 2, 0])
+                cube([t08_nut_pivot_l, t08_nut_pivot_w, t08_nut_pivot_h], center=true);
         rotate([0, 0, 45]) {
             translate([0, 0, traveller_flange_h/4])
-                shaft_traveller();
-            shaft_traveller_holes(50);
+                t08_nut();
+            t08_nut_holes(50);
             for (i=[1:traveller_num_holes])
             rotate([0, 0, i * traveller_hole_angle])
-                translate([traveller_hole_offset, 0, -shaft_traveller_pivot_h/2 + m3_nut_h/2])
+                translate([traveller_hole_offset, 0, -t08_nut_pivot_h/2 + m3_nut_h/2])
                     rotate([0, 0, 360 / 12])
                     m3_nut();
         }
         rotate([0, 90, 0])
             shaft(30, true);
         translate([0, traveller_flange_or, 0])
-            rod(center=true);
+            rail(center=true);
         
     }
 }
 
-!shaft_traveller_pivot();
+!t08_nut_pivot();
 
 
 mdi_h = 2;

@@ -1,8 +1,8 @@
 include <constants.scad>;
 
-shaft_r = 8 / 2;
+t08_screw_r = 8 / 2;
 
-rod_r = 8 / 2;
+rail_r = 8 / 2;
 
 sk8_hole_r = 5 / 2;
 sk8_hole_c_c = 32;
@@ -14,9 +14,9 @@ sk8_w = 20;
 sk8_l = 14;
 sk8_h = 33.5;
 
-module rod(l=400, center=false) {
+module rail(l=400, center=false) {
     rotate([0, 90, 0])
-        cylinder(r=rod_r, h=l, center=center);
+        cylinder(r=rail_r, h=l, center=center);
 }
 
 module sk8() {
@@ -28,7 +28,7 @@ module sk8() {
                 cube([sk8_l, sk8_flange_w, sk8_flange_h]);
         }
         translate([-sk8_l / 2, 0, 0])
-            rod(sk8_l);
+            rail(sk8_l);
         sk8_holes();
     }
 }
@@ -55,7 +55,7 @@ module sc8uu() {
         translate([-sc8uu_l/2, -sc8uu_w/2, -sc8uu_h/2])
             cube([sc8uu_l, sc8uu_w, sc8uu_h]);
         translate([-sc8uu_l/2, 0, 0])
-            rod(sc8uu_l);
+            rail(sc8uu_l);
         
         translate([-sc8uu_hole_c_c_l/2, -sc8uu_hole_c_c_w/2, -sc8uu_h/2])
             cylinder(r=sc8uu_hole_r, h=sc8uu_h);
@@ -94,8 +94,8 @@ kp08_hole_r = 5 / 2;
 kp08_hole_c_c = 42;
 kp08_c_h = 15;
 
-module shaft(l=400, center=false) {
-    rod(l, center=center);
+module t08_screw(l=400, center=false) {
+    rail(l, center=center);
 }
 
 module kp08() {
@@ -107,7 +107,7 @@ module kp08() {
             translate([-kp08_l/2, -kp08_flange_w/2, -kp08_c_h])
                 cube([kp08_l, kp08_flange_w, kp08_flange_h]);
         }
-        shaft(kp08_l);
+        t08_screw(kp08_l);
         kp08_holes();
     }
 }
@@ -132,7 +132,7 @@ traveller_ir = 7 / 2;
 
 gimbal_shift_z = -traveller_flange_z/2 + traveller_flange_h / 2;
 
-module shaft_traveller() {
+module t08_nut() {
      //translate([0, 0, gimbal_l / 2 - traveller_flange_z / 2 + gimbal_shift_z])
         difference() {
         union() {
@@ -140,7 +140,7 @@ module shaft_traveller() {
             translate([0, 0, -traveller_h / 2 + traveller_flange_z + traveller_flange_h/2]) {
                 difference() {
                     cylinder(h=traveller_flange_h, r=traveller_flange_or, center=true);
-                    shaft_traveller_holes();
+                    t08_nut_holes();
                 }
             }
         }
@@ -148,7 +148,7 @@ module shaft_traveller() {
     }
 }
 
-module shaft_traveller_holes(l=traveller_flange_h * 2 + 1) {
+module t08_nut_holes(l=traveller_flange_h * 2 + 1) {
     for (i=[1:traveller_num_holes])
         rotate([0, 0, i * traveller_hole_angle])
             translate([traveller_hole_offset, 0, 0])
@@ -164,8 +164,8 @@ module bar(length) {
 function get_sk8_c_h() = sk8_c_h;
 function get_sk8_flange_w() = sk8_flange_w;
 function get_sk8_l() = sk8_l;
-function get_rod_r() = rod_r;
-function get_shaft_l() = shaft_l;
+function get_rail_r() = rail_r;
+function get_t08_screw_l() = t08_screw_l;
 
 module bearing() {
     difference() {
@@ -175,7 +175,7 @@ module bearing() {
 }
 
 module drive_pulley_40t(bore=9.5, height=6) {
-    gt2_pulley(40, bore, pulley_t_ht=height, pulley_b_ht=0, pulley_b_dia=0, no_of_nuts=0, nut_shaft_distance=0);
+    gt2_pulley(40, bore, pulley_t_ht=height, pulley_b_ht=0, pulley_b_dia=0, no_of_nuts=0, nut_t08_screw_distance=0);
 }
 
 motor_coupler_length = 25;
@@ -207,5 +207,3 @@ module motor_coupler_holes() {
         }
     }
 }
-
-sc8uu();

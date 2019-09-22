@@ -162,7 +162,7 @@ module cap_mount_8mm() {
         translate([-openbeam_w * 1.5/2, 0, 0])
             rotate([0, 90, 0])
             openbeam(openbeam_w*1.5);
-        rod();
+        rail();
         for (i=[0, 1]) {
             for (j=[-1, 0, 1]) {
                 translate([j * openbeam_w, 0, 0])
@@ -198,10 +198,10 @@ module mini_inline_mount_8mm() {
             cylinder(r=3/2, h=2*mount_cube_w, center=true);
         
         translate([-openbeam_w/2 - 1, openbeam_w/2 + 4, 0]) 
-            rod(openbeam_w + 2);
+            rail(openbeam_w + 2);
         # translate([0, openbeam_w/2 + 4, openbeam_w/2 + wall_th + 1]) 
             rotate([0, 90, 0])
-            rod(openbeam_w + 2 + 2 * wall_th);
+            rail(openbeam_w + 2 + 2 * wall_th);
         //# for (j=[0, 2, 3]) {
             translate([0, openbeam_w / 2 + 4, 0])
             rotate([-90, 0, 0])

@@ -122,7 +122,7 @@ module nema17_mount() {
             cube([nema17_slot_l, nema17_slot_w, nema17_mount_flange_h]);
         translate([(nema17_mount_l - nema17_slot_l)/2, -nema17_mount_slot_c_c/2 - nema17_slot_w/2, -nema17_mount_c_h])
             cube([nema17_slot_l, nema17_slot_w, nema17_mount_flange_h]);
-        rod(nema17_collar_l);
+        rail(nema17_collar_l);
     }
     % translate([-nema17_l, -nema17_w/2, -nema17_w/2])
         cube([nema17_l, nema17_w, nema17_w]);

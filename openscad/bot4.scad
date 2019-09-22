@@ -25,7 +25,7 @@ module design() {
             translate([-i*(tread_l - 3*openbeam_w) / 2, j*(openbeam_w - tread_w) / 2, -(sk8_c_h + 23/2)])
                 rotate([180, 0, 90]){
                     rotate([0, 0, j*90+90]) 
-                        rod(tread_w);
+                        rail(tread_w);
                     sk8();
                     translate([-j*(2*openbeam_w + 20), 0, 0])
                         rotate([0, 90, 0])
@@ -42,7 +42,7 @@ module design() {
         translate([-i*(tread_l - 3*openbeam_w) / 2, i*(openbeam_w - tread_w) / 2, sk8_c_h + 23/2])
             rotate([0, 0, 90]) {
                 rotate([0, 0, i*90+90]) 
-                    rod(tread_w);
+                    rail(tread_w);
                 sk8();
                 # translate([-i*(2*openbeam_w + 20), 0, 0])
                         rotate([0, 90, 0])

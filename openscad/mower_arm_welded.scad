@@ -8,7 +8,7 @@ arm_grip_ir = get_arm_grip_ir();
 sk8_c_h = get_sk8_c_h();
 sk8_flange_w = get_sk8_flange_w();
 sk8_l = get_sk8_l();
-rod_r = get_rod_r();
+rail_r = get_rail_r();
 shaft_l = get_shaft_l();
 
 /////////////////////////////////////////////////
@@ -66,11 +66,11 @@ gimbal_pivot_hole_ir = 5 / 2;
 gimbal_w = 3 * openbeam_w;
 gimbal_h = 2 * openbeam_w;
 gimbal_l = openbeam_w;
-gimbal_rod_c_c = gimbal_h/2 - 1.5 * gimbal_pivot_hole_ir;
+gimbal_rail_c_c = gimbal_h/2 - 1.5 * gimbal_pivot_hole_ir;
 
 module pivot_gimbal() {
     % rotate([0, 0, 45]) 
-        shaft_traveller();
+        t08_nut();
     difference() {
         translate([-gimbal_w / 2, -gimbal_h / 2, 0])
             cube([gimbal_w, gimbal_h, gimbal_l]);
@@ -132,7 +132,7 @@ switch_pin_clearance = 1.5;
 switch_pin_h = 5;
 
 switch_holder_lip_l = 2;
-switch_holder_h = 3 * rod_r;
+switch_holder_h = 3 * rail_r;
 switch_holder_w = switch_holder_h + switch_w + switch_roller_overhang;
 switch_holder_l = switch_l + 2 * switch_holder_lip_l;
 
@@ -161,14 +161,14 @@ module limit_switch() {
             cube([switch_holder_lip_l, switch_holder_w, switch_roller_h]);
         
         rotate([0, 90, 0])
-            cylinder(r=rod_r+0.5, h=switch_holder_l);
+            cylinder(r=rail_r+0.5, h=switch_holder_l);
     }
     
 }
 
 trav_position = shaft_l / 2;
 shaft_sep_y = 100;
-rod_shaft_sep_y = 30;
+rail_shaft_sep_y = 30;
 
 module lin_act() {
     shaft_offset_x = nema_collar_l / 2 + nema_mount_flange_h;
@@ -185,10 +185,10 @@ module lin_act() {
         limit_switch();
     
     
-    % translate([0, -rod_shaft_sep_y, 0])
-        rod();
-    % translate([0, -rod_shaft_sep_y + shaft_sep_y, 0])
-        rod();
+    % translate([0, -rail_shaft_sep_y, 0])
+        rail();
+    % translate([0, -rail_shaft_sep_y + shaft_sep_y, 0])
+        rail();
 }
 
 bar_w = 1.0 * IN_MM;
@@ -220,7 +220,7 @@ module tread() {
         
         % translate([i * (bot_length / 2), -tread_width/2, -sk8_c_h - bar_w/2])
             rotate([0, 0, 90])
-            rod(tread_width);
+            rail(tread_width);
     }
     
     translate(motor_offs)
@@ -255,7 +255,7 @@ module driven_sprockets() {
     }
     translate([0, -tread_width/2, 0])
         rotate([0, 0, 90])
-        rod(tread_width);
+        rail(tread_width);
 }
 
 
@@ -304,7 +304,7 @@ module design() {
 }
 
 module layout() {
-    //* shaft_traveller();
+    //* t08_nut();
     //hard_parts_rect(false, 10 * sk8_l + shaft_offset_x);
 }
 //layout();
