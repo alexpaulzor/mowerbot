@@ -180,7 +180,7 @@ module lin_act() {
         rotate([180, 0, 0]) rotate([0, 90, 0])
              pivot_gimbal();
     
-    * translate([front_shaft_pillow_x + shaft_pillow_l + switch_holder_l * 3 / 2, 0, gimbal_w / 2 + rod_traveller_h/2])
+    * translate([front_kp08_x + kp08_l + switch_holder_l * 3 / 2, 0, gimbal_w / 2 + sc8uu_h/2])
         rotate([0, 0, 180])
         limit_switch();
     

@@ -76,43 +76,43 @@ module small_drive_adapter(use_stl=false) {
     }
 }
 
-nema23_spacer_h = nema23_mount_c_h - nema23_mount_flange_h - shaft_pillow_c_h;
+nema23_spacer_h = nema23_mount_c_h - nema23_mount_flange_h - kp08_c_h;
 
 module nema23_spacer() {
     % translate([-55, 0, 0]) {
         %nema23_mount(-1);
         % translate([55, 0, 0])
-            shaft_pillow();
+            kp08();
         % translate([10, 0, 0])
             rotate([0, 90, 0])
             small_drive_adapter(use_stl=true);
         %shaft();
     }
     difference() {
-        translate([0, 0, -shaft_pillow_c_h - nema23_spacer_h/2])
-            cube([shaft_pillow_l, shaft_pillow_flange_w, nema23_spacer_h], center=true);
-        # shaft_pillow_holes(h=100);
+        translate([0, 0, -kp08_c_h - nema23_spacer_h/2])
+            cube([kp08_l, kp08_flange_w, nema23_spacer_h], center=true);
+        # kp08_holes(h=100);
     }
     
 }
 
-nema17_spacer_h = nema17_mount_c_h - nema17_mount_flange_h - shaft_pillow_c_h;
+nema17_spacer_h = nema17_mount_c_h - nema17_mount_flange_h - kp08_c_h;
 
 module nema17_spacer() {
     % translate([-40, 0, 0]) {
         %nema17_mount(-1);
         % translate([40, 0, 0])
-            shaft_pillow();
+            kp08();
        
         %shaft();
     }
     difference() {
-        translate([0, 0, -shaft_pillow_c_h - nema17_spacer_h/2])
-            cube([shaft_pillow_l, shaft_pillow_flange_w, nema17_spacer_h], center=true);
-        shaft_pillow_holes(h=100);
+        translate([0, 0, -kp08_c_h - nema17_spacer_h/2])
+            cube([kp08_l, kp08_flange_w, nema17_spacer_h], center=true);
+        kp08_holes(h=100);
         for (y=[-1, 1]) {
-            for (z=[-shaft_pillow_c_h - m4_nut_h/2, -shaft_pillow_c_h - nema17_spacer_h + m4_nut_h/2]) {
-                translate([0, y*shaft_pillow_hole_c_c/2, z]) 
+            for (z=[-kp08_c_h - m4_nut_h/2, -kp08_c_h - nema17_spacer_h + m4_nut_h/2]) {
+                translate([0, y*kp08_hole_c_c/2, z]) 
                     m4_nut();
                 translate([0, y*nema17_mount_slot_c_c/2, z]) 
                     m4_nut();

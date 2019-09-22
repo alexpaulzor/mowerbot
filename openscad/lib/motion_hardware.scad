@@ -1,17 +1,12 @@
 include <constants.scad>;
-use <lib_pulley.scad>
 
 shaft_r = 8 / 2;
-shaft_pillow_hole_r = 5 / 2;
-shaft_pillow_hole_c_c = 42;
-shaft_pillow_c_h = 14.5;
-
-sk8_hole_r = 5 / 2;
-sk8_hole_c_c = 31.5;
-sk8_c_h = 20;
 
 rod_r = 8 / 2;
-rod_l = 500;
+
+sk8_hole_r = 5 / 2;
+sk8_hole_c_c = 32;
+sk8_c_h = 20;
 
 sk8_flange_w = 42;
 sk8_flange_h = 6.5;
@@ -19,12 +14,7 @@ sk8_w = 20;
 sk8_l = 14;
 sk8_h = 33.5;
 
-// moved to constants.scad
-// sk8_hole_r = 5.5 / 2;
-// sk8_hole_c_c = 31.5;
-// sk8_c_h = 20;
-
-module rod(l=rod_l, center=false) {
+module rod(l=400, center=false) {
     rotate([0, 90, 0])
         cylinder(r=rod_r, h=l, center=center);
 }
@@ -50,87 +40,83 @@ module sk8_holes(h=sk8_c_h) {
         cylinder(r=sk8_hole_r, h=h);
 }
 
-rod_traveller_w = 34;
-rod_traveller_l = 30;
-rod_traveller_h = 21.7;
-rod_traveller_step_h = 17;
-rod_traveller_step_w = 17;
-rod_traveller_hole_c_c_w = 24.5;
-rod_traveller_hole_c_c_l = 18;
-rod_traveller_hole_r = 4 / 2;
-rod_traveller_mount_h = 4 * rod_traveller_hole_r;
+sc8uu_w = 34;
+sc8uu_l = 30;
+sc8uu_h = 22;
+sc8uu_step_h = 18;
+sc8uu_step_w = 11;
+sc8uu_step_base_w = 17;
+sc8uu_hole_c_c_w = 24;
+sc8uu_hole_c_c_l = 18;
+sc8uu_hole_r = 4 / 2;
 
-module rod_traveller() {
+module sc8uu() {
     difference() {
-        translate([-rod_traveller_l/2, -rod_traveller_w/2, -rod_traveller_h/2])
-            cube([rod_traveller_l, rod_traveller_w, rod_traveller_h]);
-        translate([-rod_traveller_l/2, 0, 0])
-            rod(rod_traveller_l);
+        translate([-sc8uu_l/2, -sc8uu_w/2, -sc8uu_h/2])
+            cube([sc8uu_l, sc8uu_w, sc8uu_h]);
+        translate([-sc8uu_l/2, 0, 0])
+            rod(sc8uu_l);
         
-        translate([-rod_traveller_hole_c_c_l/2, -rod_traveller_hole_c_c_w/2, -rod_traveller_h/2])
-            cylinder(r=rod_traveller_hole_r, h=rod_traveller_h);
-        translate([-rod_traveller_hole_c_c_l/2, rod_traveller_hole_c_c_w/2, -rod_traveller_h/2])
-            cylinder(r=rod_traveller_hole_r, h=rod_traveller_h);
-        translate([rod_traveller_hole_c_c_l/2, rod_traveller_hole_c_c_w/2, -rod_traveller_h/2])
-            cylinder(r=rod_traveller_hole_r, h=rod_traveller_h);
-        translate([rod_traveller_hole_c_c_l/2, -rod_traveller_hole_c_c_w/2, -rod_traveller_h/2])
-            cylinder(r=rod_traveller_hole_r, h=rod_traveller_h);
-         translate([-rod_traveller_l/2, -rod_traveller_w / 2, -rod_traveller_h / 2 + rod_traveller_step_h])
-            cube([rod_traveller_l, (rod_traveller_w - rod_traveller_step_w) / 2, rod_traveller_h - rod_traveller_step_h]);
-        translate([-rod_traveller_l/2, (rod_traveller_w - rod_traveller_step_w) / 2, -rod_traveller_h / 2 + rod_traveller_step_h])
-            cube([rod_traveller_l, (rod_traveller_w - rod_traveller_step_w) / 2, rod_traveller_h - rod_traveller_step_h]);
+        translate([-sc8uu_hole_c_c_l/2, -sc8uu_hole_c_c_w/2, -sc8uu_h/2])
+            cylinder(r=sc8uu_hole_r, h=sc8uu_h);
+        translate([-sc8uu_hole_c_c_l/2, sc8uu_hole_c_c_w/2, -sc8uu_h/2])
+            cylinder(r=sc8uu_hole_r, h=sc8uu_h);
+        translate([sc8uu_hole_c_c_l/2, sc8uu_hole_c_c_w/2, -sc8uu_h/2])
+            cylinder(r=sc8uu_hole_r, h=sc8uu_h);
+        translate([sc8uu_hole_c_c_l/2, -sc8uu_hole_c_c_w/2, -sc8uu_h/2])
+            cylinder(r=sc8uu_hole_r, h=sc8uu_h);
+        translate([-sc8uu_l/2, -sc8uu_w / 2, -sc8uu_h / 2 + sc8uu_step_h])
+            cube([sc8uu_l, (sc8uu_w - sc8uu_step_w) / 2, sc8uu_h - sc8uu_step_h]);
+        translate([-sc8uu_l/2, sc8uu_step_w / 2, -sc8uu_h / 2 + sc8uu_step_h])
+            cube([sc8uu_l, (sc8uu_w - sc8uu_step_w) / 2, sc8uu_h - sc8uu_step_h]);
     }
 }
 
-module rod_traveller_mount_holes(h=rod_traveller_mount_h) {
-    translate([-rod_traveller_hole_c_c_l/2, -  rod_traveller_hole_c_c_w/2, -h/2])
-            cylinder(r=rod_traveller_hole_r, h=h);
-        translate([-rod_traveller_hole_c_c_l/2, rod_traveller_hole_c_c_w/2, -h/2])
-            cylinder(r=rod_traveller_hole_r, h=h);
-        translate([rod_traveller_hole_c_c_l/2, rod_traveller_hole_c_c_w/2, -h/2])
-            cylinder(r=rod_traveller_hole_r, h=h);
-        translate([rod_traveller_hole_c_c_l/2, -rod_traveller_hole_c_c_w/2, -h/2])
-            cylinder(r=rod_traveller_hole_r, h=h);
+module sc8uu_mount_holes(h=sc8uu_h) {
+    translate([-sc8uu_hole_c_c_l/2, -  sc8uu_hole_c_c_w/2, -h/2])
+            cylinder(r=sc8uu_hole_r, h=h);
+        translate([-sc8uu_hole_c_c_l/2, sc8uu_hole_c_c_w/2, -h/2])
+            cylinder(r=sc8uu_hole_r, h=h);
+        translate([sc8uu_hole_c_c_l/2, sc8uu_hole_c_c_w/2, -h/2])
+            cylinder(r=sc8uu_hole_r, h=h);
+        translate([sc8uu_hole_c_c_l/2, -sc8uu_hole_c_c_w/2, -h/2])
+            cylinder(r=sc8uu_hole_r, h=h);
 }
 
 
-shaft_l = 400;
-shaft_pillow_l = 13;
-shaft_pillow_h = 30;
-shaft_pillow_w = 2 * shaft_pillow_c_h;
-shaft_pillow_flange_w = 55;
+kp08_l = 13;
+kp08_h = 30;
+kp08_w = 30;
+kp08_flange_w = 55;
 
-shaft_pillow_flange_h = 5;
+kp08_flange_h = 5;
+kp08_hole_r = 5 / 2;
+kp08_hole_c_c = 42;
+kp08_c_h = 15;
 
-// moved to constants.scad
-// shaft_r = 8 / 2;
-// shaft_pillow_hole_r = 5 / 2;
-// shaft_pillow_hole_c_c = 42;
-// shaft_pillow_c_h = 14.5;
-
-module shaft(l=shaft_l, center=false) {
+module shaft(l=400, center=false) {
     rod(l, center=center);
 }
 
-module shaft_pillow() {
+module kp08() {
     difference() {
         union() {
-            translate([-shaft_pillow_l/2, 0, 0])
+            translate([-kp08_l/2, 0, 0])
                 rotate([0, 90, 0])
-                    cylinder(r=shaft_pillow_w/2, h=shaft_pillow_l);
-            translate([-shaft_pillow_l/2, -shaft_pillow_flange_w/2, -shaft_pillow_c_h])
-                cube([shaft_pillow_l, shaft_pillow_flange_w, shaft_pillow_flange_h]);
+                    cylinder(r=kp08_w/2, h=kp08_l);
+            translate([-kp08_l/2, -kp08_flange_w/2, -kp08_c_h])
+                cube([kp08_l, kp08_flange_w, kp08_flange_h]);
         }
-        shaft(shaft_pillow_l);
-        shaft_pillow_holes();
+        shaft(kp08_l);
+        kp08_holes();
     }
 }
 
-module shaft_pillow_holes(h=shaft_pillow_h) {
-    translate([0, shaft_pillow_hole_c_c/2, 0])
-        cylinder(r=shaft_pillow_hole_r, h=h, center=true);
-    translate([0, - shaft_pillow_hole_c_c/2, 0])
-        cylinder(r=shaft_pillow_hole_r, h=h, center=true);
+module kp08_holes(h=kp08_h) {
+    translate([0, kp08_hole_c_c/2, 0])
+        cylinder(r=kp08_hole_r, h=h, center=true);
+    translate([0, - kp08_hole_c_c/2, 0])
+        cylinder(r=kp08_hole_r, h=h, center=true);
 }
 
 traveller_h = 17;
@@ -222,4 +208,4 @@ module motor_coupler_holes() {
     }
 }
 
-sk8();
+sc8uu();
