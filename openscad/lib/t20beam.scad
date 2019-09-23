@@ -6,7 +6,7 @@ t20_notch_d = 6;
 t20_hole_ir = 5/2;
 
 module t20(length=100) {
-    translate([0, 0, -length/2])
+    color("silver") translate([0, 0, -length/2])
     linear_extrude(length) {
         difference() {
             square([t20_w, t20_w], center=true);
@@ -39,7 +39,7 @@ t20_corner_th = 3.5;
 
 module t20_corner() {
     // TODO: use_stl
-    difference () {
+    color("gray") difference () {
         translate([0, -t20_corner_h/2, 0])
         hull() {
             cube([t20_corner_th, t20_corner_h, t20_corner_l]);

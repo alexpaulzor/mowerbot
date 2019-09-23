@@ -156,12 +156,13 @@ nema23_w = 57;
 module nema23_mount(motor_dir=1) {
     difference() {
         union() {
-            translate([0, -nema23_mount_w / 2, -nema23_mount_c_h]) {
+            color("black") translate([0, -nema23_mount_w / 2, -nema23_mount_c_h]) {
                 cube([nema23_mount_flange_h, nema23_mount_w, nema23_mount_h]);
                 cube([nema23_mount_l, nema23_mount_w, nema23_mount_flange_h]);
             }
             
-             rotate([0, -90, (motor_dir - 1) * 90])
+            color("lightgray")
+                rotate([0, -90, (motor_dir - 1) * 90])
                 cylinder(r=nema23_shaft_or, h=nema23_shaft_l);
         }
         
@@ -173,7 +174,7 @@ module nema23_mount(motor_dir=1) {
             cylinder(r=nema23_mount_face_ir, h=nema23_mount_flange_h);
     }
     nema23_x = motor_dir * nema23_l/2 + (motor_dir < 0 ? 0 : nema23_mount_flange_h);
-    % translate([nema23_x, 0, 0])
+    color("black") translate([nema23_x, 0, 0])
         cube([nema23_l, nema23_w, nema23_w], center=true);
 }
 

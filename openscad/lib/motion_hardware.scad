@@ -27,6 +27,7 @@ sk8_l = 14;
 sk8_h = 33.5;
 
 module rail(l=400, center=false) {
+    color("lightgrey") 
     rotate([0, 90, 0])
         cylinder(r=rail_r, h=l, center=center);
 }
@@ -64,7 +65,7 @@ sc8uu_hole_c_c_l = 18;
 sc8uu_hole_r = 4 / 2;
 
 module sc8uu() {
-    difference() {
+    color("silver") difference() {
         translate([-sc8uu_l/2, -sc8uu_w/2, -sc8uu_h/2])
             cube([sc8uu_l, sc8uu_w, sc8uu_h]);
         translate([-sc8uu_l/2, 0, 0])
@@ -108,11 +109,11 @@ kp08_hole_c_c = 42;
 kp08_c_h = 15;
 
 module t08_screw(l=400, center=false) {
-    rail(l, center=center);
+    color("darkgray") rail(l, center=center);
 }
 
 module kp08() {
-    difference() {
+    color("darkgray") difference() {
         union() {
             translate([-kp08_l/2, 0, 0])
                 rotate([0, 90, 0])
@@ -146,7 +147,8 @@ traveller_ir = 7 / 2;
 gimbal_shift_z = -traveller_flange_z/2 + traveller_flange_h / 2;
 
 module t08_nut() {
-     //translate([0, 0, gimbal_l / 2 - traveller_flange_z / 2 + gimbal_shift_z])
+    color("goldenrod")
+    translate([0, 0, traveller_flange_z - traveller_h + traveller_flange_h/2]) 
         difference() {
         union() {
             cylinder(h=traveller_h, r=traveller_collar_or, center=true);
@@ -166,12 +168,6 @@ module t08_nut_holes(l=traveller_flange_h * 2 + 1) {
         rotate([0, 0, i * traveller_hole_angle])
             translate([traveller_hole_offset, 0, 0])
                 cylinder(h=l, r=traveller_hole_ir, center=true);
-}
-
-bar_w = 1.0 * IN_MM;
-
-module bar(length) {
-    cube([length, bar_w, bar_w], center=true);
 }
 
 function get_sk8_c_h() = sk8_c_h;
@@ -201,7 +197,7 @@ motor_coupler_grub_c_c = 17;
 motor_coupler_grub_theta = 72; // Unclear from measuring, somewhere 70 <= x < 75, I think
 
 module motor_coupler() {
-    difference() {
+    color("silver") difference() {
         cylinder(r=motor_coupler_od/2, h=motor_coupler_length);
         cylinder(r=motor_coupler_small_id/2, h=motor_coupler_length);
         cylinder(r=motor_coupler_large_id/2, h=motor_coupler_large_depth);
@@ -215,7 +211,7 @@ module motor_coupler_holes() {
             rotate([0, 0, t])
             translate([0, 0, motor_coupler_length/2 + z * motor_coupler_grub_c_c/2])
             rotate([0, 90, 0])
-            cylinder(r=motor_coupler_grub_ir, h=motor_coupler_od*3);
+            cylinder(r=motor_coupler_grub_ir, h=motor_coupler_od);
 
         }
     }
