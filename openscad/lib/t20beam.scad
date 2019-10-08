@@ -17,7 +17,7 @@ module t20(length=100) {
                     }
                 }
             }
-            circle(r=t20_hole_ir);
+            circle(r=t20_hole_ir, $fn=12);
         }
     }
 }

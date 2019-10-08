@@ -110,62 +110,6 @@ module pivot_gimbal() {
     }
 }
 
-/////////////////////////////////////////////////
-//////////// LIMIT SWITCH ///////////////////////
-/////////////////////////////////////////////////
-
-switch_w = 20;
-switch_l = 11;
-switch_h = 7;
-switch_hole_offset_w = 5;
-switch_hole_offset_l = 3;
-switch_hole_ir = 2.5 / 2;
-
-switch_roller_offset = 3;
-switch_roller_overhang = 2.3;
-switch_roller_h = 5;
-switch_roller_w = 19;
-switch_roller_l = 5;
-switch_roller_th = 0.2;
-
-switch_pin_clearance = 1.5;
-switch_pin_h = 5;
-
-switch_holder_lip_l = 2;
-switch_holder_h = 3 * rail_r;
-switch_holder_w = switch_holder_h + switch_w + switch_roller_overhang;
-switch_holder_l = switch_l + 2 * switch_holder_lip_l;
-
-module switch() {
-    translate([0, 0, -switch_h/2])
-        cube([switch_l, switch_w, switch_h]);
-    translate([-switch_roller_l, -switch_roller_overhang, -switch_roller_h/2])
-        rotate([0, 0, -atan(switch_roller_l / switch_roller_w)])
-            cube([switch_roller_th, switch_roller_w, switch_roller_h]);
-    translate([switch_l, switch_pin_clearance, -switch_pin_h/2])
-        cube([switch_pin_h, switch_w - 1 * switch_pin_clearance, switch_pin_h]);
-    translate([switch_l - switch_hole_offset_l, switch_w - switch_hole_offset_w, -switch_h])
-        cylinder(r=switch_hole_ir, h=2 * switch_h);
-    
-    translate([switch_l - switch_hole_offset_l, switch_hole_offset_w, -switch_h])
-        cylinder(r=switch_hole_ir, h=2 * switch_h);
-}
-
-module limit_switch() {
-    difference() {
-        translate([0, -switch_holder_h/2, -switch_holder_h/2])
-            cube([switch_holder_l, switch_holder_w, switch_holder_h]);
-        # translate([switch_holder_lip_l, switch_holder_h / 2 + switch_roller_overhang, 0])
-            switch();
-        translate([0, 0, -switch_roller_h/2])
-            cube([switch_holder_lip_l, switch_holder_w, switch_roller_h]);
-        
-        rotate([0, 90, 0])
-            cylinder(r=rail_r+0.5, h=switch_holder_l);
-    }
-    
-}
-
 trav_position = shaft_l / 2;
 shaft_sep_y = 100;
 rail_shaft_sep_y = 30;

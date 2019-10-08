@@ -1,4 +1,7 @@
+$fn = max($fn, 32);
+
 draft_angle = 3;
+
 
 module draft_cube(dims, center=false, draft_angle=draft_angle, invert=false) {
     translate(center ? [0, 0, 0] : -dims/2)
@@ -47,37 +50,53 @@ module draft(h, draft_angle=3) {
     }
 }*/
 
-module sprue(d=10, a=30, h=10, w=2, closed=false) {
-    difference() {
-        draft_cube([d+2*w, d+2*w, h], center=true, draft_angle=a, invert=true);
-        draft_cube([d, d, h], center=true, draft_angle=a, invert=true);
-        
-        for (i=[0:3])
-            rotate([0, 0, i*90])
-            translate([0, (d - h * sin(a)) / 2 + w/2, -h/2 + 1/2])
-            draft_cube([d - h * sin(a) + w*1.5, w/2, 1], draft_angle=2*a, center=true);
-    }
+sprue_h = 10;
+
+module _sprue_notch(d, h, w, ext=0) {
     for (i=[0:3])
         rotate([0, 0, i*90])
-        translate([0, (d+w)/2, h/2 + 1/2])
-        draft_cube([d + 1.5*w, w/2, 1], draft_angle=2*a, center=true);
-    if (closed)
+        translate([0, d/2 + w/6, 0])
+        rotate([0, 90, 0]) {
+            cylinder(r=w/4, h=d + w/3 + ext, center=true);
+            translate([0, w/5*0, d/2 + w/6]) 
+                sphere(r=w/4);
+        }
+        //draft_cube([d + 1.5*w, w/2, 1], draft_angle=2*a, center=true);
+}
+
+module sprue(d=20, h=sprue_h, w=4, closed=false) {
+    top_d = d + 4*w;
+    a = -atan2(top_d - d, h);
+    difference() {
+        draft_cube([top_d, top_d, h], center=true, draft_angle=-a, invert=true);
+        draft_cube([d, d, h], center=true, draft_angle=a, invert=false);
+        
+        translate([0, 0, -h/2 + w/6]) 
+            _sprue_notch(d, h, w, w*4);
+    }
+    translate([0, 0, h/2 + w/6])
+        _sprue_notch(d + 2*w, h, w);
+    * if (closed)
         translate([0, 0, -h/2 + 1/2])
-        draft_cube([d, d, 1], center=true, draft_angle=a, invert=true);
+        draft_cube([d, d, 1], center=true, draft_angle=a, invert=false);
         
 }
 
-module sprue_stack() {
-    h = 10;
-    a = 20;
+module sprue_stack(count=6, stacks=2, dz=sprue_h, count_start=0) {
+    h = 12;
+    
     d = 20;
     w = 4;
-    for (i=[0:75/h]) {
-        translate([(i % 3 - 1) * 60, 0, 0])
-        sprue(d=d + i * h*sin(a), a=a, h=h, w=w, closed=(i == 0));
-        % translate([(i % 3 - 1) * 60, 60, i*h])
-            sprue(d=d + i * h*sin(a), a=a, h=h, w=w, closed=(i == 0));
+    for (i=[count_start:count-1]) {
+        translate([(i + 2) % stacks * 80, 0, i*dz])
+            sprue(d=d + i * 2*w, h=h, w=w, closed=false && (i < stacks-1));
     }
 }
 
-//sprue_stack();
+module sprue_plate(count=5, stacks=2) {
+    sprue_stack(count=count, stacks=stacks, dz=0, count_start=0);
+}
+
+
+// sprue_stack(2, dz=15);
+ sprue_plate();

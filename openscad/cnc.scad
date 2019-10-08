@@ -1,6 +1,7 @@
 include <lib/motion_hardware.scad>;
 include <lib/t20beam.scad>;
 include <lib/motors.scad>;
+include <lib/purchased_electrics.scad>;
 
 /** 
  * REFERENCE:
@@ -95,9 +96,11 @@ cnc_stage_dy = cnc_stage_w;
 cnc_stage_dz = cnc_stage_h;
 
 cnc_x_rail_offset = cnc_stage_w/2 - sc8uu_w/2;
-cnc_undercarriage_l = 100; //(cnc_l - cnc_stage_dx)/2;
+cnc_undercarriage_l = 100;
 
 cnc_gantry_h = 300;
+cnc_zhead_h = 100; // TODO
+cnc_zhead_w = 100;
 
 module cnc_frame(use_stl=false) {
     if (use_stl) import("stl/cnc_frame.cnc.stl");
@@ -106,6 +109,11 @@ module cnc_frame(use_stl=false) {
             _cnc_frame_base();
         translate([cnc_l/2, 0, -kp08_c_h])
             gantry();
+        translate([
+                cnc_l/2 -t20_w/2 - sk8_c_h, 
+                get_position()[1] - cnc_stage_dy/2, 
+                -kp08_c_h + cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2])
+            zhead();
     }
 }
 
@@ -149,22 +157,70 @@ module gantry() {
     for (i=[-1, 1]) {
         translate([0, i * (cnc_w/2 - t20_w/2), cnc_gantry_h/2 - t20_w])
             t20(cnc_gantry_h);
-        translate([
+        for (z=[
+                cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2, 
+                cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2 - cnc_zhead_h + 3*t20_w/2 + sc8uu_hole_c_c_w/2])
+            translate([
                 -t20_w/2 - sk8_c_h, 
                 i*(cnc_w/2 - t20_w/2), 
-                cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2]) 
+                z]) 
             rotate([90, 0, 0]) 
             rotate([0, -90, 0]) 
             sk8();
     }
     translate([0, 0, cnc_gantry_h - t20_w/2]) rotate([90, 0, 0])
         t20(cnc_w);
-    translate([-t20_w/2 - sk8_c_h, 0, cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2]) 
+    for (z=[
+            cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2, 
+            cnc_gantry_h - t20_w/2 - sk8_hole_c_c/2 - cnc_zhead_h + 3*t20_w/2 + sc8uu_hole_c_c_w/2]) {
+        translate([
+            -t20_w/2 - sk8_c_h, 
+            0, 
+            z]) 
         rotate([0, 0, 90]) 
         translate([-cnc_w/2, 0, 0])
         rail(cnc_w);
+    }
+
+    # translate() rotate() nema23_mount(-1);
 }
 
+// !gantry();
+
+module zhead() {
+    for (z=[
+            0, 
+            t20_w + sc8uu_hole_c_c_w - cnc_zhead_h]) {
+        for (i=[-1, 1])
+            translate([
+                0, 
+                cnc_zhead_w/2 * i, 
+                z]) 
+                rotate([0, 90, 0])
+                rotate([0, 0, 90]) 
+                sc8uu();
+    }
+    for (i=[-1, 1]) {
+        translate([
+                -sc8uu_c_h - t20_w/2, 
+                (cnc_zhead_w/2 + sc8uu_hole_c_c_l/2)*i, 
+                sc8uu_hole_c_c_w/2 + t20_w/2 - cnc_zhead_h/2]) 
+            // rotate()
+            t20(cnc_zhead_h);
+    }
+    translate([
+            -sc8uu_c_h - t20_w/2, 
+            0, 
+            sc8uu_hole_c_c_w/2]) 
+        rotate([90, 0, 0])
+        t20(cnc_zhead_w);
+    translate([
+            -sc8uu_c_h - t20_w/2, 
+            0, 
+            sc8uu_hole_c_c_w/2 - cnc_zhead_h + t20_w]) 
+        rotate([90, 0, 0])
+        t20(cnc_zhead_w);
+}
 
 module t08_nut_holder() {
     t20(100);
@@ -207,6 +263,7 @@ module _cnc_stage() {
             ]) 
         rotate([0, 90, 0]) 
             t20(cnc_undercarriage_l);
+        
         translate([
             t20_w + cnc_undercarriage_l/2,
             i*(-cnc_x_rail_offset - sc8uu_hole_c_c_w / 2), 
@@ -229,18 +286,43 @@ module _cnc_stage() {
             t20_corner();
     }
 
+    % translate([cnc_stage_l/4, 0, t20_w*2 + sk8_c_h + sc8uu_c_h - kp08_c_h + cnc_stage_h/2])
+        cube([cnc_stage_l, cnc_stage_w, cnc_stage_h], center=true);
+
 }
 
-function timewave(maximum) = maximum / 2  ; //+ 
-// function timewave(maximum, t=$t) = maximum / 2 + maximum/2 * cos(360 * (is_undef(t) ? 0.5 : t));
+module limit_switch() {
+    difference() {
+        translate([0, -switch_holder_h/2, -switch_holder_h/2])
+            cube([switch_holder_l, switch_holder_w, switch_holder_h]);
+        # translate([switch_holder_lip_l, switch_holder_h / 2 + switch_roller_overhang, 0])
+            switch();
+        translate([0, 0, -switch_h/2])
+            cube([switch_holder_lip_l, switch_holder_w, switch_h]);
+        translate([0, 0, 0])
+            cube([switch_holder_l, 3*rail_r, 0.5]);
+        rotate([0, 90, 0])
+            cylinder(r=rail_r, h=switch_holder_l, $fn=90);
+        # translate([switch_holder_l/2, rail_r + 2, 0])
+            cylinder(r=3/2, h=switch_holder_h+5, center=true);
+    }
+    
+}
+
+! limit_switch();
+
+function timewave(maximum, period=1.0) = 
+    maximum / 2 + maximum/2 * cos(360* period * $t);
+
+function get_position () = [
+    timewave(cnc_stage_dx), 
+    timewave(cnc_stage_dy, 2), 
+    cnc_stage_dz/2];
+
 module cnc_design() {
-    show_position = [
-        timewave(cnc_stage_dx), 
-        cnc_stage_dy/2, 
-        cnc_stage_dz/2];
-    echo("Showing ", $t, show_position);
+    echo("Showing ", $t, get_position());
     cnc_frame(false);
-    translate([show_position[0], 0, 0]) 
+    translate([get_position()[0], 0, 0]) 
         cnc_stage();
 }
 
