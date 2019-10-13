@@ -123,24 +123,53 @@ module dcctl_centered() {
     }
 }
 
-rocker_or = 10;
-rocker_h = 25;
-rocker_lip_h = 3;
-rocker_lip_or = 12;
-num_rockers = 4;
-iec_plug_l = 32;
-iec_plug_w = 27;
-iec_plug_h = 32;
-
-module iec_plug() {
-    translate([0, 0, wall_th - iec_plug_h/2])
-    cube([iec_plug_l, iec_plug_w, iec_plug_h], center=true);
+iec_plug_l = 27;
+iec_plug_w = 19;
+iec_plug_h = 13;
+iec_plug_flange_l = 50;
+iec_plug_flange_w = 22;
+iec_plug_flange_h = 6;
+iec_plug_hole_or = 3.5/2;
+iec_plug_hole_c_c = 40;
+iec_plug_tab_l = 9;
+iec_plug_connector_l = 23;
+module iec_plug(with_holes=true) {
+    translate([0, 0, -iec_plug_h/2])
+        cube([iec_plug_l, iec_plug_w, iec_plug_h], center=true);
+    difference() {
+        translate([0, 0, iec_plug_flange_h/2])
+            cube([iec_plug_flange_l, iec_plug_flange_w, iec_plug_flange_h], center=true);
+        iec_plug_holes();
+    }
+    # translate([0, 0, -iec_plug_h - iec_plug_tab_l/2])
+        cube([iec_plug_l, iec_plug_w, iec_plug_tab_l], center=true);
+    % translate([0, 0, -iec_plug_h - iec_plug_connector_l/2])
+        cube([iec_plug_l, iec_plug_w, iec_plug_connector_l], center=true);
+    if (with_holes)
+        # iec_plug_holes();
 }
 
+module iec_plug_holes() {
+    for (i=[-1, 1]) {
+        translate([i * iec_plug_hole_c_c/2, 0, -iec_plug_h - iec_plug_connector_l])
+            cylinder(r=iec_plug_hole_or, h=iec_plug_flange_h + iec_plug_h + iec_plug_connector_l);
+    }
+}
+
+rocker_or = 10;
+rocker_h = 15;
+rocker_lip_h = 2;
+rocker_lip_or = 12;
+rocker_tab_l = 9;
+rocker_connector_l = 23;
 module rocker() {
     translate([0, 0, -rocker_h])
         cylinder(r=rocker_or, h=rocker_h + rocker_lip_h);
     cylinder(r=rocker_lip_or, h=rocker_lip_h);
+    # translate([0, 0, -rocker_h - rocker_tab_l/2])
+        cylinder(r=rocker_or, h=rocker_tab_l, center=true);
+    % translate([0, 0, -rocker_h - rocker_connector_l/2])
+        cylinder(r=rocker_or, h=rocker_connector_l, center=true);
 }
 
 outlet_flange_l = 93;
@@ -446,4 +475,22 @@ module switch() {
     
     translate([switch_l - switch_hole_offset_l, switch_hole_offset_w, -switch_h])
         cylinder(r=switch_hole_ir, h=2 * switch_h);
+}
+
+
+breaker_l = 30;
+breaker_w = 15;
+breaker_h = 26;
+breaker_stem_or = 11/2;
+breaker_stem_h = 10;
+breaker_tab_h = 12;
+breaker_connector_h = 25;
+module breaker() {
+    translate([0, 0, -breaker_h/2])
+        cube([breaker_l, breaker_w, breaker_h], center=true);
+    cylinder(r=breaker_stem_or, h=breaker_stem_h);
+    # translate([0, 0, -breaker_h - breaker_tab_h/2])
+        cube([breaker_l, breaker_w, breaker_tab_h], center=true);
+    % translate([0, 0, -breaker_h - breaker_connector_h/2])
+        cube([breaker_l, breaker_w, breaker_connector_h], center=true);
 }

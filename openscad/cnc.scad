@@ -1,5 +1,6 @@
 include <lib/motion_hardware.scad>;
 include <lib/t20beam.scad>;
+include <lib/openbeam.scad>;
 include <lib/motors.scad>;
 include <lib/purchased_electrics.scad>;
 
@@ -309,7 +310,59 @@ module limit_switch() {
     
 }
 
-! limit_switch();
+power_face_l = 50 + 2 * openbeam_w;
+power_face_w = 150;
+power_face_th = 2;
+power_face_hole_or = 3/2;
+
+module power_face() {
+   difference() {
+        translate([0, 0, power_face_th/2]) 
+            cube([power_face_l, power_face_w, power_face_th], center=true);
+        # translate([0, 50, power_face_th]) 
+            rotate([0, 0, 0]) 
+            rocker();
+        # translate([0, 10, power_face_th]) 
+            rotate([0, 0, 0]) 
+            rocker();
+        # translate([0, -20, 0]) 
+            rotate([0, 0, 0]) 
+            breaker();
+        # translate([0, -50, power_face_th]) 
+            rotate([0, 0, 0]) 
+            iec_plug();
+        # for (x=[-1, 0, 1])
+            for (y=[-1, 0, 1])
+            if (x != 0 || y != 0)
+            translate([x*(power_face_l/2 - openbeam_w/2), y*(power_face_w/2 - openbeam_w/2), 0])
+            cylinder(r=power_face_hole_or, h=power_face_th*3);
+    }
+    % for (i=[-1, 1]) {
+        translate([0, i*(power_face_w/2 - openbeam_w/2), -openbeam_w/2]) 
+            rotate([0, 90, 0]) 
+            openbeam(power_face_l - 2 * openbeam_w);
+        translate([i*(power_face_l/2 - openbeam_w/2), 0, -openbeam_w/2]) 
+            rotate([90, 0, 0]) 
+            openbeam(power_face_w);
+    }
+    color("black") {
+        translate([0, -70, power_face_th])
+            linear_extrude(power_face_th)
+            text("AC IN", size=8, halign="center");
+        translate([0, -35, power_face_th])
+            linear_extrude(power_face_th)
+            text("Reset", size=8, halign="center");
+        translate([0, -10, power_face_th])
+            linear_extrude(power_face_th)
+            text("Tool", size=8, halign="center");
+        translate([0, 30, power_face_th])
+            linear_extrude(power_face_th)
+            text("On/Off", size=8, halign="center");
+    }
+
+}
+
+power_face();
 
 function timewave(maximum, period=1.0) = 
     maximum / 2 + maximum/2 * cos(360* period * $t);
@@ -326,4 +379,4 @@ module cnc_design() {
         cnc_stage();
 }
 
-cnc_design();
+// cnc_design();
