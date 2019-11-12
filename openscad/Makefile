@@ -1,6 +1,7 @@
 SHELL=/bin/bash
 .PHONY: all
 SCAD ?= /Applications/OpenSCAD.app/Contents/MacOS/OpenSCAD
+PYCAM_DATA_DIR ?= /usr/local/share/pycam
 
 .PRECIOUS: *.stl *.gcode
 
@@ -52,3 +53,11 @@ autostl-%:
 
 view:
 	open stl
+
+
+laser-%: prep
+	export     fname="$(shell echo '$(*)' | cut -d'.' -f1)" \
+	&& export module="$(shell echo '$(*)' | $(MODULE_CMD))" \
+	&& export   args="$(shell echo '$(*)' | $(ARGS_CMD))" \
+	&& export PYCAM_DATA_DIR="$(PYCAM_DATA_DIR)" \
+	&& pycam stl/$$module.$$fname.stl

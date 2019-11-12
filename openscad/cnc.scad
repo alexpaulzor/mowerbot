@@ -3,6 +3,7 @@ include <lib/t20beam.scad>;
 include <lib/openbeam.scad>;
 include <lib/motors.scad>;
 include <lib/purchased_electrics.scad>;
+include <lib/arduino.scad>;
 
 /** 
  * REFERENCE:
@@ -362,7 +363,62 @@ module power_face() {
 
 }
 
-power_face();
+
+
+arduino_face_l = 50 + 2 * openbeam_w;
+arduino_face_w = 100 + 0 * openbeam_w;
+arduino_face_th = 2;
+arduino_face_hole_or = 3/2;
+arduino_face_standoff_h = 3;
+arduino_face_standoff_or = 6/2;
+
+module arduino_face() {
+    bd = boardDimensions(MEGA2560);
+    difference() {
+        union() {
+            # translate([0, 0, arduino_face_th/2]) 
+                cube([arduino_face_l, arduino_face_w, arduino_face_th], center=true);
+            translate([-bd[0]/2, -bd[1]/2, arduino_face_th])
+                holePlacement(MEGA2560)
+                cylinder(r2=arduino_face_standoff_or, r1=arduino_face_standoff_or+2, h=arduino_face_standoff_h);
+        }
+        # translate([-bd[0]/2, -bd[1]/2, arduino_face_th + arduino_face_standoff_h])
+            arduino_holes();
+        translate([-bd[0]/2, -bd[1]/2, m3_nut_h/2])
+                holePlacement(MEGA2560)
+                m3_nut();
+        for (x=[-1, -0.25, 0.25, 1])
+            for (y=[-1, 0, 1])
+            if (abs(x) == 1 || abs(y) == 1)
+            translate([x*(arduino_face_l/2 - openbeam_w/2), y*(arduino_face_w/2 - openbeam_w/2), 0])
+            cylinder(r=arduino_face_hole_or, h=power_face_th*3);
+    }
+    % for (i=[-1, 1]) {
+        translate([0, i*(arduino_face_w/2 - openbeam_w/2), -openbeam_w/2]) 
+            rotate([0, 90, 0]) 
+            openbeam(arduino_face_l - 2 * openbeam_w);
+        translate([i*(arduino_face_l/2 - openbeam_w/2), 0, -openbeam_w/2]) 
+            rotate([90, 0, 0]) 
+            openbeam(arduino_face_w - 0 * openbeam_w);
+    }
+}
+
+module arduino_holes() {
+    holePlacement(MEGA2560) 
+        cylinder(r=arduino_face_hole_or, h=20, center=true);
+    arduino(MEGA2560);        
+}
+
+module cnc_control() {
+    translate([0, -arduino_face_w/2, -power_face_w/2])
+        rotate([90, 0, 0])
+        power_face();
+    translate([0, arduino_face_w/2, -arduino_face_w/2])
+        rotate([-90, 0, 0])
+        arduino_face();
+}
+
+cnc_control();
 
 function timewave(maximum, period=1.0) = 
     maximum / 2 + maximum/2 * cos(360* period * $t);
@@ -377,6 +433,12 @@ module cnc_design() {
     cnc_frame(false);
     translate([get_position()[0], 0, 0]) 
         cnc_stage();
+}
+
+
+module test_shape() {
+    linear_extrude(1)
+    text("apaul was here", halign="center");
 }
 
 // cnc_design();
