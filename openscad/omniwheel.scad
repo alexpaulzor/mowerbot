@@ -12,7 +12,8 @@ po_num_slots = 16;
 po_spacer_num_holes = 6;
 po_hub_h = 20;
 //$fn = 60;
-po_axle_or = 3 / 2;
+po_hole_or = 3 / 2;
+po_axle_or = 3 / 32 * IN_MM / 2;
 po_axle_l = 20;
 po_axle_offset = 4;
 
@@ -36,7 +37,7 @@ module cast_po_hub(draft_angle=draft_angle) {
         for (i=[0:po_num_slots-1])
             rotate([0, 0, i*da])
             translate([po_hub_or - 2 * po_axle_offset, 0, 0])
-            draft_cylinder(r=po_axle_or, h=po_hub_h/2, invert=false, draft_angle=-draft_angle);
+            draft_cylinder(r=po_hole_or, h=po_hub_h/2, invert=false, draft_angle=-draft_angle);
         translate([0, 0, -po_hub_h/2])
             cylinder(r=po_hub_or+5, h=po_hub_h/2);
         translate([0, 0, po_hub_h/2 - bearing_h/2]) {
@@ -77,7 +78,7 @@ module po_hub(use_stl=false) {
     }
 }
 
-po_hub();
+// po_hub();
 //cast_po_hub();
 module offset_po_slot(po_num_slots=po_num_slots, dr=0) {
     roller_angle = 360 / po_num_slots;
@@ -147,6 +148,17 @@ module plate() {
         po_spacer(have_stl);
     
 }
+module po_grid() {
+    nudge = 0.1;
+    for (i=[0:3]) {
+        for (j=[0:3]) {
+            translate([i*2*(po_spacer_or + nudge), j*2*(po_spacer_or + nudge), 0])
+            po_spacer();
+        }
+    }
+}
+
+po_grid();
 //po_hub(false);
 
 /*

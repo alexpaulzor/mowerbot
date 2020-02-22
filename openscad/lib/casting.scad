@@ -1,6 +1,6 @@
 $fn = max($fn, 32);
 
-draft_angle = 3;
+draft_angle = 2;
 
 
 module draft_cube(dims, center=false, draft_angle=draft_angle, invert=false) {
@@ -99,4 +99,3 @@ module sprue_plate(count=5, stacks=2) {
 
 
 // sprue_stack(2, dz=15);
- sprue_plate();

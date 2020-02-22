@@ -494,3 +494,28 @@ module breaker() {
     % translate([0, 0, -breaker_h - breaker_connector_h/2])
         cube([breaker_l, breaker_w, breaker_connector_h], center=true);
 }
+
+
+bldc_cont_l = 63;
+bldc_cont_w = 45;
+bldc_cont_h = 30;
+bldc_cont_board_h = 16;
+bldc_cont_standoff_or = 6/2;
+bldc_cont_standoff_h = 13;
+bldc_cont_hole_or = 3/2;
+bldc_cont_hole_c_c_l = 57;
+bldc_cont_hole_c_c_w = 37;
+module bldc_cont() {
+    difference() {
+        union() {
+            translate([0, 0, -bldc_cont_board_h/2])
+                cube([bldc_cont_l, bldc_cont_w, bldc_cont_board_h], center=true);
+            % translate([0, 0, (bldc_cont_h-bldc_cont_board_h)/2])
+                cube([bldc_cont_l, bldc_cont_w, bldc_cont_h-bldc_cont_board_h], center=true);
+
+        }
+        for (x=[-1, 1]) for (y=[-1, 1])
+            translate([x * bldc_cont_hole_c_c_l/2, y * bldc_cont_hole_c_c_w/2, 0])
+            cylinder(r=bldc_cont_hole_or, h=bldc_cont_h*2, center=true);
+    }
+}

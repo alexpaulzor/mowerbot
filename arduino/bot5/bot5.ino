@@ -2,6 +2,12 @@
 //#include <AccelStepper.h>
 #include <LiquidCrystal_I2C.h>
 
+#include "DHT.h"
+
+#define DHTPIN 2
+#define DHTTYPE DHT11
+DHT dht(DHTPIN, DHTTYPE);
+
 LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars and 2 line display
 
 #define ENABLE_SERIAL 0
@@ -48,20 +54,8 @@ LiquidCrystal_I2C lcd(0x27,20,4);  // set the LCD address to 0x27 for a 16 chars
 #define CHANNEL_STEERING CHANNEL_L_EW
 #define CHANNEL_ENABLE_DRIVE CHANNEL_SWA
 #define CHANNEL_ENABLE_TOOL CHANNEL_SWB
+#define CHANNEL_MOW_SPEED CHANNEL_DIAL_VRA
 
-#define H_STEPPER_MAX_STEPS PWM_MAX
-#ifdef ENABLE_STEPPER
-#define STEPPER_STEPS_PER_REV 200
-#define MAX_SPEED_STEPS_PER_SEC (5 * STEPPER_STEPS_PER_REV)
-#define MM_PER_REV 8
-#define H_STEPPER_DIR_PIN 4
-#define H_STEPPER_PUL_PIN 5
-#define H_STEPPER_LIM_SW_PIN A6
-#define H_STEPPER_FUZZ (STEPPER_STEPS_PER_REV / 2)
-
-AccelStepper height_stepper(AccelStepper::DRIVER,
-  H_STEPPER_PUL_PIN, H_STEPPER_DIR_PIN);
-#endif
 
 PPMReader ppm(INTERRUPT_PIN, NUM_CHANNELS);
 unsigned long last_ppm_signal = 0;
@@ -101,6 +95,7 @@ void setup() {
 
   stop_motors();
   setup_lcd();
+  dht.begin();
 
   blink(3, 200);
   IF_SERIAL Serial.println("setup() complete");
@@ -109,16 +104,8 @@ void setup() {
 
 void loop() {
     int channel_values[NUM_CHANNELS];
-    // Print latest valid values from all channels
-    for (int channel = 1; channel <= NUM_CHANNELS; ++channel) {
-        int value = ppm.latestValidChannelValue(channel, 0);
-        IF_SERIAL Serial.print(String(value) + " ");
-        if (abs(value - channel_values[channel - 1]) <= PPM_FUZZ) {
-            last_ppm_signal = millis();
-        }
-        channel_values[channel - 1] = value;
-    }
-
+    
+    read_rc(channel_values);
     refresh_disp(channel_values);
 
     if (millis() > (last_ppm_signal + RC_TIMEOUT_S * 1000) || millis() < last_ppm_signal) {
@@ -127,26 +114,45 @@ void loop() {
         return;
     }
 
+    drive_mower(
+        channel_values[CHANNEL_ENABLE_TOOL] > PPM_CENTER,
+        map(channel_values[CHANNEL_MOW_SPEED],
+                PPM_LOW, PPM_HIGH, 0, PWM_MAX));
+
     if (channel_values[CHANNEL_ENABLE_DRIVE] > PPM_CENTER) {
-        if (channel_values[CHANNEL_ENABLE_TOOL] > PPM_CENTER) {
-          digitalWrite(TOOL_PIN, HIGH);
-        } else {
-          digitalWrite(TOOL_PIN, LOW);
-        }
+        
         drive(
             map(channel_values[CHANNEL_THROTTLE],
                 PPM_LOW, PPM_HIGH, -THROTTLE_WEIGHT, THROTTLE_WEIGHT),
             map(channel_values[CHANNEL_STEERING],
-                PPM_LOW, PPM_HIGH, -STEERING_WEIGHT, STEERING_WEIGHT),
-            map(channel_values[CHANNEL_DIAL_VRA],
-                PPM_LOW, PPM_HIGH, 0, H_STEPPER_MAX_STEPS));
+                PPM_LOW, PPM_HIGH, -STEERING_WEIGHT, STEERING_WEIGHT));
     } else {
         stop_motors();
         blink(1, DRIVE_MS/2);
    }
 }
 
-void drive(int throttle_pct, int steering_pct, long desired_position) {
+void read_rc(int channel_values[]) {
+  // Print latest valid values from all channels
+  for (int channel = 1; channel <= NUM_CHANNELS; ++channel) {
+        int value = ppm.latestValidChannelValue(channel, 0);
+        IF_SERIAL Serial.print(String(value) + " ");
+        if (abs(value - channel_values[channel - 1]) <= PPM_FUZZ) {
+            last_ppm_signal = millis();
+        }
+        channel_values[channel - 1] = value;
+    }
+}
+
+void drive_mower(bool enable_mower, int mow_pct) {
+    if (enable_mower) {
+        analogWrite(TOOL_PIN, mow_pct);
+    } else {
+        digitalWrite(TOOL_PIN, LOW);
+    }
+}
+
+void drive(int throttle_pct, int steering_pct) {
   unsigned long now = millis();
   if (now - last_drive > DRIVE_MS) {
     int old_left_speed = left_speed;
@@ -167,13 +173,10 @@ void drive(int throttle_pct, int steering_pct, long desired_position) {
     "; S: " + String(steering_pct) +
     "; -> L=" + String(left_speed) +
     "; R=" + String(right_speed) //+ 
-    //"; H=" + String(height_stepper.currentPosition()) +
-    //" -> " + String(height_steps) +
-    //" @ " + String(height_stepper.speed())
     );
 
   digitalWrite(STATUS_LED_PIN, HIGH);
-  drive_motors(left_speed, right_speed, desired_position);
+  drive_motors(left_speed, right_speed);
   digitalWrite(STATUS_LED_PIN, LOW);
 }
 
@@ -185,7 +188,7 @@ void stop_motors() {
   digitalWrite(RIGHT_REVERSE_PIN, LOW);
 }
 
-void drive_motors(int left_speed, int right_speed, long desired_position) {
+void drive_motors(int left_speed, int right_speed) {
     int l_pwm_pin = LEFT_FORWARD_PIN;
     int l_low_pin = LEFT_REVERSE_PIN;
     if (left_speed < 0) {
@@ -204,16 +207,13 @@ void drive_motors(int left_speed, int right_speed, long desired_position) {
         constrain(map(abs(left_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX));
     analogWrite(r_pwm_pin,
         constrain(map(abs(right_speed), 0, THROTTLE_WEIGHT, 0, PWM_MAX), 0, PWM_MAX)); 
-    long start = millis();
-    #ifdef ENABLE_STEPPER
-    height_stepper.moveTo(desired_position);
-    #endif
+
+    delay(DRIVE_MS);
+    //long start = millis();
     
-    while (millis() < start + DRIVE_MS && millis() > start - 1) {
-        #ifdef ENABLE_STEPPER
-        height_stepper.runSpeed()
-        #endif
-    }
+    //while (millis() < start + DRIVE_MS && millis() > start - 1) {
+        //sleep(start + DRIVE_MS - millis());
+    //}
 }
 
 void setup_lcd() {
@@ -222,7 +222,7 @@ void setup_lcd() {
 }
 
 void refresh_disp(int* channel_values) {
-    int current = read_current();
+    float temperature = dht.readTemperature();
     char buf[20];
     lcd.setCursor ( 0, 0 );
     sprintf(buf, "Up %6u s\0", millis() / 1000);
@@ -241,47 +241,8 @@ void refresh_disp(int* channel_values) {
     lcd.print(buf);
     lcd.setCursor (0, 3);
     sprintf(
-        buf, "Adj=%4d Cur=%06dmA\0",
+        buf, "Adj=%4d Tmp=%06fC\0",
         (channel_values[CHANNEL_DIAL_VRA] - 1500) / 5,
-        current);
+        temperature);
     lcd.print(buf);
 }
-
-#ifdef ENABLE_STEPPER
-bool drive_height(long desired_position) {
-  bool at_home = arm_at_home(desired_position);
-  if (desired_position < H_STEPPER_FUZZ && !at_home) {
-    // Home zero was broken, seek to negative
-    desired_position = height_stepper.currentPosition() - MAX_SPEED_STEPS_PER_SEC;
-  } 
-  long steps_off = desired_position - height_stepper.currentPosition();
-  int dir = steps_off / abs(steps_off);
-  if (abs(steps_off) < H_STEPPER_FUZZ || (desired_position < H_STEPPER_FUZZ && at_home)) {
-    height_stepper.setSpeed(0);
-    return true;
-  } else {
-    height_stepper.moveTo(desired_position);
-    height_stepper.setSpeed(dir * MAX_SPEED_STEPS_PER_SEC);
-  }
-  // height_stepper.enableOutputs();
-  long start = millis();
-  //IF_SERIAL Serial.println("runSpeed() @ " + String(height_stepper.speed()) + " (" + String(steps_off));
-  while (millis() < start + DRIVE_MS && millis() > start - 1 && height_stepper.runSpeed()) {
-    // wait
-  }
-  return false;
-}
-
-bool arm_at_home(long desired_position) {
-  int home_sw = digitalRead(H_STEPPER_HOME_SW_PIN);
-  if (home_sw == HIGH) {
-    if (desired_position < H_STEPPER_FUZZ) {
-      // Only reset position if we are trying to home
-      height_stepper.setCurrentPosition(0);
-    }
-    IF_SERIAL Serial.println("home=" + String(home_sw));
-    return true;
-  }
-  return false;
-}
-#endif
