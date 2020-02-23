@@ -30,12 +30,12 @@ use <lib/casting.scad>;
 // 	backlash = 0,
 // 	involute_facets=0,
 // 	finish = -1)
-
-% bldc_hub();
-rim_thickness = bldc_hub_h;
+rim_thickness = bldc_hub_h/3;
 pressure_angle = 28;
 
+hs_teeth = 8;
 bldc_teeth = 40;
+
 bldc_gear_pd = 175; //bldc_od + 50;
 bldc_gear_cp = bldc_gear_pd / bldc_teeth * 180;
 // bldc_gear_cp = 1000;
@@ -54,23 +54,34 @@ module bldc_gear() {
 			// 	rim_width=5,
 			// 	hub_thickness=10,
 				hub_diameter=0,
-				bore_diameter=bldc_od/2,
+				bore_diameter=bldc_od-10,
 				circles=0
 			// 	backlash=0,
 			// 	twist=0,
 				// involute_facets=0
 			);
-			# draft_cylinder(r=bldc_od/2, h=rim_thickness);
+			translate([0, 0, -0.1])
+				draft_cylinder(r=bldc_od/2, h=rim_thickness+0.2);
+			# bldc_gear_pins();
 		}
 	}
 }
 
-hs_teeth = 8;
+module bldc_gear_pins() {
+	num_pins = 8;
+	for (i=[0:num_pins])
+		rotate([0, 0, i / num_pins * 360])
+		translate([bldc_od / 2 + 5, 0, 0])
+		draft_cylinder(r=1/4*IN_MM/2, h=rim_thickness);
+}
+
+
 hs_gear_cp = bldc_gear_cp;
 // hs_gear_cp = hs_gear_pd / hs_teeth * 180;
 hs_gear_pd = hs_gear_cp * hs_teeth / 180;
 hs_id = 8;
-
+hs_rotation =  (hs_teeth % 2 + 1) * 360 / hs_teeth / 2;
+//360/hs_teeth/2;
 
 
 module hs_gear() {
@@ -86,13 +97,14 @@ module hs_gear() {
 		// 	rim_width=5,
 		// 	hub_thickness=10,
 			hub_diameter=0,
-			bore_diameter=hs_id/2,
+			bore_diameter=hs_id-1,
 			circles=0
 		// 	backlash=0,
 		// 	twist=0,
 			// involute_facets=0
 		);
-		draft_cylinder(r=hs_id/2, h=rim_thickness);
+		translate([0, 0, -0.1])
+		draft_cylinder(r=hs_id/2, h=rim_thickness+0.2);
 	}
 }	
 
@@ -102,26 +114,33 @@ hs_max_rpm = bldc_max_rpm*bldc_teeth/hs_teeth;
 tip_speed_mmpm = hs_max_rpm*mower_or*2*PI;
 tip_speed_fpm = tip_speed_mmpm/IN_MM/12;
  
-
-echo(
-	bldc_max_rpm=bldc_max_rpm,
-	bldc_teeth=bldc_teeth,
-	hs_teeth=hs_teeth,
-	ratio=bldc_teeth/hs_teeth,
-	hs_max_rpm=hs_max_rpm,
-	mower_or=mower_or,
-	tip_speed_mps=tip_speed_mmpm/60/1000,
-	tip_speed_fpm=tip_speed_fpm,
-	tip_speed_mph=tip_speed_fpm * 60 / 5280
-);
-
-module plate() {
+module gearset() {
 	bldc_gear();
-	hs_gear();
-	% translate([bldc_gear_pd/2 + hs_gear_pd/2, 0, 0]) {
-		rotate([0, 0, 360/hs_teeth/2]) {
+	// hs_gear();
+	translate([bldc_gear_pd/2 + hs_gear_pd/2, 0, 0]) {
+		rotate([0, 0, hs_rotation]) {
 			hs_gear();
 		}
 	}
+}
+
+
+module plate() {
+	* % bldc_hub();
+	*% for(i=[-1, 1]) translate([0, 0, i*rim_thickness])
+		gearset();
+	gearset();
+	echo(
+		rim_thickness=rim_thickness,
+		bldc_max_rpm=bldc_max_rpm,
+		bldc_teeth=bldc_teeth,
+		hs_teeth=hs_teeth,
+		ratio=bldc_teeth/hs_teeth,
+		hs_max_rpm=hs_max_rpm,
+		mower_or=mower_or,
+		tip_speed_mps=tip_speed_mmpm/60/1000,
+		tip_speed_fpm=tip_speed_fpm,
+		tip_speed_mph=tip_speed_fpm * 60 / 5280
+	);
 }
 plate();

@@ -264,7 +264,7 @@ module wc_motor() {
 // at 16.5rps = 10 m/s
 
 bldc_rim_od = 136; // mm
-bldc_od = 125; // mm
+bldc_od = 124; // mm
 bldc_rim_dr = 6; // mm
 bldc_rim_h = 18;
 bldc_shaft_od = 12;
