@@ -70,6 +70,7 @@ module bevel_gear_pair (
 //Bevel Gear Finishing Options:
 bevel_gear_flat = 0;
 bevel_gear_back_cone = 1;
+bevel_gear_reverse_cone = 2;
 
 module bevel_gear (
 	number_of_teeth=11,
@@ -87,13 +88,13 @@ module bevel_gear (
 	echo ("bevel_gear",
 		"teeth", number_of_teeth,
 		"cone distance", cone_distance,
-		face_width,
-		outside_circular_pitch,
-		pressure_angle,
-		clearance,
-		bore_diameter,
-		involute_facets,
-		finish);
+		face_width=face_width,
+		outside_circular_pitch=outside_circular_pitch,
+		pressure_angle=pressure_angle,
+		clearance=clearance,
+		bore_diameter=bore_diameter,
+		involute_facets=involute_facets,
+		finish=finish);
 
 	// Pitch diameter: Diameter of pitch circle at the fat end of the gear.
 	outside_pitch_diameter  =  number_of_teeth * outside_circular_pitch / 180;
@@ -191,6 +192,15 @@ module bevel_gear (
 					r2=back_cone_full_radius*2,
 					h=apex_to_apex + back_cone_descent);
 			}
+			else if (finish == bevel_gear_reverse_cone)
+			{
+				# translate ([0,0,-back_cone_descent])
+				cylinder (
+					$fn=number_of_teeth*2, 
+					r1=back_cone_full_radius,
+					r2=0,
+					h=apex_to_apex + back_cone_descent);
+			}
 			else
 			{
 				translate ([-1.5*outside_pitch_radius,-1.5*outside_pitch_radius,0])
@@ -201,6 +211,14 @@ module bevel_gear (
 		}
 		
 		if (finish == bevel_gear_back_cone)
+		{
+			translate ([0,0,-face_cone_descent])
+			cylinder (
+				r1=face_cone_end_radius,
+				r2=face_cone_full_radius * 2,
+				h=face_cone_height + face_cone_descent+pitch_apex);
+		}
+		else if (finish == bevel_gear_reverse_cone)
 		{
 			translate ([0,0,-face_cone_descent])
 			cylinder (
