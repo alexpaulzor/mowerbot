@@ -194,7 +194,7 @@ module bevel_gear (
 			}
 			else if (finish == bevel_gear_reverse_cone)
 			{
-				# translate ([0,0,-back_cone_descent])
+				translate ([0,0,-back_cone_descent])
 				cylinder (
 					$fn=number_of_teeth*2, 
 					r1=back_cone_full_radius,

@@ -269,7 +269,7 @@ bldc_rim_dr = 6; // mm
 bldc_rim_h = 18;
 bldc_shaft_od = 12;
 bldc_shaft_h = 100;
-bldc_hub_h = 28; // mm
+bldc_hub_h = 27; // mm
 
 module bldc_hub() {
     cylinder(r=bldc_od/2, h=bldc_hub_h, center=true);

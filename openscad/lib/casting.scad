@@ -1,7 +1,17 @@
-$fn = max($fn, 32);
+// $fn = max($fn, 32);
 
 draft_angle = 2;
 
+// Aluminium = 2% shrinkage during solidification
+CAST_EXPANSION = 1.02;
+FLASK_SIZE = [7.5, 7.5, 3.5] * 25.4; // 3.5 inches
+
+module flask() {
+    color("#00330066") {
+        translate([0, 0, FLASK_SIZE[2]/2])
+            cube(FLASK_SIZE, center=true);
+    }
+}
 
 module draft_cube(dims, center=false, draft_angle=draft_angle, invert=false) {
     translate(center ? [0, 0, 0] : -dims/2)
@@ -35,7 +45,7 @@ module draft_cylinder(r=1, h=1, center=false, draft_angle=draft_angle, invert=fa
 module _draft_cylinder(r=1, h=1, draft_angle=draft_angle, invert=false) {
 	draft_r = r - h * sin(draft_angle);
 	rotate([invert ? 180 : 0, 0, 0])
-	cylinder(r1=r, r2=draft_r, h=h, center=true, $fn=10*r);
+	cylinder(r1=r, r2=draft_r, h=h, center=true, $fn=8*r);
 }
 /*
 
