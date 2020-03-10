@@ -1,26 +1,45 @@
 use <lib/lib_involute.scad>;
 include <lib/motors.scad>;
+include <lib/mower.scad>;
 include <lib/casting.scad>;
+include <lib/motion_hardware.scad>;
+include <lib/t20beam.scad>;
 
-rim_thickness = bldc_hub_h/3;
-pressure_angle = 28;
+// ARBITRARY CHOICES
+gear1_teeth = 40;
+gear2_teeth = 8;
 
-hs_teeth = 8;
-bldc_teeth = 40;
-
-bldc_gear_pd = 140;
-bldc_gear_cp = bldc_gear_pd / bldc_teeth * 180;
-
-
-gear1_teeth = bldc_teeth * 1;
-gear2_teeth = hs_teeth * 1;
 bevel_pd = 160;
 bevel_cp = bevel_pd / gear1_teeth * 180;
 ring_gear_thickness = 6;
 bevel_face = 10;
 ring_sleeve_width = 5;
-hs_id = 7.7;
+
 axis_angle = 90;
+mower_or = 180;
+
+// MEASUREMENTS
+bldc_max_rpm = 990;
+hs_id = 7.7;
+hs_length = 100;
+hs_collar_h = 10;
+
+// DERIVED
+hs_max_rpm = bldc_max_rpm*gear1_teeth/gear2_teeth;
+tip_speed_mmpm = hs_max_rpm*mower_or*2*PI;
+tip_speed_fpm = tip_speed_mmpm/IN_MM/12;
+
+echo(
+	bldc_max_rpm=bldc_max_rpm,
+	gear1_teeth=gear1_teeth,
+	gear2_teeth=gear2_teeth,
+	ratio=gear1_teeth/gear2_teeth,
+	hs_max_rpm=hs_max_rpm,
+	mower_or=mower_or,
+	tip_speed_mps=tip_speed_mmpm/60/1000,
+	tip_speed_fpm=tip_speed_fpm,
+	tip_speed_mph=tip_speed_fpm * 60 / 5280
+);
 
 function outside_pitch_radius(teeth) = teeth * bevel_cp / 360;
 outside_pitch_radius1 = outside_pitch_radius(gear1_teeth);
@@ -42,19 +61,45 @@ echo("pitch_angle1 + pitch_angle2", pitch_angle1 + pitch_angle2);
 echo(pitch_apex1=pitch_apex1, pitch_apex2=pitch_apex2, ring_gear_thickness=ring_gear_thickness);
 	
 
+
 module gearset2(use_stl=false) {
 	translate ([0,0,pitch_apex1 + bevel_face])
 	{
-		translate([0,0,-pitch_apex1])
+		translate([0,0,-pitch_apex1]) {
 			ring_gear(use_stl);
 
-		rotate([0,-(pitch_angle1+pitch_angle2),0])
-		translate([pitch_apex1*0,0,-pitch_apex2])
-		rotate([0, 0, 360 / gear2_teeth / 2]) {
-			hs_gear3(use_stl);
-			% hs_gear3(true);
 		}
+
+		rotate([0,-(pitch_angle1+pitch_angle2),0])
+			translate([pitch_apex1*0,0,-pitch_apex2])
+			hs_axis(use_stl);
+		
 	}
+}
+
+module hs_axis(use_stl=false) {
+	rotate([0, 0, 360 / gear2_teeth / 2]) 
+		hs_gear3(use_stl);
+	translate([0, 0, -hs_length + bevel_face]) {
+		cylinder(r=hs_id/2, h=hs_length);
+		translate([0, 0, -ch_hub_h + ch_top_h + m8_nut_h])
+			cutting_head();
+		
+	}
+	translate([0, 0, -bevel_face - hs_collar_h - 2 * m8_nut_h]) {
+		rotate([0, 90, 0])
+			kp08();
+		translate([-kp08_c_h - t20_w/2, 0, 0])
+			rotate([90, 0, 0])
+			t20(260);
+	}
+	translate([0, 0, -bevel_face - hs_collar_h - 2 * m8_nut_h - t20_w]) {
+		rotate([0, 90, 0])
+			kp08();
+		translate([-kp08_c_h - t20_w/2, 0, 0])
+			rotate([90, 0, 0])
+			t20(300);
+		}
 }
 
 module ring_gear(use_stl=false) {
