@@ -185,16 +185,16 @@ module design_chain_drive() {
         idle_sprocket_spacer();
 }
 
-bldc_teeth = 38;
-hs_sprocket_teeth = 9;
+bldc_teeth = 40;
+hs_sprocket_teeth = 8;
 hs_hub_od = 20;
 hs_hub_h = 20;
 
 drive_ratio = bldc_teeth / hs_sprocket_teeth; 
-hs_axle_od = 8;
+hs_axle_od = 6;
 bldc_max_rpm = 990;
 hs_max_rpm = bldc_max_rpm * bldc_teeth / hs_sprocket_teeth;
-bldc_hole_or = 3/2;
+bldc_hole_or = 3/32 * IN_MM / 2;
 echo("bldc: ", bldc_teeth, ":", hs_sprocket_teeth,  " (", drive_ratio, ") ", hs_max_rpm, " rpm");
 
 module bldc_sprocket(use_stl=false) {
@@ -215,17 +215,27 @@ module hs_sprocket(use_stl=false) {
         difference() {
             union() {
                 sprocket(size=CHAIN_SIZE, teeth=hs_sprocket_teeth, bore=(hs_axle_od-2)/IN_MM, hub_diameter=0*hs_hub_od/IN_MM, hub_height=0*hs_hub_h/IN_MM);
-                # draft_cylinder(r=hs_hub_od/2, h=hs_hub_h, draft_angle=2);
+                // # draft_cylinder(r=hs_hub_od/2, h=hs_hub_h, draft_angle=2);
             }
+            # hs_sprocket_holes();
             
-            # translate([0, 0, hs_hub_h/2])
+            translate([0, 0, hs_hub_h/2])
             rotate([180, 0, 0])
             draft_cylinder(r=hs_axle_od/2, h=hs_hub_h, draft_angle=2, center=true);
         }
     }
 }
 
-hs_sprocket();
+module hs_sprocket_holes() {
+    hs_sprocket_num_holes = floor(hs_sprocket_teeth / 2);
+    hs_sprocket_hole_angle = 360 / hs_sprocket_num_holes;
+    
+    for (i=[0:hs_sprocket_num_holes-1]) {
+        rotate([0, 0, i*hs_sprocket_hole_angle])
+        translate([hs_axle_od, 0, 0])
+        cylinder(r=bldc_hole_or, h=bldc_hub_h, center=true);
+    }
+}  
 
 module bldc_holes() {
     bldc_num_holes = floor(bldc_teeth / 4);
@@ -249,16 +259,16 @@ module bldc_sleeve() {
 
 module bldc_design() {
     gear_h = IN_MM * get_thickness(CHAIN_SIZE);
-    % translate([0, 0, -gear_h/2])
+    translate([0, 0, -gear_h/2])
         bldc_sprocket(false);
-    % bldc_hub();
-    for (i=[-1,1])
+    translate([100, 100, 0])
+        hs_sprocket(false);
+    *% bldc_hub();
+    *for (i=[-1,1])
         translate([0, 0, i*(gear_h/2 + (bldc_hub_h-gear_h)/4)])
         bldc_sleeve();
         
 }
 
-//bldc_design();
+bldc_design();
 
-//translate([100, 100, 0])
-//hs_sprocket(false);

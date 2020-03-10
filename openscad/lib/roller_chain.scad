@@ -1,3 +1,4 @@
+include <metric.scad>;
 include <openbeam.scad>;
 use <sprockets.scad>
 

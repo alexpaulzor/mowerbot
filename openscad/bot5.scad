@@ -48,7 +48,7 @@ module laser_holder() {
         
     }
 }
-laser_holder();
+// laser_holder();
 
 mini_drive_wall_th = 2;
 mini_drive_l = motor_coupler_length + mini_drive_wall_th*3;
@@ -134,3 +134,39 @@ module design_minibot() {
 
 }
 
+//
+
+board_l = 70;
+board_w = 50;
+board_h = 30;
+board_hole_or = 3/2;
+board_hole_c_c_l = 66;
+board_hole_c_c_w = 46;
+module bot5_board() {
+    difference() {
+        union() {
+            translate([0, 0, -board_h/2])
+                cube([board_l, board_w, board_h], center=true);
+            * for (x=[-1, 1]) for (y=[-1, 1])
+                translate([x * board_hole_c_c_l/2, y * board_hole_c_c_w/2, 0])
+                cylinder(r=bldc_cont_standoff_or, h=bldc_cont_standoff_h);
+
+        }
+        # for (x=[-1, 1]) for (y=[-1, 1])
+            translate([x * board_hole_c_c_l/2, y * board_hole_c_c_w/2, 0])
+            cylinder(r=board_hole_or, h=board_h*2, center=true);
+    }
+}
+
+module bot5_electrics() {
+    translate([0, 0, 0]) 
+        rotate([180, 0, 0]) 
+        bot5_board();
+    % translate([0, -bldc_cont_board_h, -bldc_cont_w/2]) 
+        rotate([90, 0, 0]) 
+        bldc_cont();
+    % translate([0, bldc_cont_board_h, -bldc_cont_w/2]) 
+        rotate([-90, 0, 0]) 
+        bldc_cont();
+}
+bot5_electrics();
