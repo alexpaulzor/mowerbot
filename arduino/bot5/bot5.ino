@@ -222,7 +222,7 @@ void setup_lcd() {
 }
 
 void refresh_disp(int* channel_values) {
-    float temperature = dht.readTemperature();
+    float temperature = 0; //dht.readTemperature();
     char buf[20];
     lcd.setCursor ( 0, 0 );
     sprintf(buf, "Up %6u s\0", millis() / 1000);

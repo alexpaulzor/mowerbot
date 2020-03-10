@@ -33,19 +33,19 @@ module _draft_cube(dims, draft_angle=draft_angle) {
 	}
 }
 
-module draft_cylinder(r=1, h=1, center=false, draft_angle=draft_angle, invert=false) {
+module draft_cylinder(r=1, h=1, center=false, draft_angle=draft_angle, invert=false, fn=1000) {
 	if (!center) {
 		translate([0, 0, h/2])
-		_draft_cylinder(r=r, h=h, draft_angle=draft_angle, invert=invert);
+		_draft_cylinder(r=r, h=h, draft_angle=draft_angle, invert=invert, fn=fn);
 	} else {
-		_draft_cylinder(r=r, h=h, draft_angle=draft_angle, invert=invert);
+		_draft_cylinder(r=r, h=h, draft_angle=draft_angle, invert=invert, fn=fn);
 	}
 }
 
-module _draft_cylinder(r=1, h=1, draft_angle=draft_angle, invert=false) {
+module _draft_cylinder(r=1, h=1, draft_angle=draft_angle, invert=false, fn=1000) {
 	draft_r = r - h * sin(draft_angle);
 	rotate([invert ? 180 : 0, 0, 0])
-	cylinder(r1=r, r2=draft_r, h=h, center=true, $fn=8*r);
+	cylinder(r1=r, r2=draft_r, h=h, center=true, $fn=min(fn, 8*r));
 }
 /*
 

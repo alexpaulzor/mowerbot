@@ -25,7 +25,8 @@ stl-%: prep
 	&& time $(SCAD) \
 		-o stl/$$module.$$fname.stl \
 		$$tmpfile \
-	&& echo "Rendered stl/$$module.$$fname.stl" | tee >(say)
+	&& echo "Rendered stl/$$module.$$fname.stl" \
+	&& say "Rendered $$module"
 	rm -f $$tmpfile
 
 clean: clean-gcode clean-stl
