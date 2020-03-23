@@ -1,4 +1,5 @@
 include <metric.scad>;
+use <casting.scad>;
 
 motor_short_c_c = 56;
 motor_short_offset = 0.9 * IN_MM;
@@ -229,19 +230,19 @@ wc_shaft_r1 = 17 / 2;  // bottom
 wc_shaft_h = 53;
 wc_shaft_notch_w = 5;
 wc_shaft_notch_l = 38 - wc_shaft_notch_w;
-wc_shaft_notch_d = 5;
+wc_shaft_notch_d = wc_shaft_r1 - wc_shaft_r2;
 wc_shaft_notch_offs = 12 + wc_shaft_notch_w / 2;
 
 module wc_motor_shaft() {
     difference() {
-        cylinder(r1=wc_shaft_r1, r2=wc_shaft_r2, h=wc_shaft_h);
-        % translate([0, wc_shaft_r1, wc_shaft_notch_offs])
+        cylinder(r1=wc_shaft_r1, r2=wc_shaft_r2, h=wc_shaft_h, $fn=64);
+        translate([0, wc_shaft_r1, wc_shaft_notch_offs])
             rotate([90, 0, 0])
             cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
-        % translate([0, wc_shaft_r1, wc_shaft_notch_offs + wc_shaft_notch_l])
+        translate([0, wc_shaft_r1, wc_shaft_notch_offs + wc_shaft_notch_l])
             rotate([90, 0, 0])
             cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
-        % translate([0, wc_shaft_r1 - wc_shaft_notch_d / 2, wc_shaft_notch_offs + wc_shaft_notch_l / 2])
+        translate([0, wc_shaft_r1 - wc_shaft_notch_d / 2, wc_shaft_notch_offs + wc_shaft_notch_l / 2])
             cube([wc_shaft_notch_w, wc_shaft_notch_d, wc_shaft_notch_l], center=true);  
     }
     translate([0, 0, wc_shaft_h])
@@ -266,15 +267,62 @@ module wc_motor() {
 bldc_rim_od = 136; // mm
 bldc_od = 124; // mm
 bldc_rim_dr = 6; // mm
-bldc_rim_h = 18;
+bldc_rim_h = 17;
+bldc_rim_flange_h = 7;
+bldc_bearing_od = 32;
 bldc_shaft_od = 12;
-bldc_shaft_h = 100;
+bldc_shaft_core_od = 17;
+bldc_shaft_notch_od = 10;
+bldc_shaft_notch_h = 18;
+bldc_shaft_ext = 24;
+bldc_shaft_h = 116;
 bldc_hub_h = 27; // mm
 
+
 module bldc_hub() {
+    color("DarkSlateGray")
+        bldc_rotor();
+    color("SlateGray")
+        bldc_shaft();
+}
+
+module bldc_rotor() {
     cylinder(r=bldc_od/2, h=bldc_hub_h, center=true);
-    cylinder(r=bldc_shaft_od/2, h=bldc_shaft_h, center=true);
-    for (i=[-1,1])
-        translate([0, 0, i*(bldc_hub_h/2 + bldc_rim_h/2)])
-        cylinder(r=bldc_rim_od/2, h=bldc_rim_h, center=true);
+
+    for (i=[-1,1]) {
+        translate([0, 0, i*(bldc_hub_h/2 + bldc_rim_flange_h/2)])
+            cylinder(
+                r=bldc_rim_od/2, h=bldc_rim_flange_h, center=true, draft_angle=50);
+        translate([
+            0, 0, 
+            i*(bldc_hub_h/2 + bldc_rim_flange_h + (bldc_rim_h - bldc_rim_flange_h)/2)])
+        draft_cylinder(
+            r=bldc_rim_od/2, h=bldc_rim_h - bldc_rim_flange_h, center=true, draft_angle=60, invert=(i<0));
+        bearing_h = bldc_shaft_h/2 - bldc_shaft_ext - bldc_hub_h/2 - bldc_rim_h;
+        translate([
+            0, 0, 
+            i*(bldc_hub_h/2 + bldc_rim_h + bearing_h/2)])
+        cylinder(
+            r=bldc_bearing_od/2, h=bearing_h, center=true);
+        translate([
+            0, 0, 
+            i*(bldc_hub_h/2 + bldc_rim_h + bearing_h/2)])
+        cylinder(
+            r=bldc_bearing_od/2, h=bearing_h, center=true);
+    }
+    
+}
+
+module bldc_shaft() {
+    notch_w = (bldc_shaft_od - bldc_shaft_notch_od)/2;
+    difference() {
+        union() {
+            cylinder(r=bldc_shaft_od/2, h=bldc_shaft_h, center=true);
+            cylinder(r=bldc_shaft_core_od/2, h=bldc_shaft_h - 2*bldc_shaft_notch_h, center=true);
+        }
+        for (i=[-1,1])
+        for (j=[-1,1])
+            translate([j*(bldc_shaft_notch_od/2 + notch_w/2), 0, i*(bldc_shaft_h/2 - bldc_shaft_notch_h/2) + 0.1])
+            cube([notch_w, bldc_shaft_notch_od, bldc_shaft_notch_h + 0.2], center=true);
+    }
 }

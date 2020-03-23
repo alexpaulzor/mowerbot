@@ -41,18 +41,32 @@ module dc_mower() {
 
 // cutting head
 ch_or = 92/2;
-ch_h = 23;
+ch_h = 15;
 ch_hub_h = 49;
-ch_hub_or = 35/3;
+ch_hub_or = 35/2;
 ch_hub_ir = 10.3/2;
 ch_hub_hex_ir = 16/2;
 ch_top_h = 5;
+ch_num_strings = 3;
+ch_string_offset = 19;
+ch_string_or = 0.095*IN_MM/2;
+ch_mower_or = 230;
+
 
 module cutting_head() {
     difference() {
         union() {
-            cylinder(r=ch_or, h=ch_h);
-            cylinder(r=ch_hub_or, h=ch_hub_h);
+            color("black")
+                cylinder(r=ch_or, h=ch_h);
+            color("black")
+                cylinder(r=ch_hub_or, h=ch_hub_h);
+            color("blue")
+                translate([0, 0, ch_string_offset])
+                for (i=[0:ch_num_strings])
+                for (di=[-10, 10])
+                rotate([0, 90, 360/ch_num_strings*i+di])
+                cylinder(r=ch_string_or, h=ch_mower_or);
+            
         }
         
         cylinder(r=ch_hub_ir, h=ch_hub_h);

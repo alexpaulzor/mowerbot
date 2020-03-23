@@ -176,6 +176,9 @@ function get_sk8_l() = sk8_l;
 function get_rail_r() = rail_r;
 function get_t08_screw_l() = t08_screw_l;
 
+bearing_h = 7;
+bearing_ir = 4;
+bearing_or = 11;
 module bearing() {
     difference() {
         cylinder(r=bearing_or, h=bearing_h, center=true);

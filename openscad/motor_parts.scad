@@ -3,20 +3,29 @@ include <lib/metric.scad>;
 include <lib/motion_hardware.scad>;
 use <lib/lib_pulley.scad>;
 include <lib/mower.scad>;
+include <lib/casting.scad>;
 
-hub_ir = 35 / 2;
+hub_ir = (1 + 3/8) * IN_MM / 2;
 wall_th = 3;
-hub_h = 48 + wall_th;
+
+hub_h = 45;
+hub_num_sections = 2;
+hub_section_theta = 360 / hub_num_sections;
 
 
-module hub_adapter() {
+module _hub_adapter() {
+    // % cylinder(r=hub_ir, h=hub_h);
     difference() {
-        union() {
-            cylinder(r=hub_ir, h=hub_h);
-            cylinder(r=hub_ir + wall_th, h=wall_th);
+        intersection() {
+            draft_cylinder(r=hub_ir, h=hub_h, invert=false, draft_angle=0, face_draft=2);
+            rotate([0, 0, 180])
+                draft_cylinder(r=hub_ir, h=hub_h, invert=false, draft_angle=0, face_draft=2);
+            // draft_cylinder(r=hub_ir, h=hub_h, invert=false, draft_angle=0, face_draft=-5);
+            // * cylinder(r=hub_ir + wall_th, h=wall_th);
         }
-        wc_motor_shaft();
-        for (z=[hub_h / 4, hub_h / 2, 3 * hub_h / 4]) {
+        translate([0, 0, hub_h - wc_shaft_h])
+            wc_motor_shaft();
+        * for (z=[hub_h / 4, hub_h / 2, 3 * hub_h / 4]) {
             translate([0, hub_ir, wall_th + z]) {
                 rotate([90, 0, 0]) {
                     cylinder(r=5/2, h=hub_ir);
@@ -26,7 +35,108 @@ module hub_adapter() {
             }
         }
     }
+    /*section_h = hub_h / hub_num_sections;
+    for (i=[0:hub_num_sections-1])
+        translate([0, 0, section_h*i])
+        hub_adapter_section(i);*/
 }
+
+module hub_adapter_key() {
+    intersection() {
+        _hub_adapter();
+        hub_adapter_mask();
+    }
+}
+
+
+module hub_adapter_prong() {
+    intersection() {
+        rotate([0, 0, hub_section_theta])
+            _hub_adapter();
+        hub_adapter_mask();
+    }
+}
+
+module hub_adapter() {
+    hub_adapter_key();
+    rotate([0, 0, hub_section_theta])
+        hub_adapter_prong();
+    // * rotate([0, 0, hub_section_theta])
+    //     hub_adapter_prong();
+}
+
+module hub_adapter_mask() {
+    r = 30;
+    translate([0, -r,0])
+        cube([r, 2*r, hub_h]);
+    // * linear_extrude(hub_h)
+    //     polygon([
+    //         [0, 0], 
+    //         [r * cos(hub_section_theta/2), r * sin(hub_section_theta/2)], 
+    //         [r * -cos(hub_section_theta/2), r * sin(hub_section_theta/2)]]);
+}
+
+// ! hub_adapter_mask();
+// module hub_adapter_section(section=0, hub_num_sections=hub_num_sections) {
+//     section_h = hub_h / hub_num_sections;
+    
+//     difference() {
+//         union() {
+//             draft_cylinder(r=hub_ir, h=section_h, invert=false, draft_angle=-2);
+//             * cylinder(r=hub_ir + wall_th, h=wall_th);
+//         }
+//         translate([0, 0, -section * section_h])
+//             wc_motor_shaft();
+//         echo(section=section);
+//         * for (z=[hub_h / 4, hub_h / 2, 3 * hub_h / 4]) {
+//             translate([0, hub_ir, wall_th + z]) {
+//                 rotate([90, 0, 0]) {
+//                     cylinder(r=5/2, h=hub_ir);
+//                     m5_nut();
+//                     translate([0, 0, m5_nut_h/2 + 1]) m5_nut();
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// ! wc_motor_shaft();
+
+module hub_adapter_cast_plate() {
+    
+    scale(CAST_EXPANSION) {
+        translate([0, 0, 0])
+            rotate([0, -90, 0])
+            hub_adapter_key();
+        translate([0, 40, 0])
+            rotate([0, -90, 0])
+            hub_adapter_prong();
+    
+        // translate([-35, 0, hub_h])
+        //     rotate([180, 0, 0])
+        //     hub_adapter();
+        // translate([35, 0, hub_h])
+        //     rotate([180, 0, 0])
+        //     hub_adapter();
+        // shell();
+        // for (x=[-67, 67])
+        // translate([x, 0, 0]) 
+        //     shell(or=5, ir=4);
+        // for (x=[-14, 14])
+        // translate([x, 0, 2])
+        //     draft_cube([10, 6, 4], center=true, draft_angle=10);
+        // for (x=[-58, 58])
+        // translate([x, 0, 1])
+        //     draft_cube([10, 3, 2], center=true, draft_angle=10);
+    }
+}
+
+hub_adapter_cast_plate();
+% translate([40, 40, 0])
+    hub_adapter();
+// % flask();
+
+// hub_adapter_cast_plate();
 
 pitch_or = bldc_od / 2 + 4;
 gt2_pitch = 2;
@@ -129,7 +239,12 @@ module ch_adapter() {
     }
 }
 
-ch_adapter();
+module scale_plate_bldc() {
+    bldc_hub();
+}
+
+// scale_plate_bldc();
+// ch_adapter();
 
 //bldc_design();
 
