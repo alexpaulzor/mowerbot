@@ -5,12 +5,28 @@ draft_angle = 2;
 // Aluminium = 2% shrinkage during solidification
 CAST_EXPANSION = 1.02;
 FLASK_SIZE = [7.5, 7.5, 3.5] * 25.4; // 3.5 inches
-
-module flask() {
+SMALL_FLASK_SIZE = [95, 95, 70];
+echo(FLASK_SIZE=FLASK_SIZE, SMALL_FLASK_SIZE=SMALL_FLASK_SIZE);
+module flask(dims=FLASK_SIZE) {
+    translate([0, 0, dims[2]/2])
     color("#00330066") {
-        translate([0, 0, FLASK_SIZE[2]/2])
-            cube(FLASK_SIZE, center=true);
+        for (i=[-1, 1]) {
+            difference() {
+                union() {
+                    translate([0, 0, i * dims[2]/2])
+                        square([dims[0], dims[1]], center=true);
+                }
+                union() {
+                    translate([0, 0, i * dims[2]/2])
+                        square([dims[0]-2, dims[1]-2], center=true);
+                }
+            }
+        }
     }
+}
+
+module small_flask() {
+    flask(SMALL_FLASK_SIZE);
 }
 
 module draft_cube(dims, center=false, draft_angle=draft_angle, invert=false) {
@@ -55,7 +71,7 @@ module _draft_cylinder(r=1, h=1, draft_angle=draft_angle, invert=false, fn=1000,
     }
 }
 
-module shell(or=10, ir=9, half=true) {
+module shell(or=10, ir=8, half=true) {
     difference() {
      sphere(or);
      sphere(ir);
@@ -125,5 +141,32 @@ module sprue_plate(count=5, stacks=2) {
     sprue_stack(count=count, stacks=stacks, dz=0, count_start=0);
 }
 
+crucible_h = 150;
+crucible_ir1 = 50/2;
+crucible_ir2 = 49/2;
+crucible_th = 5;
+crucible_or = crucible_ir1 + crucible_th;
+crucible_w = 10;
+
+module crucible() {
+    translate([crucible_ir1 + crucible_th/2, 0, 0]) {
+        cube([crucible_th, crucible_w, crucible_h], center=true);
+        translate([0, 0, crucible_h/2])
+            rotate([0, 90, 0])
+            difference() {
+                cylinder(r=crucible_ir2, h=crucible_th, center=true);
+                translate([-crucible_ir2/2, 0, 0])
+                    cube([crucible_ir1, 2*crucible_ir2, crucible_w], center=true);
+            }
+        
+    }
+    difference() {
+        cylinder(r=crucible_or, h=crucible_h, center=true);
+        translate([0, 0, -crucible_w])
+            cylinder(r=crucible_or+crucible_th, h=crucible_h, center=true);
+        cylinder(r1=crucible_ir1, r2=crucible_ir2, h=crucible_h+1, $fn=32, center=true);
+    }
+   
+}
 
 // sprue_stack(2, dz=15);

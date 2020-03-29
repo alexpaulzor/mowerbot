@@ -230,23 +230,52 @@ wc_shaft_r1 = 17 / 2;  // bottom
 wc_shaft_h = 53;
 wc_shaft_notch_w = 5;
 wc_shaft_notch_l = 38 - wc_shaft_notch_w;
-wc_shaft_notch_d = wc_shaft_r1 - wc_shaft_r2;
+wc_shaft_notch_d = 3.5;
 wc_shaft_notch_offs = 12 + wc_shaft_notch_w / 2;
+wc_shaft_angle = atan((wc_shaft_r1-wc_shaft_r2)/wc_shaft_h);
+echo(wc_shaft_angle=wc_shaft_angle);
+module wc_motor_shaft_key_offset() {
+    translate([
+        0, 
+        wc_shaft_r1 - wc_shaft_notch_d / 2 - sin(wc_shaft_angle) * (wc_shaft_notch_offs + wc_shaft_notch_l/2), 
+        wc_shaft_notch_offs + wc_shaft_notch_l / 2])
+    rotate([90 + wc_shaft_angle, 0, 0])
+    children();
+}
 
-module wc_motor_shaft() {
+module wc_motor_shaft(key=true) {
+    // key = 1 -> normal notch
+    // key = 2 -> inverted notch
     difference() {
         cylinder(r1=wc_shaft_r1, r2=wc_shaft_r2, h=wc_shaft_h, $fn=64);
-        translate([0, wc_shaft_r1, wc_shaft_notch_offs])
-            rotate([90, 0, 0])
-            cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
-        translate([0, wc_shaft_r1, wc_shaft_notch_offs + wc_shaft_notch_l])
-            rotate([90, 0, 0])
-            cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d);
-        translate([0, wc_shaft_r1 - wc_shaft_notch_d / 2, wc_shaft_notch_offs + wc_shaft_notch_l / 2])
-            cube([wc_shaft_notch_w, wc_shaft_notch_d, wc_shaft_notch_l], center=true);  
+        if (key)
+            wc_motor_shaft_key_offset()
+            wc_motor_shaft_key();
     }
     translate([0, 0, wc_shaft_h])
         cylinder(r=wc_shaft_thread_or, h=wc_shaft_thread_h);
+}
+
+module wc_motor_shaft_key(h=wc_shaft_notch_d, draft_angle=2) {
+    // translate([
+    //             0, 
+    //             wc_shaft_r1 - sin(angle) * (wc_shaft_notch_offs), 
+    //             wc_shaft_notch_offs])
+    //         cylinder(r=wc_shaft_notch_w/2, h=wc_shaft_notch_d, $fn=32);
+    //     translate([
+    //             0, 
+    //             wc_shaft_r1 - sin(angle) * (wc_shaft_notch_offs + wc_shaft_notch_l), 
+    //             wc_shaft_notch_offs + wc_shaft_notch_l])
+            
+        // translate([
+        //         0, 
+        //         wc_shaft_r1 - wc_shaft_notch_d / 2 - sin(angle) * (wc_shaft_notch_offs + wc_shaft_notch_l/2), 
+        //         wc_shaft_notch_offs + wc_shaft_notch_l / 2])
+        //     rotate([angle, 0, 0])
+    draft_cube([wc_shaft_notch_w, wc_shaft_notch_l, h], center=true, draft_angle=-draft_angle, invert=true);  
+    for (i=[-1, 1])
+        translate([0, i * wc_shaft_notch_l/2, 0])
+        draft_cylinder(r=wc_shaft_notch_w/2, h=h, center=true, draft_angle=-draft_angle, invert=true);
 }
 
 module wc_motor() {
