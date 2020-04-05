@@ -142,8 +142,8 @@ module sprue_plate(count=5, stacks=2) {
 }
 
 crucible_h = 150;
-crucible_ir1 = 50/2;
-crucible_ir2 = 49/2;
+crucible_ir1 = 49/2;
+crucible_ir2 = 50/2;
 crucible_th = 5;
 crucible_or = crucible_ir1 + crucible_th;
 crucible_w = 10;
@@ -168,5 +168,10 @@ module crucible() {
     }
    
 }
-
+module crucible_ring() {
+    difference() {
+        cylinder(r=crucible_or, h=crucible_w, center=true);
+        cylinder(r1=crucible_ir1, r2=crucible_ir2, h=crucible_w+1, $fn=32, center=true);
+    }
+}
 // sprue_stack(2, dz=15);

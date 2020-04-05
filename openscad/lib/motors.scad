@@ -243,20 +243,20 @@ module wc_motor_shaft_key_offset() {
     children();
 }
 
-module wc_motor_shaft(key=true) {
+module wc_motor_shaft(key=true, short_key=false) {
     // key = 1 -> normal notch
     // key = 2 -> inverted notch
     difference() {
         cylinder(r1=wc_shaft_r1, r2=wc_shaft_r2, h=wc_shaft_h, $fn=64);
         if (key)
             wc_motor_shaft_key_offset()
-            wc_motor_shaft_key();
+            wc_motor_shaft_key(short_key=short_key);
     }
     translate([0, 0, wc_shaft_h])
         cylinder(r=wc_shaft_thread_or, h=wc_shaft_thread_h);
 }
 
-module wc_motor_shaft_key(h=wc_shaft_notch_d, draft_angle=2) {
+module wc_motor_shaft_key(h=wc_shaft_notch_d, draft_angle=2, short_key=false) {
     // translate([
     //             0, 
     //             wc_shaft_r1 - sin(angle) * (wc_shaft_notch_offs), 
@@ -272,10 +272,13 @@ module wc_motor_shaft_key(h=wc_shaft_notch_d, draft_angle=2) {
         //         wc_shaft_r1 - wc_shaft_notch_d / 2 - sin(angle) * (wc_shaft_notch_offs + wc_shaft_notch_l/2), 
         //         wc_shaft_notch_offs + wc_shaft_notch_l / 2])
         //     rotate([angle, 0, 0])
-    draft_cube([wc_shaft_notch_w, wc_shaft_notch_l, h], center=true, draft_angle=-draft_angle, invert=true);  
+    l = short_key ? wc_shaft_notch_l - 2*wc_shaft_notch_w : wc_shaft_notch_l;
+    draft_cube([wc_shaft_notch_w, l, h], center=true, draft_angle=-draft_angle, invert=true);  
     for (i=[-1, 1])
-        translate([0, i * wc_shaft_notch_l/2, 0])
+        translate([0, i * l/2, 0])
         draft_cylinder(r=wc_shaft_notch_w/2, h=h, center=true, draft_angle=-draft_angle, invert=true);
+    if (short_key)
+        % wc_motor_shaft_key(h=h, draft_angle=draft_angle, short_key=false);
 }
 
 module wc_motor() {

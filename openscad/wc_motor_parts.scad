@@ -21,7 +21,7 @@ module wheel_hub(key=false) {
     translate([0, 0, -wc_shaft_h + hub_h]) {
         // difference() {
             rotate([0, 0, -hub_angle/4])
-                wc_motor_shaft(key=key);
+                wc_motor_shaft(key=key, short_key=true);
         //     wc_motor_shaft_key_offset()
         //         translate([0, 10, 0]) 
         //         wc_motor_shaft_key();
