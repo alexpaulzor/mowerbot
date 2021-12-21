@@ -6,6 +6,7 @@ draft_angle = 2;
 CAST_EXPANSION = 1.02;
 FLASK_SIZE = [7.5, 7.5, 3.5] * 25.4; // 3.5 inches
 SMALL_FLASK_SIZE = [95, 95, 70];
+BIG_FLASK_SIZE = [250, 250, 100];
 echo(FLASK_SIZE=FLASK_SIZE, SMALL_FLASK_SIZE=SMALL_FLASK_SIZE);
 module flask(dims=FLASK_SIZE) {
     translate([0, 0, dims[2]/2])
@@ -29,8 +30,12 @@ module small_flask() {
     flask(SMALL_FLASK_SIZE);
 }
 
+module big_flask() {
+    flask(BIG_FLASK_SIZE);
+}
+
 module draft_cube(dims, center=false, draft_angle=draft_angle, invert=false) {
-    translate(center ? [0, 0, 0] : -dims/2)
+    translate(center ? [0, 0, 0] : dims/2)
         rotate(invert ? [180, 0, 0] : [0, 0, 0])
 		_draft_cube(dims, draft_angle=draft_angle);
 	

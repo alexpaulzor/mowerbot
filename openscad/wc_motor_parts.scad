@@ -10,7 +10,7 @@ num_hub_slices = 3;
 hub_angle = 360 / num_hub_slices;
 
 face_draft = 5;
-pin_or = 3/2; 
+pin_or = 2; 
 pin_h = 5;
 
 module wheel_hub(key=false) {
@@ -68,11 +68,21 @@ module wc_hub_adapter_slice_offset() {
     children();
 }
 
-module slice_pin() {
-    for (z=[-1, 1])
-        translate([0, 0, z * pin_h/2])
-        sphere(r=pin_or, $fn=32);
-    cylinder(r=pin_or, h=pin_h, center=true, $fn=32);
+module slice_pin(dh=0, notch=false) {
+    // for (z=[-1, 1])
+    //     translate([0, 0, z * pin_h/2])
+    //     sphere(r=pin_or, $fn=32);
+    // cylinder(r=pin_or, h=pin_h, center=true, $fn=32);
+    difference() {
+        union() {
+            cube([pin_or * 2, pin_or/sqrt(2), pin_h + dh], center=true);
+            cube([pin_or / sqrt(2), pin_or*2, pin_h + dh], center=true);
+        }
+        if (notch)
+            rotate_extrude()
+            translate([pin_or, 0, 0])
+            circle(pin_or/3);
+    }
 }
 
 module slice_pins() {
@@ -167,9 +177,9 @@ module cast_plate3() {
                 rotate([0, 0, -90])
                 cast_plate_bottom();
             for (y=[-3:3]) {
-                translate([45, y * (pin_h + 2*pin_or), pin_or])
-                rotate([90, 0, 0])
-                slice_pin();
+                translate([45, y * (pin_h + pin_or), pin_or / sqrt(2) + 0.3])
+                rotate([90, 45, 0])
+                slice_pin(dh=-1, notch=true);
             }
         // }
 

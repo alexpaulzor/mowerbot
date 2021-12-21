@@ -324,7 +324,7 @@ module bldc_rotor() {
     for (i=[-1,1]) {
         translate([0, 0, i*(bldc_hub_h/2 + bldc_rim_flange_h/2)])
             cylinder(
-                r=bldc_rim_od/2, h=bldc_rim_flange_h, center=true, draft_angle=50);
+                r=bldc_rim_od/2, h=bldc_rim_flange_h, center=true);
         translate([
             0, 0, 
             i*(bldc_hub_h/2 + bldc_rim_flange_h + (bldc_rim_h - bldc_rim_flange_h)/2)])
@@ -358,3 +358,82 @@ module bldc_shaft() {
             cube([notch_w, bldc_shaft_notch_od, bldc_shaft_notch_h + 0.2], center=true);
     }
 }
+
+
+
+
+bldc2_rim_od = 161; // mm
+bldc2_od = 151; // mm
+bldc2_rim_h = 9;
+bldc2_rim_flange_h = 4;
+bldc2_rim_slope_h = bldc2_rim_h - bldc2_rim_flange_h;
+bldc2_bearing_od = 35;
+bldc2_bearing_h = 3;
+bldc2_shaft_od = 12;
+bldc2_shaft_core_od = 15;
+bldc2_shaft_notch_od = 10;
+bldc2_shaft_notch_h = 15;
+// bldc2_shaft_ext = 24;
+bldc2_shaft_h = 97;
+bldc2_hub_h = 40; // mm
+
+// 35 @ 0
+// 42 @ 3
+// 161 9 5
+// 161 @ 9
+
+module bldc2_hub() {
+    bldc2_rotor();
+    // color("DarkSlateGray")
+        bldc2_shaft();
+}
+
+module bldc2_rotor() {
+    // color("silver")
+        cylinder(r=bldc2_od/2, h=bldc2_hub_h, center=true);
+
+    // color("DarkSlateGray")
+    for (i=[0, 180])
+        rotate([i, 0, 0]) {
+        translate([0, 0, bldc2_hub_h/2 + bldc2_rim_flange_h/2])
+            cylinder(
+                r=bldc2_rim_od/2, h=bldc2_rim_flange_h, center=true);
+        translate([0, 0, bldc2_hub_h/2 + bldc2_rim_flange_h + bldc2_rim_slope_h/2])
+            cylinder(r1=bldc2_rim_od/2, r2=42/2, h=bldc2_rim_slope_h, center=true);
+        translate([0, 0, bldc2_hub_h/2 + bldc2_rim_h + bldc2_bearing_h/2])
+            cylinder(r1=42/2, r2=bldc2_bearing_od/2, h=bldc2_bearing_h, center=true);
+        // // * translate([
+        // //     0, 0, 
+        // //     i*(bldc2_hub_h/2 + bldc2_rim_flange_h + (bldc2_rim_h - bldc2_rim_flange_h)/2)])
+        // // draft_cylinder(
+        // //     r=bldc2_rim_od/2, h=bldc2_rim_h - bldc2_rim_flange_h, center=true, draft_angle=80, invert=(i<0));
+        // bearing_h = 3; //bldc2_shaft_h/2 - bldc2_shaft_ext - bldc2_hub_h/2 - bldc2_rim_h;
+        // # translate([
+        //     0, 0, 
+        //     i*(bldc2_hub_h/2 + bldc2_rim_h + bearing_h/2)])
+        //     cylinder(
+        //         r=bldc2_bearing_od/2, h=bearing_h, center=true);
+        // translate([
+        //     0, 0, 
+        //     i*(bldc2_hub_h/2 + bldc2_rim_h + bearing_h/2)])
+        //     cylinder(
+        //         r=bldc2_bearing_od/2, h=bearing_h, center=true);
+    }
+    
+}
+
+module bldc2_shaft() {
+    notch_w = (bldc2_shaft_od - bldc2_shaft_notch_od)/2;
+    difference() {
+        union() {
+            cylinder(r=bldc2_shaft_od/2, h=bldc2_shaft_h, center=true);
+            cylinder(r=bldc2_shaft_core_od/2, h=bldc2_shaft_h - 2*bldc2_shaft_notch_h, center=true);
+        }
+        for (i=[-1,1])
+        for (j=[-1,1])
+            translate([j*(bldc2_shaft_notch_od/2 + notch_w/2), 0, i*(bldc2_shaft_h/2 - bldc2_shaft_notch_h/2) + 0.1])
+            cube([notch_w, bldc2_shaft_notch_od, bldc2_shaft_notch_h + 0.2], center=true);
+    }
+}
+
+

@@ -16,6 +16,7 @@ prep:
 	mkdir -p stl
 
 stl-%: prep
+	gdate --iso=seconds
 	export     fname="$(shell echo '$(*)' | cut -d'.' -f1)" \
 	&& export module="$(shell echo '$(*)' | $(MODULE_CMD))" \
 	&& export   args="$(shell echo '$(*)' | $(ARGS_CMD))" \
