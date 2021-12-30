@@ -80,11 +80,12 @@ module bat() {
 }
 
 
+// IBT_2 h-bridge BTS7960b
 dcctl_l = 50;
 dcctl_w = 42;
 dcctl_h = 52;
-dcctl_hs_l = 33;
-dcctl_hs_w = 23;
+dcctl_hs_l = 35;
+dcctl_hs_w = 27;
 dcctl_hs_h = dcctl_h;
 dcctl_hole_r = 3/2;
 dcctl_hole_offset = 5;
@@ -116,12 +117,16 @@ module dcctl() {
         cube([dcctl_hs_l, dcctl_hs_w, dcctl_hs_h]);
 }
 
+// ! dcctl();
+
 module dcctl_centered() {
     translate([-dcctl_l/2, 0, -dcctl_h/2]) {
         dcctl();
-        dcctl_holes();
+        # dcctl_holes();
     }
 }
+
+// ! dcctl_centered();
 
 iec_plug_l = 27;
 iec_plug_w = 19;
@@ -458,7 +463,7 @@ switch_pin_clearance = 1.5;
 switch_pin_h = 5;
 
 switch_holder_lip_l = 2;
-switch_holder_h = 3 * rail_r;
+switch_holder_h = 24;
 switch_holder_w = switch_holder_h + switch_w + switch_roller_overhang;
 switch_holder_l = switch_l + 2 * switch_holder_lip_l;
 

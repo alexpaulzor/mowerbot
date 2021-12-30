@@ -183,23 +183,22 @@ mini_motor_shaft_or = 3;
 mini_motor_notched_w = 4.37;
 mini_motor_notch_h = 10;
 mini_motor_shaft_h = 14;
-mini_motor_shaft_offs = 15;
-mini_motor_w = 1.26 * IN_MM;
-mini_motor_l = 1.81 * IN_MM;
-mini_motor_h = 1.0 * IN_MM;
-mini_motor_hole_sep = [18, 32];
+mini_motor_shaft_offs = 15.5;
+mini_motor_w = 32;
+mini_motor_l = 46;
+mini_motor_h = 26;
+mini_motor_hole_sep = [18, 33];
 mini_motor_hole_ir = 3/2;
-mini_motor_hole_offs = 7;
+mini_motor_hole_offs = 6.5;
 mini_motor_cyl_or = 24.3 / 2;
 mini_motor_cyl_l = 35;
 mini_motor_cyl_offs = 3.5;
 
 module mini_motor() {
-    translate([-mini_motor_shaft_offs, -mini_motor_w/2, -mini_motor_h]) {
-        difference() {
-            cube([mini_motor_l, mini_motor_w, mini_motor_h]);
-            # mini_motor_holes();
-        }
+    difference() {
+        translate([-mini_motor_shaft_offs - 0.1, -mini_motor_w/2-0.1, -mini_motor_h-0.1])
+            cube([mini_motor_l +0.2, mini_motor_w+0.2, mini_motor_h+0.2]);
+        mini_motor_holes();
     }
         
     difference() {
@@ -213,14 +212,16 @@ module mini_motor() {
 }
 
 module mini_motor_holes() {
-    translate([mini_motor_hole_offs, mini_motor_w / 2 + mini_motor_hole_sep[0]/2, 2])
-        cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
-    translate([mini_motor_hole_offs, mini_motor_w / 2 - mini_motor_hole_sep[0]/2, 2])
-        cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
-    translate([mini_motor_hole_offs + mini_motor_hole_sep[1], mini_motor_w / 2 + mini_motor_hole_sep[0]/2, 2])
-        cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
-    translate([mini_motor_hole_offs + mini_motor_hole_sep[1], mini_motor_w / 2 - mini_motor_hole_sep[0]/2, 2])
-        cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
+    translate([-mini_motor_shaft_offs, -mini_motor_w/2, -mini_motor_h]) {
+        translate([mini_motor_hole_offs, mini_motor_w / 2 + mini_motor_hole_sep[0]/2, 2])
+            cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
+        translate([mini_motor_hole_offs, mini_motor_w / 2 - mini_motor_hole_sep[0]/2, 2])
+            cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
+        translate([mini_motor_hole_offs + mini_motor_hole_sep[1], mini_motor_w / 2 + mini_motor_hole_sep[0]/2, 2])
+            cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
+        translate([mini_motor_hole_offs + mini_motor_hole_sep[1], mini_motor_w / 2 - mini_motor_hole_sep[0]/2, 2])
+            cylinder(r=mini_motor_hole_ir, h=mini_motor_h);
+    }
 }
 
 wc_shaft_thread_or = 10 / 2;  // M10x1.25
